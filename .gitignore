@@ -1,0 +1,16 @@
+CMakeCache.txt
+Makefile
+cmake_install.cmake
+CMakeFiles/*
+*~
+*.swo
+*.swp
+*.a
+*.vcxproj
+*.filters
+tests/CMakeCache.txt
+tests/bin
+tests/build
+tests/CMakeFiles/*
+tests/Testing/*
+tests/CTestTestfile.cmake

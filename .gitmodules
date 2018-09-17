@@ -1,0 +1,5 @@
+[submodule "pybind11"]
+	path = cpp/pybind11
+	url = https://github.com/pybind/pybind11
+  branch = master
+  ignore = all
