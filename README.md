@@ -1,9 +1,7 @@
-# Lobot
+# Overview
 
-Lobot is a repo for a Rocket League bot, and a collection of tools used to
-make predictions about how the car and ball behave. Although the sources 
-are written in C++, it is possible to access some of these utilities in
-python.
+This project aims to provide a way for members of the RLBot community to contribute
+their ideas to a common set of tools for arithmetic, simulation, and car controllers.
 
 ## Build and Test
 
@@ -12,9 +10,8 @@ To build, you need a copy of 64 bit python and a C++ compiler (assuming Windows 
 Get a copy of the repo
 
 ```
-git clone https://github.com/samuelpmish/Lobot
+git clone https://github.com/samuelpmish/Utilities
 ```
-
 
 Initialize the submodules
 
@@ -34,11 +31,4 @@ Build
 
 ```
 cmake --build . --config Release
-```
-
-Testing (C++)
-
-```
-cd tests
-ctest.exe
 ```

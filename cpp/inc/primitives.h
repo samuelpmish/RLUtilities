@@ -9,7 +9,7 @@ struct int2{
   int32_t x, y;
 };
 
-inline bool operator<(const int2 & a, const int2 & b) { 
+inline bool operator<(const int2 & a, const int2 & b) {
   return (a.x < b.x) || (a.x == b.x && a.y < b.y);
 }
 
@@ -28,34 +28,29 @@ struct sphere{
 };
 
 struct tri{
-
   vec3 p[3];
 
-  tri(){}
+  tri() {}
   tri(std::initializer_list< vec3 >);
 
-  inline vec3 center() const { 
+  inline vec3 center() const {
     return (p[0] + p[1] + p[2]) / 3.0f;
   }
 
-  inline vec3 unit_normal() const { 
-    return normalize(cross(p[1]-p[0], p[2]-p[0])); 
+  inline vec3 unit_normal() const {
+    return normalize(cross(p[1]-p[0], p[2]-p[0]));
   }
-
 };
 
 struct obb{
-
   vec3 center;
   vec3 half_width;
   mat3 orientation;
 
   obb(){}
-
 };
 
 struct aabb{
-
   float min_x;
   float min_y;
   float min_z;
@@ -64,10 +59,10 @@ struct aabb{
   float max_y;
   float max_z;
 
-  aabb(){}
-  aabb(const tri &);
-  aabb(const obb &);
-  aabb(const sphere & s);
+  aabb() {}
+  explicit aabb(const tri &);
+  explicit aabb(const obb &);
+  explicit aabb(const sphere & s);
   aabb(const aabb & a, const aabb & b);
 
   inline vec3 center() const{
@@ -75,7 +70,6 @@ struct aabb{
                 0.5f * (min_y + max_y),
                 0.5f * (min_z + max_z)};
   }
-
 };
 
 bool intersect(const aabb &, const aabb &);
