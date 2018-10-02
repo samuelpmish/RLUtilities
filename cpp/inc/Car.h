@@ -23,19 +23,11 @@ class Car {
   bool can_dodge;
   float dodge_timer;
 
-  sphere sphere_collider;
-  obb obb_collider;
-  vec3 pivot_offset;
-
-  float time;
-  float ETA;
+  vec3 hitbox_widths;
+  vec3 hitbox_offset;
 
   int team;
   int id;
-
-  vec3 target;
-  vec3 target_normal;
-  float target_speed;
 
   Input last;
 
@@ -43,7 +35,7 @@ class Car {
 
   void step(Input in = Input(), float dt = DELTA_T);
   vec3 pitch_surface_normal();
-  obb bounding_box();
+  obb hitbox();
   void extrapolate(float);
 
   vec3 forward();

@@ -239,19 +239,18 @@ void Car::step(Input in, float dt) {
 }
 
 vec3 Car::pitch_surface_normal() {
-  sphere_collider.center = x;
-  if (env.in_contact_with(sphere_collider)) {
+  if (env.in_contact_with(sphere{x, 40.0})) {
     return env.last_contact_info().direction;
   } else {
     return vec3{0.0f, 0.0f, 0.0f};
   }
 }
 
-obb Car::bounding_box() {
+obb Car::hitbox() {
   obb box;
   box.orientation = o;
-  box.half_width = obb_collider.half_width;
-  box.center = dot(o, pivot_offset) + x;
+  box.half_width = hitbox_widths;
+  box.center = dot(o, hitbox_offset) + x;
   return box;
 }
 
@@ -271,19 +270,8 @@ Car::Car() {
   can_dodge = false;
   dodge_timer = 0.0f;
 
-  obb_collider.half_width = vec3{59.00368881f, 42.09970474f, 18.07953644f};
-  pivot_offset = vec3{13.97565993f, 0.0f, 20.75498772f};
-
-  // just approximate geometry here
-  sphere_collider.radius = 40.0;
+  hitbox_widths = vec3{59.00368881f, 42.09970474f, 18.07953644f};
+  hitbox_offset = vec3{13.97565993f, 0.0f, 20.75498772f};
 
   last = Input();
-
-  ETA = 0.0f;
-  time = 0.0f;
-
-  target = vec3{0.0f, 0.0f, 0.0f};
-  target_normal = vec3{0.0f, 0.0f, 0.0f};
-
-  target_speed = 0.0f;
 }

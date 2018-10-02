@@ -6,7 +6,6 @@
 
 #include <utility>
 
-#include "bot.cpp"
 #include "Ball.h"
 #include "Car.h"
 #include "linalg.h"
