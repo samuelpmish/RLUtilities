@@ -13,22 +13,9 @@ Get a copy of the repo
 git clone https://github.com/samuelpmish/Utilities
 ```
 
-Initialize the submodules
+Run the build script to download submodules and build the C++ tools and their python bindings
 
 ```
-cd Lobot
-git submodule init
-git submodule update --remote
-```
-
-Generate the project files (e.g. for Visual Studio 15)
-
-```
-cmake . -G"Visual Studio 15 2017 Win64"
-```
-
-Build
-
-```
-cmake --build . --config Release
+cd Utilities
+./build.sh
 ```
