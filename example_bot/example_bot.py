@@ -37,19 +37,15 @@ class PythonExample(BaseAgent):
         self.info.read_packet(packet)
 
         if self.action is None:
-            self.action = HalfFlip(self.info.my_car)
+            self.action = HalfFlip(self.info.my_car, True)
 
         if controller.L1:
             self.controls = controller.get_output()
             self.action = None
         else:
-            self.action.step(0.01666)
+            self.action.step(0.016666)
             self.controls = convert_input(self.action.controls)
             if self.action.timer > 3:
                 self.action = None
-
-        print(mat3(1,2,3,
-                   4,5,6,
-                   7,8,9))
 
         return self.controls
