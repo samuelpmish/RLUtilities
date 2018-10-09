@@ -21,7 +21,7 @@ PYBIND11_MODULE(LinearAlgebra, m) {
      }))
     .def("__getitem__", [](const vec2 & v, size_t i){ return v[i]; })
     .def("__setitem__", [](vec2 & v, size_t i, float f){ v[i] = f; })
-    .def("__str__", [](const vec3 & v){ 
+    .def("__str__", [](const vec2 & v){ 
         return std::to_string(v[0]) + std::string(" ") + 
                std::to_string(v[1]);
         })
