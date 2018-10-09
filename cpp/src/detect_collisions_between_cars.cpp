@@ -22,14 +22,14 @@
 #endif
 
 int offset_LUT[8][8] = {
-    {0, 0, 1,  2,  3,  4,  5,  6},
-    {0, 0, 7,  8,  9, 10, 11, 12},
-    {0, 0, 0, 13, 14, 15, 16, 17},
-    {0, 0, 0,  0, 18, 19, 20, 21},
-    {0, 0, 0,  0,  0, 22, 23, 24},
-    {0, 0, 0,  0,  0,  0, 25, 26},
-    {0, 0, 0,  0,  0,  0,  0, 27},
-    {0, 0, 0,  0,  0,  0,  0,  0}
+    { 0,  0,  1,  2,  3,  4,  5,  6},
+    { 0,  0,  7,  8,  9, 10, 11, 12},
+    { 1,  7,  0, 13, 14, 15, 16, 17},
+    { 2,  8, 13,  0, 18, 19, 20, 21},
+    { 3,  9, 14, 18,  0, 22, 23, 24},
+    { 4, 10, 15, 19, 22,  0, 25, 26},
+    { 5, 11, 16, 20, 23, 25,  0, 27},
+    { 6, 12, 17, 21, 24, 26, 27,  0}
 };
 
 int id_LUT[28][2] = {{0, 1}, {0, 2}, {0, 3}, {0, 4}, {0, 5}, {0, 6}, {0, 7},
@@ -74,21 +74,23 @@ class CollisionReport {
   }
 };
 
+typedef double REAL;
+
 //pybind11::array_t<CollisionReport> detect_collisions_between_cars(
 std::vector < CollisionReport > detect_collisions_between_cars(
-    pybind11::array_t<float> info, int threads = 1) {
+    pybind11::array_t<REAL> info, int threads = 1) {
   pybind11::buffer_info info_buf = info.request();
 
   omp_set_num_threads(threads);
 
-  float* fptr = reinterpret_cast<float*>(info_buf.ptr);
+  REAL * fptr = reinterpret_cast<REAL *>(info_buf.ptr);
 
   std::vector<CollisionReport> report_list;
 
   auto stride = info_buf.shape[0];
   auto num_frames = info_buf.shape[1];
-  int num_cars = 8;
-  int fields_per_car = 7;
+  int fields_per_car = 6;
+  auto num_cars = stride / fields_per_car;
 
   #pragma omp parallel for
   for (int i = 0; i < num_frames; i++) {
@@ -97,18 +99,20 @@ std::vector < CollisionReport > detect_collisions_between_cars(
     sphere spheres[8];
 
     CollisionReport report;
+    report.frame_ = i;
 
     for (int c = 0; c < num_cars; c++) {
-      int offset = stride * i + c * fields_per_car;
-      int type = static_cast<int>(fptr[offset + 0]);
-      car.x[0] = fptr[offset + 1];
-      car.x[1] = fptr[offset + 2];
-      car.x[2] = fptr[offset + 3];
-      car.o = euler_rotation(
-          {fptr[offset + 4], fptr[offset + 5], fptr[offset + 6]});
+      auto offset = stride * i + c * fields_per_car;
+      car.x[0] = static_cast<float>(fptr[offset + 0]);
+      car.x[1] = static_cast<float>(fptr[offset + 1]);
+      car.x[2] = static_cast<float>(fptr[offset + 2]);
+      car.o = euler_rotation({
+          static_cast<float>(fptr[offset + 3]),
+          static_cast<float>(fptr[offset + 4]),
+          static_cast<float>(fptr[offset + 5])});
       hitboxes[c] = car.hitbox();
       spheres[c].center = car.x;
-      spheres[c].radius = 75.0f;
+      spheres[c].radius = 80.0f;
     }
 
     for (int a = 0; a < num_cars; a++) {

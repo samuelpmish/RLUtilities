@@ -23,6 +23,8 @@ class Car {
   bool can_dodge;
   float dodge_timer;
 
+  float time;
+
   vec3 hitbox_widths;
   vec3 hitbox_offset;
 

@@ -1,15 +1,14 @@
-from rlbot.agents.base_agent import SimpleControllerState
-
 import math
 import time
 
-from Lobot import *
+from .LinearAlgebra import vec3, dot, clamp, sgn, normalize
+from .Simulation import Car, Input
 
 class DoNothing:
 
     def __init__(self):
 
-        self.controls = SimpleControllerState()
+        self.controls = Input()
         self.finished = True
 
     def step(self, dt):
@@ -22,7 +21,7 @@ class Jump:
     def __init__(self, duration):
 
         self.duration = duration
-        self.controls = SimpleControllerState()
+        self.controls = Input()
 
         self.timer = 0
         self.counter = 0
@@ -50,7 +49,7 @@ class AirDodge:
 
         self.car = car
         self.target = target
-        self.controls = SimpleControllerState()
+        self.controls = Input()
 
         self.jump = Jump(duration)
 
@@ -241,7 +240,7 @@ class AerialTurn:
         self.epsilon_omega = 0.01
         self.epsilon_theta = 0.04
 
-        self.controls = SimpleControllerState()
+        self.controls = Input()
 
         self.timer = 0.0
         self.finished = False
@@ -379,7 +378,7 @@ class Aerial:
         self.car = car
         self.up = up
 
-        self.controls = SimpleControllerState()
+        self.controls = Input()
 
         self.action = None
         self.state = self.JUMP if car.on_ground else self.AERIAL_APPROACH
@@ -461,11 +460,11 @@ class HalfFlip:
 
         self.car = car
         self.use_boost = use_boost
-        self.controls = SimpleControllerState()
+        self.controls = Input()
 
-        behind = car.pos - 1000.0 * car.forward() - 120.0 * car.left()
+        behind = car.pos - 1000.0 * car.forward() - 0 * 120.0 * car.left()
 
-        self.dodge = AirDodge(self.car, 0.08, target = behind)
+        self.dodge = AirDodge(self.car, 0.20, target = behind)
 
         self.counter = 0
         self.timer = 0.0
@@ -475,38 +474,31 @@ class HalfFlip:
     def step(self, dt):
 
         boost_delay = 0.8
-        air_control_on = 0.5
-        air_control_off = 0.96
-        timeout = 1.4
+        stall_start = 0.75
+        stall_end = 1.10
+        timeout = 2.0
 
         self.dodge.step(dt)
         self.controls = self.dodge.controls
 
-        if air_control_on < self.timer and self.timer < air_control_off:
-            self.controls.roll  = -0.7
+        omega_up = dot(self.car.omega, self.car.up())
+
+        if stall_start < self.timer < stall_end:
+            self.controls.roll  =  0.0
             self.controls.pitch = -1.0
             self.controls.yaw   =  0.0
-        elif air_control_off < self.timer:
-            self.controls.roll  =  0.0
-            self.controls.pitch =  0.0
-            self.controls.yaw   = -1.0
 
-        if self.use_boost and self.timer < boost_delay:
-            self.controls.boost = 1
-        else:
-            self.controls.boost = 0
+        if self.timer > stall_end:
+            self.controls.roll  = sgn(omega_up + 0.01)
+            self.controls.pitch = -1.0
+            self.controls.yaw   =  0.0
 
         self.timer += dt
 
         self.finished = (self.timer > timeout) or \
                         (self.car.on_ground and self.timer > 0.5)
 
-        if self.finished:
-            print('Half Flip time ', self.timer)
-
         return self.finished
-
-
 
 
 
@@ -519,7 +511,7 @@ class Drive:
         self.car = car
         self.target_pos = target_pos
         self.target_speed = target_speed
-        self.controls = SimpleControllerState()
+        self.controls = Input()
 
         self.finished = False
 
@@ -596,13 +588,13 @@ class Wavedash:
             self.direction[2] = 0;
             self.direction = normalize(self.direction)
 
-        self.controls = SimpleControllerState()
+        self.controls = Input()
         self.controls.handbrake = True
         self.controls.throttle = 1
 
         self.action = None
         self.state = self.JUMP
- 
+
         self.counter = 0
         self.state_timer = 0.0
         self.total_timer = 0.0

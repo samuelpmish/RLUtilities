@@ -267,10 +267,13 @@ Car::Car() {
   double_jumped = false;
   on_ground = false;
 
+  time = 0.0f;
+
   can_dodge = false;
   dodge_timer = 0.0f;
 
-  hitbox_widths = vec3{59.00368881f, 42.09970474f, 18.07953644f};
+  //hitbox_widths = vec3{59.00368881f, 42.09970474f, 18.07953644f};
+  hitbox_widths = vec3{70.00368881f, 50.09970474f, 24.07953644f};
   hitbox_offset = vec3{13.97565993f, 0.0f, 20.75498772f};
 
   last = Input();

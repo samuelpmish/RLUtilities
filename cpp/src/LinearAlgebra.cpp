@@ -4,6 +4,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/operators.h>
 
+#include <string>
 #include <utility>
 
 #include "linalg.h"
@@ -20,6 +21,10 @@ PYBIND11_MODULE(LinearAlgebra, m) {
      }))
     .def("__getitem__", [](const vec2 & v, size_t i){ return v[i]; })
     .def("__setitem__", [](vec2 & v, size_t i, float f){ v[i] = f; })
+    .def("__str__", [](const vec3 & v){ 
+        return std::to_string(v[0]) + std::string(" ") + 
+               std::to_string(v[1]);
+        })
     .def(pybind11::self -  pybind11::self)
     .def(pybind11::self +  pybind11::self)
     .def(pybind11::self -= pybind11::self)
@@ -38,6 +43,11 @@ PYBIND11_MODULE(LinearAlgebra, m) {
      }))
     .def("__getitem__", [](const vec3 & v, size_t i){ return v[i]; })
     .def("__setitem__", [](vec3 & v, size_t i, float f){ v[i] = f; })
+    .def("__str__", [](const vec3 & v){ 
+        return std::to_string(v[0]) + std::string(" ") + 
+               std::to_string(v[1]) + std::string(" ") + 
+               std::to_string(v[2]);
+        })
     .def(pybind11::self -  pybind11::self)
     .def(pybind11::self +  pybind11::self)
     .def(pybind11::self -= pybind11::self)
@@ -61,6 +71,17 @@ PYBIND11_MODULE(LinearAlgebra, m) {
     })
     .def("__setitem__", [](mat2 & A, std::pair < size_t, size_t > i, float v){
         A(i.first, i.second) = v;
+    })
+    .def("__str__", [](const mat2 & A){ 
+      std::string s;
+      for (int i = 0; i < 2; i++) { 
+        for (int j = 0; j < 2; j++) { 
+          s += std::to_string(A(i,j));
+          if (j == 1) s += "\n";
+          else        s += " ";
+        }
+      }
+      return s;
     });
 
   pybind11::class_<mat3>(m, "mat3")
@@ -78,6 +99,17 @@ PYBIND11_MODULE(LinearAlgebra, m) {
     })
     .def("__setitem__", [](mat3 & A, std::pair < size_t, size_t > i, float v){
         A(i.first, i.second) = v;
+    })
+    .def("__str__", [](const mat3 & A){ 
+      std::string s;
+      for (int i = 0; i < 3; i++) { 
+        for (int j = 0; j < 3; j++) { 
+          s += std::to_string(A(i,j));
+          if (j == 2) s += "\n";
+          else        s += " ";
+        }
+      }
+      return s;
     });
 
   // free functions
@@ -114,8 +146,5 @@ PYBIND11_MODULE(LinearAlgebra, m) {
   m.def("norm", (float (*)(const vec2 &)) &norm);
   m.def("normalize", (vec3 (*)(const vec3 &)) &normalize);
   m.def("normalize", (vec2 (*)(const vec2 &)) &normalize);
-
-//  m.def("max_speed", &max_speed);
-//  m.def("max_curvature", &max_curvature);
 
 }
