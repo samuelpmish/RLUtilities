@@ -5,7 +5,7 @@ their ideas to a common set of tools for arithmetic, simulation, and car control
 
 ## Build and Test
 
-To build, you need a copy of 64 bit python and a C++ compiler (assuming Windows only)
+To build, you need a copy of 64 bit python 3.6 and a C++ compiler (assuming Windows only)
 
 Get a copy of the repo
 
