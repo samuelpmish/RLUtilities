@@ -89,7 +89,8 @@ PYBIND11_MODULE(Simulation, m) {
     .def_readwrite("throttle", &Input::throttle)
     .def_readwrite("jump", &Input::jump)
     .def_readwrite("boost", &Input::boost)
-    .def_readwrite("slide", &Input::slide);
+    .def_readwrite("slide", &Input::slide)
+	.def_readwrite("handbrake", &Input::handbrake);
 
   pybind11::class_<Car>(m, "Car")
     .def(pybind11::init<>())
