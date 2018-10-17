@@ -5,9 +5,10 @@ from .Goal import Goal
 
 class BoostPad:
 
-    def __init__(self, index, pos, timer):
+    def __init__(self, index, pos, is_active, timer):
         self.index = index
         self.pos = pos
+        self.is_active = is_active
         self.timer = timer
 
 class GameInfo:
@@ -93,6 +94,7 @@ class GameInfo:
             car.supersonic = game_car.is_super_sonic
             car.jumped = game_car.jumped
             car.double_jumped = game_car.double_jumped
+            car.boost = game_car.boost
             car.time = self.time
 
             car.extrapolate(GameInfo.DT)
@@ -110,6 +112,14 @@ class GameInfo:
                         self.teammates.append(car)
                 else:
                     self.opponents.append(car)
+
+        for i in range(0, len(self.boost_pads)):
+
+            boost_pad = packet.game_boosts[self.boost_pads[i].index]
+
+            self.boost_pads[i].is_active = boost_pad.is_active
+
+            self.boost_pads[i].timer = boost_pad.timer
 
         self.time += GameInfo.DT
 
