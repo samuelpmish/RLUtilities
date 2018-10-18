@@ -24,6 +24,7 @@ struct Input {
   bool jump;
   bool boost;
   bool slide;
+  bool handbrake;
 };
 
 struct ScoreInfo {
