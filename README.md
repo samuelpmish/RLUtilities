@@ -40,3 +40,6 @@ include it in an existing CMake project.
 ```
 pip install RLUtilities
 ```
+
+Check out [ExampleBots](https://github.com/samuelpmish/ExampleBots) for demonstrations of how to use these
+tools in Python.
