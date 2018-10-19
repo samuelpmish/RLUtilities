@@ -10,32 +10,33 @@ To build, you need a copy of 64 bit python 3.6 and a C++ compiler (assuming Wind
 Get a copy of the repo
 
 ```
-git clone https://github.com/samuelpmish/Utilities
+git clone https://github.com/samuelpmish/RLUtilities
 ```
 
 Run the build script to download submodules and build the C++ tools and their python bindings
 
 ```
-cd Utilities
+cd RLUtilities
 ./build.sh
 ```
 
 ## Adding to a project
 
-Please consider adding this repo as a submodule to your project, so that you might easily
-receive updates to it:
+### C++
+
+Add this repo as a submodule to your project, so that you might easily receive updates to it:
 
 ```
 > cd my_rlbot_folder
 > git submodule add -b master git@github.com:samuelpmish/Utilities.git
 > git submodule update --remote
-> cd Utilities
-> ./build.sh
 ```
 
-Then, (if your bot.py file is in my_rlbot_folder) you can import the modules:
+The project uses CMake, so doing ```add_directory(path/to/RLUtilities/cpp)``` should allow you to
+include it in an existing CMake project.
+
+### Python
 
 ```
-from Utilities.Simulation import Car, Ball
-from Utilities.LinearAlgebra import vec3, dot, euler_rotation
+pip install RLUtilities
 ```
