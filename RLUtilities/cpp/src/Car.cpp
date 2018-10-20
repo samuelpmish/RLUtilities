@@ -9,9 +9,12 @@ Pitch Car::env;
 
 float max_curvature(float speed) {
   const int n = 6;
-  float values[n][2] = {{0.0f, 0.00690f},    {500.0f, 0.00398f},
-                        {1000.0f, 0.00235f}, {1500.0f, 0.00138f},
-                        {1750.0f, 0.00110f}, {2500.0f, 0.00080f}};
+  float values[n][2] = {{   0.0f, 0.00690f},    
+                        { 500.0f, 0.00398f},
+                        {1000.0f, 0.00235f}, 
+                        {1500.0f, 0.00138f},
+                        {1750.0f, 0.00110f}, 
+                        {2500.0f, 0.00080f}};
 
   float input = clamp(speed, 0.0f, 2500.0f);
 
@@ -27,16 +30,19 @@ float max_curvature(float speed) {
 
 float max_speed(float curvature) {
   const int n = 6;
-  float values[n][2] = {{0.0f, 0.00690f},    {500.0f, 0.00398f},
-                        {1000.0f, 0.00235f}, {1500.0f, 0.00138f},
-                        {1750.0f, 0.00110f}, {2500.0f, 0.00080f}};
+  float values[n][2] = {{0.00080f, 2500.0f},
+                        {0.00110f, 1750.0f},
+                        {0.00138f, 1500.0f},
+                        {0.00235f, 1000.0f},
+                        {0.00398f,  500.0f},
+                        {0.00690f,    0.0f}};
 
-  float input = clamp(curvature, 0.00080f, 0.00690f);
+  float input = clamp(curvature, values[0][0], values[n-1][0]);
 
   for (int i = 0; i < (n - 1); i++) {
-    if (values[i][1] <= input && input < values[i + 1][1]) {
-      float u = (input - values[i][1]) / (values[i + 1][1] - values[i][1]);
-      return clamp(lerp(values[i][0], values[i + 1][0], u), 0.0f, 2300.0f);
+    if (values[i][0] <= input && input <= values[i + 1][0]) {
+      float u = (input - values[i][0]) / (values[i + 1][0] - values[i][0]);
+      return clamp(lerp(values[i][1], values[i + 1][1], u), 0.0f, 2300.0f);
     }
   }
 

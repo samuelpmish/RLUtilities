@@ -1,7 +1,7 @@
 import math
 import time
 
-from .LinearAlgebra import vec3, dot, clamp, sgn, normalize
+from .LinearAlgebra import *
 from .Simulation import Car, Input
 
 class DoNothing:
@@ -126,9 +126,9 @@ def solve_PWL(a, b, c):
 
     if xm <= 0 <= xp:
         if abs(xp) < abs(xm):
-            clamp(xp,  0, 1)
+            return clamp(xp,  0, 1)
         else:
-            clamp(xm, -1, 0)
+            return clamp(xm, -1, 0)
     else:
         if 0 <= xp:
             return clamp(xp,  0, 1)
@@ -206,8 +206,10 @@ class AerialTurn:
         u = vec3(0, 0, 0)
 
         dummy = Car(self.car)
+        self.trajectory.append(vec3(dummy.pos))
         for i in range(0, num_points):
             dummy.step(Input(), 0.0333)
+            self.trajectory.append(vec3(dummy.pos))
             u = dummy.pitch_surface_normal()
             if norm(u) > 0.0 and i > 10:
                 f = normalize(dummy.vel - dot(dummy.vel, u) * u)
@@ -226,6 +228,7 @@ class AerialTurn:
 
         self.found = False
         self.car = car
+        self.trajectory = []
 
         if target == 'Recovery':
 

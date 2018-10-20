@@ -8,9 +8,5 @@ CMakeFiles/*
 *.a
 *.vcxproj
 *.filters
-tests/CMakeCache.txt
-tests/bin
-tests/build
-tests/CMakeFiles/*
-tests/Testing/*
-tests/CTestTestfile.cmake
+*.pyd
+RLUtilities/cpp/build/
