@@ -571,9 +571,8 @@ class Drive:
                         self.controls.throttle = 0.01
                 self.controls.boost = 0
 
-        self.finished = (self.car.ETA - self.car.time) < 0
-
-        return self.finished
+        if norm(self.car.pos - self.target_pos) < 100:
+            self.finished = True
 
 # TODO
 # TODO
