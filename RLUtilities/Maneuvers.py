@@ -126,14 +126,14 @@ def solve_PWL(a, b, c):
 
     if xm <= 0 <= xp:
         if abs(xp) < abs(xm):
-            return clamp(xp,  0, 1)
+            return clip(xp,  0, 1)
         else:
-            return clamp(xm, -1, 0)
+            return clip(xm, -1, 0)
     else:
         if 0 <= xp:
-            return clamp(xp,  0, 1)
+            return clip(xp,  0, 1)
         if xm <= 0:
-            return clamp(xm, -1, 0)
+            return clip(xm, -1, 0)
 
     return 0
 
@@ -438,7 +438,7 @@ class Aerial:
             # approximates the desired average boost ratio
             if angle_between(self.action.target, self.car.theta) < 0.4:
                 use_boost -= round(self.boost_counter)
-                self.boost_counter += clamp(1.25 * (self.B_avg / Aerial.B), 0.0, 1.0)
+                self.boost_counter += clip(1.25 * (self.B_avg / Aerial.B), 0.0, 1.0)
                 use_boost += round(self.boost_counter)
 
             self.controls.boost = 1 if use_boost else 0
@@ -537,7 +537,7 @@ class Drive:
         # angle between car's forward direction and target position
         phi = math.atan2(delta_local[1], delta_local[0])
 
-        self.controls.steer = clamp(2.5 * phi, -1.0, 1.0)
+        self.controls.steer = clip(2.5 * phi, -1.0, 1.0)
 
         if abs(phi) > 1.7:
             #self.controls.handbrake = 1

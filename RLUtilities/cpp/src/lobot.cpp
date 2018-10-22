@@ -219,7 +219,7 @@ PYBIND11_MODULE(Lobot, m) {
   m.def("angle_between", (float (*)(const mat3 &, const mat3 &)) &angle_between);
 
   m.def("sgn", &sgn);
-  m.def("clamp", &clamp);
+  m.def("clip", &clip);
 
   m.def("xy", &xy);
   m.def("norm", (float (*)(const vec3 &)) &norm);

@@ -25,7 +25,7 @@ inline vec < n > dot(const vec < m > & v,
 template < int m, int n >
 inline vec < m > dot(const mat < m, n > & A,
                      const vec < n > & v) {
-                           
+
   vec < m > Av;
 
   for(int i = 0; i < m; i++){
@@ -43,7 +43,7 @@ template < int m, int n >
 inline float dot(const vec < m > & u,
                  const mat < m, n > & A,
                  const vec < n > & v) {
-                           
+
   float uAv = 0;
 
   for(int i = 0; i < m; i++){
@@ -56,11 +56,11 @@ inline float dot(const vec < m > & u,
 
 }
 
-inline float sgn(float x) { 
-  return float((0.0f < x) - (x < 0.0f)); 
+inline float sgn(float x) {
+  return float((0.0f < x) - (x < 0.0f));
 }
 
-inline float clamp(float x, float minimum, float maximum) {
+inline float clip(float x, float minimum, float maximum) {
   return fmax(fmin(x, maximum), minimum);
 }
 
@@ -110,7 +110,7 @@ inline mat < 3, 3 > axis_rotation(const vec < 3 > & omega) {
 
 inline vec < 3 > rotation_to_axis(const mat < 3, 3 > & R) {
 
-  float theta = acos(clamp(0.5f * (tr(R) - 1.0f), -1.0f, 1.0f));
+  float theta = acos(clip(0.5f * (tr(R) - 1.0f), -1.0f, 1.0f));
 
   float scale;
 
@@ -118,9 +118,9 @@ inline vec < 3 > rotation_to_axis(const mat < 3, 3 > & R) {
   if (fabs(theta) < 0.00001f) {
     scale = 0.5f + theta * theta / 12.0f;
   } else {
-    scale = 0.5f * theta / sin(theta); 
+    scale = 0.5f * theta / sin(theta);
   }
-  
+
   return vec3{R(2,1)-R(1,2), R(0,2)-R(2,0), R(1,0)-R(0,1)} * scale;
 
 }

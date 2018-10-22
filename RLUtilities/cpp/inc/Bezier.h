@@ -15,7 +15,7 @@ class Bezier {
   }
 
   vec3 operator()(float tau) {
-    float t = clamp(tau, 0.0f, 1.0f);
+    float t = clip(tau, 0.0f, 1.0f);
     float s = 1.0f - t;
 
     switch (num_points) {
@@ -40,7 +40,7 @@ class Bezier {
   }
 
   vec3 tangent(float tau) {
-    float t = clamp(tau, 0.0f, 1.0f);
+    float t = clip(tau, 0.0f, 1.0f);
     float s = 1.0f - t;
     switch (num_points) {
       case 2:

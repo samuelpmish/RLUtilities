@@ -50,3 +50,15 @@ find_package(OpenMP)
 if(OpenMP_CXX_FOUND)
     target_link_libraries(DetectCollisions PUBLIC OpenMP::OpenMP_CXX)
 endif()
+
+pybind11_add_module(Mechanics
+  ${PROJECT_SOURCE_DIR}/src/AerialTurn.cpp
+  ${PROJECT_SOURCE_DIR}/src/Mechanics.cpp
+)
+
+target_include_directories(Mechanics PRIVATE inc/)
+target_compile_features(Mechanics PRIVATE cxx_std_11)
+target_link_libraries(Mechanics PRIVATE
+  bot_utils
+)
+

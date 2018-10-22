@@ -46,7 +46,7 @@ class Curve {
   }
 
   vec3 point_at(float s) {
-    s = clamp(s, 0, distances[0]);
+    s = clip(s, 0, distances[0]);
 
     for (int i = 0; i < (points.size() - 1); i++) {
       if (distances[i] >= s && s >= distances[i + 1]) {
@@ -59,7 +59,7 @@ class Curve {
   }
 
   vec3 tangent_at(float s) {
-    s = clamp(s, 0, distances[0]);
+    s = clip(s, 0, distances[0]);
 
     for (int i = 0; i < (points.size() - 1); i++) {
       if (distances[i] >= s && s >= distances[i + 1]) {
@@ -79,7 +79,7 @@ class Curve {
       vec3 a = points[i];
       vec3 b = points[i + 1];
 
-      float alpha = clamp(dot(b - a, c - a) / dot(b - a, b - a), 0.0f, 1.0f);
+      float alpha = clip(dot(b - a, c - a) / dot(b - a, b - a), 0.0f, 1.0f);
 
       float distance = norm(c - (a + alpha * (b - a)));
 

@@ -3,6 +3,7 @@
 #include "linalg.h"
 
 #include <math.h>
+#include <iostream>
 #include <initializer_list>
 
 template <int N0, int N1>
@@ -357,6 +358,18 @@ inline mat<3, 3> euler_rotation(const vec<3>& pyr) {
   theta(2, 2) = CP * CR;
 
   return theta;
+}
+
+template <int m, int n>
+std::ostream& operator<<(std::ostream& os, const mat<m, n>& A) {
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+      os << A(i,j);
+      if (j == n-1) os << "\n";
+      else          os << ", ";
+    }
+  }
+  return os;
 }
 
 typedef mat<2, 2> mat2;

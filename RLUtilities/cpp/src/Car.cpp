@@ -16,7 +16,7 @@ float max_curvature(float speed) {
                         {1750.0f, 0.00110f}, 
                         {2500.0f, 0.00080f}};
 
-  float input = clamp(speed, 0.0f, 2500.0f);
+  float input = clip(speed, 0.0f, 2500.0f);
 
   for (int i = 0; i < (n - 1); i++) {
     if (values[i][0] <= input && input < values[i + 1][0]) {
@@ -37,12 +37,12 @@ float max_speed(float curvature) {
                         {0.00398f,  500.0f},
                         {0.00690f,    0.0f}};
 
-  float input = clamp(curvature, values[0][0], values[n-1][0]);
+  float input = clip(curvature, values[0][0], values[n-1][0]);
 
   for (int i = 0; i < (n - 1); i++) {
     if (values[i][0] <= input && input <= values[i + 1][0]) {
       float u = (input - values[i][0]) / (values[i + 1][0] - values[i][0]);
-      return clamp(lerp(values[i][1], values[i + 1][1], u), 0.0f, 2300.0f);
+      return clip(lerp(values[i][1], values[i + 1][1], u), 0.0f, 2300.0f);
     }
   }
 

@@ -142,9 +142,9 @@ bool intersect(const tri & a, const aabb & b) {
 bool intersect(const aabb & a, const sphere & b) {
 
   vec3 nearest {
-    clamp(b.center[0], a.min_x, a.max_x),
-    clamp(b.center[1], a.min_y, a.max_y),
-    clamp(b.center[2], a.min_z, a.max_z)
+    clip(b.center[0], a.min_x, a.max_x),
+    clip(b.center[1], a.min_y, a.max_y),
+    clip(b.center[2], a.min_z, a.max_z)
   };
 
   return (norm(b.center - nearest) <= b.radius);
@@ -273,7 +273,7 @@ bool intersect(const tri & a, const tri & b) {
 
 float distance_between(const vec3 & start, const vec3 & dir, const vec3 & p) {
 
-  float u = clamp(dot(p - start, dir) / dot(dir, dir), 0.0f, 1.0f);
+  float u = clip(dot(p - start, dir) / dot(dir, dir), 0.0f, 1.0f);
   return norm(start + u * dir - p);
 
 }
