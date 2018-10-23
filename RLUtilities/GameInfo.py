@@ -1,7 +1,7 @@
-from .Simulation import Ball, Pitch, Car
-from .LinearAlgebra import vec3, euler_rotation
+from Simulation import Ball, Pitch, Car
+from LinearAlgebra import vec3, euler_rotation
 
-from .Goal import Goal
+from Goal import Goal
 
 class BoostPad:
 
@@ -15,7 +15,7 @@ class GameInfo:
 
     DT = 0.01666
 
-    def __init__(self, index, team):
+    def __init__(self, index, team, fieldInfo = None):
 
         self.time = 0
         self.ball = Ball()
@@ -33,14 +33,21 @@ class GameInfo:
 
         self.my_car = Car()
 
-        self.boost_pads = [
-            BoostPad( 3, vec3(-3072.0, -4096.0, 73.0), True, 0.0),
-            BoostPad( 4, vec3( 3072.0, -4096.0, 73.0), True, 0.0),
-            BoostPad(15, vec3(-3584.0,     0.0, 73.0), True, 0.0),
-            BoostPad(18, vec3( 3584.0,     0.0, 73.0), True, 0.0),
-            BoostPad(29, vec3(-3072.0,  4096.0, 73.0), True, 0.0),
-            BoostPad(30, vec3( 3072.0,  4096.0, 73.0), True, 0.0)
-        ]
+        if fieldInfo == None:
+            self.boost_pads = [
+                BoostPad( 3, vec3(-3072.0, -4096.0, 73.0), True, 0.0),
+                BoostPad( 4, vec3( 3072.0, -4096.0, 73.0), True, 0.0),
+                BoostPad(15, vec3(-3584.0,     0.0, 73.0), True, 0.0),
+                BoostPad(18, vec3( 3584.0,     0.0, 73.0), True, 0.0),
+                BoostPad(29, vec3(-3072.0,  4096.0, 73.0), True, 0.0),
+                BoostPad(30, vec3( 3072.0,  4096.0, 73.0), True, 0.0)
+            ]
+        else:
+            self.boost_pads = []
+            for i in range(fieldInfo.num_boosts):
+                current = fieldInfo.boost_pads[i]
+                if current.is_full_boost:
+                    self.boost_pads.append(BoostPad(i, vec3(current.location.x, current.location.y, current.location.z), True, 0.0))
 
         self.ball_predictions = []
 
