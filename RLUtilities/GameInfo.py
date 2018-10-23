@@ -1,5 +1,5 @@
-from Simulation import Ball, Pitch, Car
-from LinearAlgebra import vec3, euler_rotation
+from .Simulation import Ball, Pitch, Car
+from .LinearAlgebra import vec3, euler_rotation
 
 from Goal import Goal
 
