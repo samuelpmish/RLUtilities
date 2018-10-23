@@ -1,8 +1,11 @@
 import math
 import time
 
-from .LinearAlgebra import *
-from .Simulation import Car, Input
+#from .LinearAlgebra import *
+#from .Simulation import Car, Input
+
+from RLUtilities.LinearAlgebra import *
+from RLUtilities.Simulation import Car, Input
 
 class DoNothing:
 
@@ -336,12 +339,12 @@ class Aerial:
 
     # parameters
     jump_t = 0.25
-    jump_dx = 300.0
-    jump_dv = 500.0
+    jump_dx = 100.0
+    jump_dv = 600.0
 
     B = 1000.0  # boost acceleration
     g = -650.0  # gravitational acceleration
-    a = 9.0     # maximum aerial angular acceleration
+    a =    9.0  # maximum aerial angular acceleration
 
     def is_viable(self):
 
@@ -350,35 +353,37 @@ class Aerial:
 
         # and if it requires an acceleration that the car
         # is unable to produce, then it is not viable
-        return 0 <= self.B_avg < Aerial.B
+        return 0 <= self.B_avg < 0.95 * Aerial.B
 
     def calculate_course(self):
 
-        v0 = self.car.vel
-        dx = self.car.target - self.car.pos
+        z = vec3(0, 0, 1)
+        P = self.target
+        x0 = vec3(self.car.pos)
+        v0 = vec3(self.car.vel)
 
-        T = self.car.ETA - self.car.time
+        delta_t = self.t_arrival - self.car.time
 
         if self.car.on_ground:
+            v0 += self.car.up() * Aerial.jump_dv
+            x0 += self.car.up() * Aerial.jump_dx
 
-            v0 -= self.car.up() * Aerial.jump_dv
-            dx -= self.car.up() * Aerial.jump_dx
-            T  -= Aerial.jump_t
+        self.A = P - x0 - v0 * delta_t - 0.5 * Aerial.g * delta_t * delta_t * z
 
-        self.H = dx - v0 * T - vec3(0, 0, 0.5 * Aerial.g * T * T)
-
-        self.n = normalize(self.H)
+        self.f = normalize(self.A)
 
         # estimate the time required to turn
-        theta = angle_between(self.car.theta, look_at(self.n, self.up))
-        ta = 0.5 * (2.0 * math.sqrt(theta / Aerial.a))
+        phi = angle_between(self.car.theta, look_at(self.f, self.up))
+        T = 0.7 * (2.0 * math.sqrt(phi / Aerial.a))
 
         # see if the boost acceleration needed to reach the target is achievable
-        self.B_avg = 2.0 * norm(self.H) / ((T - ta) * (T - ta))
+        self.B_avg = 2.0 * norm(self.A) / ((delta_t - T) ** 2)
 
-    def __init__(self, car, up=vec3(0, 0, 1)):
+    def __init__(self, car, target, t_arrival, up=vec3(0, 0, 1)):
 
         self.car = car
+        self.target = target
+        self.t_arrival = t_arrival
         self.up = up
 
         self.controls = Input()
@@ -386,8 +391,12 @@ class Aerial:
         self.action = None
         self.state = self.JUMP if car.on_ground else self.AERIAL_APPROACH
 
-        self.H = vec3(0, 0, 0)
-        self.n = vec3(0, 0, 0)
+        self.jump_duration = 0.2
+        self.double_jump = AirDodge(car, self.jump_duration)
+        self.aerial_turn = AerialTurn(car, self.car.theta)
+
+        self.A = vec3(0, 0, 0)
+        self.f = vec3(0, 0, 0)
         self.B_avg = 0
 
         self.counter = 0
@@ -401,42 +410,38 @@ class Aerial:
 
         old_state = self.state
 
+        self.calculate_course()
+
+        if norm(self.A) > 50.0:
+            self.aerial_turn.target = look_at(self.f, self.up)
+        else:
+            self.aerial_turn.target = look_at(normalize(self.target-self.car.pos), self.up)
+
+        self.aerial_turn.step(dt)
+
         if self.state == self.JUMP:
 
-            if self.action is None:
-                self.action = AirDodge(car = self.car, duration = 0.2)
+            self.double_jump.step(dt)
 
-            jump_finished = self.action.step(dt)
-            self.controls = self.action.controls
+            self.controls = self.double_jump.controls
+            if self.total_timer < self.jump_duration:
+                self.controls.roll = self.aerial_turn.controls.roll
+                self.controls.pitch = self.aerial_turn.controls.pitch
+                self.controls.yaw = self.aerial_turn.controls.yaw
 
-            if jump_finished:
+            if self.double_jump.finished:
                 self.state = self.AERIAL_APPROACH
 
         elif self.state == self.AERIAL_APPROACH:
 
-            if self.counter == 0:
-                self.boost_counter = 0.0
-                self.action = AerialTurn(car = self.car, target = self.car.theta)
-                self.action.epsilon_omega = 0.0
-                self.action.epsilon_theta = 0.0
-
-            self.calculate_course()
-
-            if norm(self.H) > 50.0:
-                self.action.target = look_at(self.n, self.up)
-            else:
-                self.action.target = look_at(normalize(self.car.target-self.car.pos), self.up)
-
-            self.action.step(dt)
-
             # use the controls from the aerial turn correction
-            self.controls = self.action.controls
+            self.controls = self.aerial_turn.controls
 
             use_boost = 0
 
             # and set the boost in a way that its duty cycle
             # approximates the desired average boost ratio
-            if angle_between(self.action.target, self.car.theta) < 0.4:
+            if angle_between(self.aerial_turn.target, self.car.theta) < 0.4:
                 use_boost -= round(self.boost_counter)
                 self.boost_counter += clip(1.25 * (self.B_avg / Aerial.B), 0.0, 1.0)
                 use_boost += round(self.boost_counter)
@@ -452,9 +457,7 @@ class Aerial:
 
         self.total_timer += dt
 
-        self.finished = (self.car.time >= self.car.ETA)
-
-        return self.finished
+        self.finished = (self.car.time >= self.t_arrival)
 
 
 class HalfFlip:
@@ -615,8 +618,6 @@ class Wavedash:
 
         if self.state == self.JUMP:
 
-            print('jump')
-
             if self.counter <= 2:
                 self.controls.jump = 1
             elif self.counter <= 4:
@@ -625,8 +626,6 @@ class Wavedash:
                 self.state = self.AERIAL_TURN
 
         elif self.state == self.AERIAL_TURN:
-
-            print('turn')
 
             on_off = 0.15 if self.state_timer < turn_time else 0
 
@@ -638,8 +637,6 @@ class Wavedash:
                 self.state = self.AIR_DODGE
 
         elif self.state == self.AIR_DODGE:
-
-            print('dodge')
 
             if self.counter == 0:
 
