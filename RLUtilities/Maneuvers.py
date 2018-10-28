@@ -1,9 +1,6 @@
 import math
 import time
 
-#from .LinearAlgebra import *
-#from .Simulation import Car, Input
-
 from RLUtilities.LinearAlgebra import *
 from RLUtilities.Simulation import Car, Input
 
@@ -46,9 +43,80 @@ class Jump:
         return self.finished
 
 
+class AirDodge2:
+
+    def __init__(self, car, jump_duration = 0.1, target = None, dodge_time = None):
+
+        self.car = car
+        self.jump_duration = jump_duration
+        self.target = target
+        self.controls = Input()
+
+        self.jumped = car.on_g
+        self.jump = Jump(duration)
+
+        if duration <= 0:
+            self.jump.finished = True
+
+        self.counter = 0
+        self.state_timer = 0.0
+        self.total_timer = 0.0
+
+        self.finished = False
+
+    def step(self, dt):
+
+        recovery_time = 0.0 if (self.target is None) else 0.4
+
+        if not self.jump.finished:
+
+            self.jump.step(dt)
+            self.controls = self.jump.controls
+
+        else:
+
+            if self.counter == 0:
+
+                # double jump
+                if self.target is None:
+                    self.controls.roll = 0
+                    self.controls.pitch = 0
+                    self.controls.yaw = 0
+
+                # air dodge
+                else:
+                    target_local = dot(self.target - self.car.pos, self.car.theta)
+                    target_local[2] = 0;
+
+                    direction = normalize(target_local)
+
+                    self.controls.roll = 0
+                    self.controls.pitch = -direction[0]
+                    self.controls.yaw = sgn(self.car.theta[2,2]) * direction[1]
+
+            elif self.counter == 2:
+
+                self.controls.jump = 1
+
+            elif self.counter >= 4:
+
+                self.controls.roll = 0
+                self.controls.pitch = 0
+                self.controls.yaw = 0
+                self.controls.jump = 0
+
+            self.counter += 1
+            self.state_timer += dt
+
+        self.finished = (self.jump.finished and
+                         self.state_timer > recovery_time and
+                         self.counter >= 6)
+
+
+
 class AirDodge:
 
-    def __init__(self, car, duration = 0.0, target = None):
+    def __init__(self, car, duration = 0.0, target = None, dodge_time = None):
 
         self.car = car
         self.target = target
@@ -112,8 +180,6 @@ class AirDodge:
         self.finished = (self.jump.finished and
                          self.state_timer > recovery_time and
                          self.counter >= 6)
-
-        return self.finished
 
 
 # Solves a piecewise linear (PWL) equation of the form
@@ -463,18 +529,16 @@ class Aerial:
 class HalfFlip:
 
     def __init__(self, car, use_boost = False):
-
         self.car = car
         self.use_boost = use_boost
         self.controls = Input()
 
-        behind = car.pos - 1000.0 * car.forward() - 0 * 120.0 * car.left()
+        duration = 0.12
+        behind = car.pos - 1000.0 * car.forward()
+        self.dodge = AirDodge(self.car, duration, behind)
 
-        self.dodge = AirDodge(self.car, 0.10, target = behind)
+        self.s = 0.95 * sgn(dot(self.car.omega, self.car.up()) + 0.01)
 
-        self.s = sgn(dot(self.car.omega, self.car.up()) + 0.01)
-
-        self.counter = 0
         self.timer = 0.0
 
         self.finished = False
@@ -508,8 +572,6 @@ class HalfFlip:
 
         self.finished = (self.timer > timeout) or \
                         (self.car.on_ground and self.timer > 0.5)
-
-        return self.finished
 
 
 
@@ -577,96 +639,64 @@ class Drive:
         if norm(self.car.pos - self.target_pos) < 100:
             self.finished = True
 
-# TODO
-# TODO
+
 class Wavedash:
-# TODO
-# TODO
 
-    JUMP = 0
-    AERIAL_TURN = 1
-    AIR_DODGE = 2
-
-    def __init__(self, car, target = None):
+    def __init__(self, car, target):
 
         self.car = car
-
-        if target == None:
-            self.direction = normalize(vec3(1, 0, 0))
-        else:
-            self.direction = dot(target - car.pos, car.theta)
-            self.direction[2] = 0;
-            self.direction = normalize(self.direction)
+        self.target = target
 
         self.controls = Input()
         self.controls.handbrake = True
-        self.controls.throttle = 1
 
-        self.action = None
-        self.state = self.JUMP
+        direction = normalize(xy(target - car.pos))
+
+        R = axis_rotation(-0.2 * cross(vec3(0, 0, 1), direction))
+
+        self.turn = AerialTurn(car, dot(R, car.theta))
 
         self.counter = 0
-        self.state_timer = 0.0
-        self.total_timer = 0.0
+        self.timer = 0.0
+
+        self.finished = False
 
     def step(self, dt):
 
-        turn_time = 0.5
-        idle_time = 0.35
+        dodge_time = 0.9
 
-        old_state = self.state
+        if self.counter < 1:
 
-        if self.state == self.JUMP:
+            self.turn.step(dt)
+            self.controls.roll = self.turn.controls.roll
+            self.controls.pitch = self.turn.controls.pitch
+            self.controls.yaw = self.turn.controls.yaw
+            self.controls.jump = 1
 
-            if self.counter <= 2:
-                self.controls.jump = 1
-            elif self.counter <= 4:
-                self.controls.jump = 0
-            else:
-                self.state = self.AERIAL_TURN
+        elif self.timer < dodge_time:
 
-        elif self.state == self.AERIAL_TURN:
+            self.turn.step(dt)
+            self.controls.roll = self.turn.controls.roll
+            self.controls.pitch = self.turn.controls.pitch
+            self.controls.yaw = self.turn.controls.yaw
+            self.controls.jump = 0
 
-            on_off = 0.15 if self.state_timer < turn_time else 0
-
-            self.controls.roll  = on_off * -self.direction[1]
-            self.controls.pitch = on_off *  self.direction[0]
-            self.controls.yaw   = on_off * 0
-
-            if self.state_timer > turn_time + idle_time:
-                self.state = self.AIR_DODGE
-
-        elif self.state == self.AIR_DODGE:
-
-            if self.counter == 0:
-
-                self.controls.roll  =  self.direction[1]
-                self.controls.pitch = -self.direction[0]
-                self.controls.yaw   = 0
-
-            elif self.counter == 2:
-
-                self.controls.jump = 1
-
-            elif self.counter >= 4:
-
-                self.controls.roll = 0
-                self.controls.pitch = 0
-                self.controls.yaw = 0
-                self.controls.jump = 0
-
-            self.controls.handbrake = True
-
-        if self.state == old_state:
-            self.counter += 1
-            self.state_timer += dt
         else:
-            self.counter = 0
-            self.state_timer = 0.0
 
-        self.total_timer += dt
+            target_local = dot(self.target - self.car.pos, self.car.theta)
+            target_local[2] = 0;
 
-        if self.state == self.AIR_DODGE and self.car.on_ground:
-            return True
-        else:
-            return False
+            direction = normalize(target_local)
+
+            self.controls.roll = 0
+            self.controls.pitch = -direction[0]
+            self.controls.yaw = sgn(self.car.theta[2,2]) * direction[1]
+            self.controls.jump = 1
+
+        self.timer += dt
+        self.counter += 1
+
+        if (self.timer > 0.25 and
+            self.car.on_ground and
+            norm(xy(self.car.omega)) < 0.13):
+            self.finished = True

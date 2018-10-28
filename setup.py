@@ -5,7 +5,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='RLUtilities',
-    version='0.0.7',
+    version='0.0.8',
     author='Sam Mish',
     author_email='samuelpmish@gmail.com',
     description='tools for controlling Rocket League bots',
