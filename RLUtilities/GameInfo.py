@@ -21,8 +21,12 @@ class GameInfo:
         self.ball = Ball()
         self.pitch = Pitch()
 
-        self.my_goal = Goal(team)
-        self.their_goal = Goal(1 - team)
+        if fieldInfo == None:
+            self.my_goal = Goal(team)
+            self.their_goal = Goal(1 - team)
+        else:
+            self.my_goal = Goal(team, fieldInfo)
+            self.their_goal = Goal(1 - team, fieldInfo)
 
         self.team = team
         self.index = index

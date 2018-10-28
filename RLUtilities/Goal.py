@@ -12,17 +12,24 @@ class Goal:
         self.sign = -1 if team == 0 else 1
         if fieldInfo == None:
             self.center = vec3(0, self.sign * Goal.DISTANCE, Goal.HEIGHT / 2.0)
+            self.corners = [
+                vec3(-Goal.WIDTH / 2.0, self.sign * Goal.DISTANCE, 0),
+                vec3( Goal.WIDTH / 2.0, self.sign * Goal.DISTANCE, 0),
+                vec3( Goal.WIDTH / 2.0, self.sign * Goal.DISTANCE, Goal.HEIGHT),
+                vec3(-Goal.WIDTH / 2.0, self.sign * Goal.DISTANCE, Goal.HEIGHT)
+            ]
         else:
-            for i in range(len(self.fieldInfo.goals)):
-                current = self.fieldInfo.goals[i]
+            for i in range(len(fieldInfo.goals)):
+                current = fieldInfo.goals[i]
+                current_pos = current.location
                 if(current.team_num == team):
-                    self.center =  vec3(current.location.x, current.location.y, current.location.z)
-        self.corners = [
-            vec3(-Goal.WIDTH / 2.0, self.sign * Goal.DISTANCE, 0),
-            vec3( Goal.WIDTH / 2.0, self.sign * Goal.DISTANCE, 0),
-            vec3( Goal.WIDTH / 2.0, self.sign * Goal.DISTANCE, Goal.HEIGHT),
-            vec3(-Goal.WIDTH / 2.0, self.sign * Goal.DISTANCE, Goal.HEIGHT)
-        ]
+                    self.center =  vec3(current_pos.x, current_pos.y, current_pos.z)
+                    self.corners = [
+                        vec3(current_pos.x - Goal.WIDTH / 2.0, current_pos.y, current_pos.z - Goal.HEIGHT / 2.0),
+                        vec3(current_pos.x + Goal.WIDTH / 2.0, current_pos.y, current_pos.z - Goal.HEIGHT / 2.0),
+                        vec3(current_pos.x + Goal.WIDTH / 2.0, current_pos.y, current_pos.z + Goal.HEIGHT / 2.0),
+                        vec3(current_pos.x - Goal.WIDTH / 2.0, current_pos.y, current_pos.z + Goal.HEIGHT / 2.0)
+                    ]
 
     def solid_angle(self, p):
 
