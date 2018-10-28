@@ -6,11 +6,17 @@ class Goal:
     HEIGHT = 640.0
     DISTANCE = 5120.0
 
-    def __init__(self, team):
+    def __init__(self, team, fieldInfo = None):
 
         self.team = team
         self.sign = -1 if team == 0 else 1
-        self.center = vec3(0, self.sign * Goal.DISTANCE, Goal.HEIGHT / 2.0)
+        if fieldInfo == None:
+            self.center = vec3(0, self.sign * Goal.DISTANCE, Goal.HEIGHT / 2.0)
+        else:
+            for i in range(len(self.fieldInfo.goals)):
+                current = self.fieldInfo.goals[i]
+                if(current.team_num == team):
+                    self.center =  vec3(current.location.x, current.location.y, current.location.z)
         self.corners = [
             vec3(-Goal.WIDTH / 2.0, self.sign * Goal.DISTANCE, 0),
             vec3( Goal.WIDTH / 2.0, self.sign * Goal.DISTANCE, 0),
