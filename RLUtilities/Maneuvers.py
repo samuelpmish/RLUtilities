@@ -652,7 +652,7 @@ class Wavedash:
 
         direction = normalize(xy(target - car.pos))
 
-        R = axis_rotation(-0.2 * cross(vec3(0, 0, 1), direction))
+        R = axis_rotation(-0.6 * cross(vec3(0, 0, 1), direction))
 
         self.turn = AerialTurn(car, dot(R, car.theta))
 
@@ -698,5 +698,5 @@ class Wavedash:
 
         if (self.timer > 0.25 and
             self.car.on_ground and
-            norm(xy(self.car.omega)) < 0.13):
+            norm(xy(self.car.omega)) < .75):
             self.finished = True
