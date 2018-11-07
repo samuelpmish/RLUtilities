@@ -1,7 +1,7 @@
 from .Simulation import Ball, Pitch, Car
 from .LinearAlgebra import vec3, euler_rotation
 
-from Goal import Goal
+from .Goal import Goal
 
 class BoostPad:
 
@@ -21,7 +21,7 @@ class GameInfo:
         self.ball = Ball()
         self.pitch = Pitch()
 
-        if fieldInfo == None:
+        if fieldInfo is None:
             self.my_goal = Goal(team)
             self.their_goal = Goal(1 - team)
         else:
@@ -37,7 +37,7 @@ class GameInfo:
 
         self.my_car = Car()
 
-        if fieldInfo == None:
+        if fieldInfo is None:
             self.boost_pads = [
                 BoostPad( 3, vec3(-3072.0, -4096.0, 73.0), True, 0.0),
                 BoostPad( 4, vec3( 3072.0, -4096.0, 73.0), True, 0.0),
