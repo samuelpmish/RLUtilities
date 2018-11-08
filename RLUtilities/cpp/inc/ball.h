@@ -11,7 +11,7 @@ class Ball {
 
   float radius;
 
-  Ball() {
+  __declspec(dllexport) Ball() {
     radius = 91.25f;
 
     x = vec3{0.0f, 0.0f, 1.1f * radius};
@@ -37,7 +37,7 @@ class Ball {
     }
   }
 
-  inline void step(float dt) {
+  __declspec(dllexport) inline void step(float dt) {
     const float R = radius;        // ball radius
     const float G = -650.0f;       // gravitational acceleration
     const float A = 0.0003f;       // inverse moment of inertia

@@ -36,6 +36,7 @@ target_include_directories(Simulation PRIVATE inc/)
 target_compile_features(Simulation PRIVATE cxx_std_11)
 
 pybind11_add_module(DetectCollisions
+  ${PROJECT_SOURCE_DIR}/src/ball.cpp
   ${PROJECT_SOURCE_DIR}/src/car.cpp
   ${PROJECT_SOURCE_DIR}/src/bvh.cpp
   ${PROJECT_SOURCE_DIR}/src/mesh.cpp
