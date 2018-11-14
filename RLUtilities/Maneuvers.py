@@ -416,7 +416,6 @@ class Aerial:
 
         # figure out what needs to be done in the maneuver
         self.calculate_course()
-
         # and if it requires an acceleration that the car
         # is unable to produce, then it is not viable
         return 0 <= self.B_avg < 0.95 * Aerial.B
