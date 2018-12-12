@@ -83,6 +83,6 @@ class Goal:
 
     def inside(self, p):
         if self.team == 0:
-            return p[1] > Goal.DISTANCE
-        else:
             return p[1] < -Goal.DISTANCE
+        else:
+            return p[1] > Goal.DISTANCE
