@@ -1,3 +1,5 @@
+![RLUtilities](http://rlutilities.com/img/header.jpg)
+
 # Overview
 
 This project aims to provide a way for members of the RLBot community to contribute
