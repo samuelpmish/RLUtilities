@@ -1,19 +1,19 @@
-import numpy as np
 import time
 
-from DetectCollisions import *
+import numpy as np
+from RLUtilities.DetectCollisions import *
 
-#num_cars = 8
-#num_frames = 36000
-#fields_per_car = 6 # 3 positions, 3 rotations
-#dimensions = (fields_per_car * num_cars, num_frames)
+# num_cars = 8
+# num_frames = 36000
+# fields_per_car = 6 # 3 positions, 3 rotations
+# dimensions = (fields_per_car * num_cars, num_frames)
 #
-#angle_scale = -3
-#position_scale = 3000
+# angle_scale = -3
+# position_scale = 3000
 #
-#game_info = np.zeros(dimensions, dtype=np.float32, order='F')
+# game_info = np.zeros(dimensions, dtype=np.float32, order='F')
 #
-#for i in range(num_cars):
+# for i in range(num_cars):
 #
 #    offset = fields_per_car * i
 #
@@ -27,16 +27,16 @@ from DetectCollisions import *
 #    game_info[offset + 4, :] = np.random.rand(1, num_frames) * angle_scale
 #    game_info[offset + 5, :] = np.random.rand(1, num_frames) * angle_scale
 
-#data = np.load("C:/Users/sam/Dropbox/Utilities/BOTS_JOINING_AND_LEAVING.gzip")
-#data = np.load("C:/Users/sam/Dropbox/Utilities/DEFAULT_3_ON_3_AROUND_58_HITS.gzip")
-#data = np.load("C:/Users/sam/Dropbox/Utilities/1_DEMO.gzip")
+# data = np.load("C:/Users/sam/Dropbox/Utilities/BOTS_JOINING_AND_LEAVING.gzip")
+# data = np.load("C:/Users/sam/Dropbox/Utilities/DEFAULT_3_ON_3_AROUND_58_HITS.gzip")
+# data = np.load("C:/Users/sam/Dropbox/Utilities/1_DEMO.gzip")
 data = np.load("C:/Users/sam/Dropbox/Utilities/3_bumps.gzip")
 
-#discard the ball info for now
+# discard the ball info for now
 game_info = np.copy(data[:, 6:].T, 'F')
 
 print(game_info.shape)
-print(game_info.strides[0]//8, game_info.strides[1]//8)
+print(game_info.strides[0] // 8, game_info.strides[1] // 8)
 
 start = time.time()
 tmp1 = detect_collisions_between_cars(game_info, 1)

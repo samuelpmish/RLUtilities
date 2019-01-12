@@ -8,5 +8,4 @@ CMakeFiles/*
 *.a
 *.vcxproj
 *.filters
-*.pyd
 RLUtilities/cpp/build/
