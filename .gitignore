@@ -1,3 +1,4 @@
+# Python
 CMakeCache.txt
 Makefile
 cmake_install.cmake
@@ -8,5 +9,12 @@ CMakeFiles/*
 *.a
 *.vcxproj
 *.filters
+
 build*/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
 .idea/
+.mypy_cache/
