@@ -8,4 +8,5 @@ CMakeFiles/*
 *.a
 *.vcxproj
 *.filters
-RLUtilities/cpp/build/
+build*/
+.idea/
