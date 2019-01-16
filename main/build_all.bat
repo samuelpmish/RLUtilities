@@ -1,3 +1,6 @@
+git submodule init
+git submodule update --remote
+
 SET pypath="C:\Users\Admin\AppData\Local\Programs\Python"
 
 cd cpp

@@ -1,3 +1,6 @@
+git submodule init
+git submodule update --remote
+
 cd cpp
 
 mkdir build

@@ -1,4 +1,7 @@
 #!/bin/bash
+git submodule init
+git submodule update --remote
+
 pypath=C:/Users/sam/AppData/Local/Programs/Python
 
 cd cpp
