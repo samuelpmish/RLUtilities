@@ -5,7 +5,7 @@ their ideas to a common set of tools for arithmetic, simulation, and car control
 
 ## Build and Test
 
-To build, you need a copy of 64 bit python 3.6 and a C++ compiler (assuming Windows only), [cmake](https://cmake.org/download/):
+To build, you need a copy of 64 bit python 3.6 or 3.7 and a C++ compiler (assuming Windows only), [cmake](https://cmake.org/download/):
 
 Get a copy of the repo
 
@@ -13,10 +13,10 @@ Get a copy of the repo
 git clone https://github.com/samuelpmish/RLUtilities
 ```
 
-Run the build script to download submodules and build the C++ tools and their python bindings
+Run the build script to build the C++ tools and their python bindings
 
 ```
-cd RLUtilities
+cd RLUtilities/main
 ./build.bat
 ```
 
@@ -32,7 +32,7 @@ Add this repo as a submodule to your project, so that you might easily receive u
 > git submodule update --remote
 ```
 
-The project uses CMake, so doing ```add_directory(path/to/RLUtilities/cpp)``` should allow you to
+The project uses CMake, so doing ```add_directory(path/to/RLUtilities/main/cpp)``` should allow you to
 include it in an existing CMake project.
 
 ### Python
