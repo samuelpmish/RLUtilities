@@ -1,64 +1,46 @@
 cmake_minimum_required(VERSION 3.8)
 project(Utilities)
 
-add_definitions(-DASSET_PATH="${PROJECT_SOURCE_DIR}/assets/")
-
 add_subdirectory(pybind11)
+add_definitions(-DGENERATE_PYTHON_BINDINGS)
 
-add_library(bot_utils STATIC
+add_library(cpp_lib
+
+  # simulation
   ${PROJECT_SOURCE_DIR}/src/car.cpp
   ${PROJECT_SOURCE_DIR}/src/ball.cpp
-  ${PROJECT_SOURCE_DIR}/src/bvh.cpp
-  ${PROJECT_SOURCE_DIR}/src/pitch.cpp
+  ${PROJECT_SOURCE_DIR}/src/geometry.cpp
   ${PROJECT_SOURCE_DIR}/src/mesh.cpp
-  ${PROJECT_SOURCE_DIR}/src/primitives.cpp
-)
+  ${PROJECT_SOURCE_DIR}/src/field.cpp
+  ${PROJECT_SOURCE_DIR}/src/curve.cpp
+  ${PROJECT_SOURCE_DIR}/src/bvh.cpp
+  ${PROJECT_SOURCE_DIR}/src/soccar.cpp
+  ${PROJECT_SOURCE_DIR}/src/hoops.cpp
+  ${PROJECT_SOURCE_DIR}/src/dropshot.cpp
+  ${PROJECT_SOURCE_DIR}/src/gametype.cpp
+  ${PROJECT_SOURCE_DIR}/src/compositearc.cpp
 
-target_include_directories(bot_utils PUBLIC inc/)
-target_compile_features(bot_utils PUBLIC cxx_std_11)
+  # mechanics
+  ${PROJECT_SOURCE_DIR}/src/jump.cpp
+  ${PROJECT_SOURCE_DIR}/src/drive.cpp
+  ${PROJECT_SOURCE_DIR}/src/dodge.cpp
+  ${PROJECT_SOURCE_DIR}/src/aerial.cpp
+  ${PROJECT_SOURCE_DIR}/src/unroller.cpp
+  ${PROJECT_SOURCE_DIR}/src/wavedash.cpp
+  ${PROJECT_SOURCE_DIR}/src/boostdash.cpp
+  ${PROJECT_SOURCE_DIR}/src/aerialturn.cpp
+
+)
+target_include_directories(cpp_lib PUBLIC inc/)
+target_link_libraries(cpp_lib PUBLIC pybind11)
+target_compile_features(cpp_lib PUBLIC cxx_std_17)
+
+pybind11_add_module(from_cpp
+  ${PROJECT_SOURCE_DIR}/src/python_extensions.cpp
+)
+target_link_libraries(from_cpp PRIVATE cpp_lib)
 
 pybind11_add_module(LinearAlgebra
   ${PROJECT_SOURCE_DIR}/src/LinearAlgebra.cpp
 )
-target_include_directories(LinearAlgebra PRIVATE inc/)
-target_compile_features(LinearAlgebra PRIVATE cxx_std_11)
-
-pybind11_add_module(Simulation
-  ${PROJECT_SOURCE_DIR}/src/car.cpp
-  ${PROJECT_SOURCE_DIR}/src/ball.cpp
-  ${PROJECT_SOURCE_DIR}/src/bvh.cpp
-  ${PROJECT_SOURCE_DIR}/src/pitch.cpp
-  ${PROJECT_SOURCE_DIR}/src/mesh.cpp
-  ${PROJECT_SOURCE_DIR}/src/primitives.cpp
-  ${PROJECT_SOURCE_DIR}/src/Simulation.cpp
-)
-target_include_directories(Simulation PRIVATE inc/)
-target_compile_features(Simulation PRIVATE cxx_std_11)
-
-pybind11_add_module(DetectCollisions
-  ${PROJECT_SOURCE_DIR}/src/car.cpp
-  ${PROJECT_SOURCE_DIR}/src/bvh.cpp
-  ${PROJECT_SOURCE_DIR}/src/mesh.cpp
-  ${PROJECT_SOURCE_DIR}/src/pitch.cpp
-  ${PROJECT_SOURCE_DIR}/src/primitives.cpp
-  ${PROJECT_SOURCE_DIR}/src/detect_collisions_between_cars.cpp
-)
-target_include_directories(DetectCollisions PRIVATE inc/)
-target_compile_features(DetectCollisions PRIVATE cxx_std_11)
-
-find_package(OpenMP)
-if(OpenMP_CXX_FOUND)
-    target_link_libraries(DetectCollisions PUBLIC OpenMP::OpenMP_CXX)
-endif()
-
-pybind11_add_module(Mechanics
-  ${PROJECT_SOURCE_DIR}/src/AerialTurn.cpp
-  ${PROJECT_SOURCE_DIR}/src/Mechanics.cpp
-)
-
-target_include_directories(Mechanics PRIVATE inc/)
-target_compile_features(Mechanics PRIVATE cxx_std_11)
-target_link_libraries(Mechanics PRIVATE
-  bot_utils
-)
-
+target_include_directories(LinearAlgebra PUBLIC inc/)

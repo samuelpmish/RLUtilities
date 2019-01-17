@@ -65,6 +65,19 @@ inline mat<m, n> operator+(const mat<m, n>& A, const mat<m, n>& B) {
 }
 
 template <int m, int n>
+inline mat<m, n> operator-(const mat<m, n>& A, const mat<m, n>& B) {
+  mat<m, n> C;
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+      C(i, j) = A(i, j) - B(i, j);
+    }
+  }
+  return C;
+}
+
+
+
+template <int m, int n>
 inline mat<m, n> operator*(const mat<m, n>& A, const float other) {
   mat<m, n> B;
   for (int i = 0; i < m; i++) {
@@ -81,6 +94,17 @@ inline mat<m, n> operator*(const float other, const mat<m, n>& A) {
   for (int i = 0; i < m; i++) {
     for (int j = 0; j < n; j++) {
       B(i, j) = other * A(i, j);
+    }
+  }
+  return B;
+}
+
+template <int m, int n>
+inline mat<m, n> operator/(const mat<m, n>& A, const float denominator) {
+  mat<m, n> B;
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+      B(i, j) = A(i, j) / denominator;
     }
   }
   return B;
@@ -356,6 +380,36 @@ inline mat<3, 3> euler_rotation(const vec<3>& pyr) {
   theta(0, 2) = -CR * CY * SP - SR * SY;
   theta(1, 2) = -CR * SY * SP + SR * CY;
   theta(2, 2) = CP * CR;
+
+  return theta;
+}
+
+// to use this with the quaternions directly from Rocket League,
+// you have to do the following:
+//
+// vec4 q = get_quaternion_from_phys_tick();
+// mat3 theta = quaterion_rotation(-q[3], -q[0], -q[1], -q[2])
+//
+inline mat<3, 3> quaternion_rotation(float q0, float q1, float q2, float q3) {
+
+  float s = 1.0f / (q0*q0 + q1*q1 + q2*q2 + q3*q3);
+
+  mat<3, 3> theta;
+
+  // front direction
+  theta(0, 0) = 1.0f - 2.0f * s * (q2 * q2 + q3 * q3);
+  theta(1, 0) =        2.0f * s * (q1 * q2 + q3 * q0);
+  theta(2, 0) =        2.0f * s * (q1 * q3 - q2 * q0);
+
+  // left direction
+  theta(0, 1) =        2.0f * s * (q1 * q2 - q3 * q0);
+  theta(1, 1) = 1.0f - 2.0f * s * (q1 * q1 + q3 * q3);
+  theta(2, 1) =        2.0f * s * (q2 * q3 + q1 * q0);
+
+  // up direction
+  theta(0, 2) =        2.0f * s * (q1 * q3 + q2 * q0);
+  theta(1, 2) =        2.0f * s * (q2 * q3 - q1 * q0);
+  theta(2, 2) = 1.0f - 2.0f * s * (q1 * q1 + q2 * q2);
 
   return theta;
 }

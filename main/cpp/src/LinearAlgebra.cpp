@@ -129,12 +129,14 @@ PYBIND11_MODULE(LinearAlgebra, m) {
 
   m.def("inv", (mat2 (*)(const mat2 &)) &inv);
   m.def("inv", (mat3 (*)(const mat3 &)) &inv);
+  m.def("look_at", &look_at);
   m.def("rotation", &rotation);
   m.def("euler_rotation", &euler_rotation);
   m.def("axis_rotation", &axis_rotation);
   m.def("rotation_to_axis", &rotation_to_axis);
   m.def("transpose", (mat2 (*)(const mat2 &)) &transpose);
   m.def("transpose", (mat3 (*)(const mat3 &)) &transpose);
+  m.def("angle_between", (float (*)(const vec2 &, const vec2 &)) &angle_between);
   m.def("angle_between", (float (*)(const vec3 &, const vec3 &)) &angle_between);
   m.def("angle_between", (float (*)(const mat3 &, const mat3 &)) &angle_between);
 

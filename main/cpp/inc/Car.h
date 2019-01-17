@@ -1,17 +1,19 @@
 #pragma once
 
-#include "Ball.h"
-#include "Pitch.h"
+#include "linalg.h"
+#include "geometry.h"
 #include "RL_structs.h"
 
 #define DELTA_T 0.01666
 
 class Car {
+
  public:
   vec3 x;
   vec3 v;
   vec3 w;
   mat3 o;
+  mat2 o_dodge;
 
   bool supersonic;
   bool jumped;
@@ -20,8 +22,12 @@ class Car {
 
   int boost;
 
-  bool can_dodge;
+  float jump_timer;
   float dodge_timer;
+  bool enable_jump_acceleration;
+
+  vec2 dodge_dir;
+  vec3 dodge_torque;
 
   float time;
 
@@ -33,19 +39,24 @@ class Car {
 
   Input last;
 
+  mat3 I, invI;
+
+  static const float m; 
+  static const float v_max;
+  static const float w_max;
+
   Car();
 
   void step(Input in = Input(), float dt = DELTA_T);
-  vec3 pitch_surface_normal();
-  obb hitbox();
   void extrapolate(float);
 
-  vec3 forward();
-  vec3 left();
-  vec3 up();
+  vec3 forward() const;
+  vec3 left() const;
+  vec3 up() const;
+
+  obb hitbox() const;
 
  private:
-  static Pitch env;
 
   void jump(const Input& in, float dt);
   void air_dodge(const Input& in, float dt);
@@ -59,7 +70,6 @@ class Car {
   void driving_handbrake(const Input& in, float dt);
 
   void check_collision();
+
 };
 
-float max_curvature(float speed);
-float max_speed(float curvature);

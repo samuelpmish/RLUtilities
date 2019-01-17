@@ -1,129 +1,243 @@
 #include "AerialTurn.h"
 
-AerialTurn::AerialTurn(Car & c, const mat3 & t) :
-  car(c) {
+#include "timer.h"
+
+#include <fstream>
+
+const float AerialTurn::scale = 10.5f;
+const vec3 AerialTurn::angular_acceleration = 
+    vec3{-400.0f, -130.0f, 95.0f} / AerialTurn::scale;
+
+const vec3 AerialTurn::angular_damping = 
+    vec3{-50.0f, -30.0f, -20.0f} / AerialTurn::scale;
+
+const vec3 e[] = {
+ {1.0f, 0.0f, 0.0f},
+ {0.0f, 1.0f, 0.0f},
+ {0.0f, 0.0f, 1.0f}
+};
+
+AerialTurn::AerialTurn(Car & c) : car(c) {
+  target = eye<3>();
+	eps_phi = 0.10f;
+	eps_omega = 0.15f;
+  horizon_time = 0.05f;
+
   finished = false;
-  target = t;
   controls = Input();
 }
 
-float AerialTurn::q(float x) {
-  return 1.0f - (1.0f / (1.0f + 500.0f * x * x));
-}
+// This matrix is used to relate the angular
+// velocity to the time rate of the components
+// in the axis-angle representation of the
+// orientation error, phi. It is defined
+// such that we can write dphi_dt in the
+// following way:
+//
+//    vec3 dphi_dt = dot(Z(phi), omega)
+//
+mat3 AerialTurn::Z(const vec3 & q) {
 
-float AerialTurn::r(float delta, float v) {
-  return delta - 0.5f * sgn(v) * v * v / ALPHA_MAX;
-}
+  // in general, these coefficients are
+  // given by:
+  //
+  //   c[i] = (B[i] / i!),
+  //
+  // where B[i] is the ith Bernoulli number
+  float series_coefficients[] = {
+     1.0f,
+    -1.0f / 2.0f,
+     1.0f / 12.0f,
+     0.0f,
+     -1.0f / 720.0f,
+     0.0f,
+     1.0f / 30240.0f,
+     0.0f,
+     -1.0f / 1209600.0f
+  };
 
-float AerialTurn::bangbang(float delta, float v, float dt) {
-  float ri = r(delta, v);
-  float alpha = sgn(ri) * ALPHA_MAX;
-  float rf = r(delta - v * dt, v + alpha * dt);
+  // we don't need to be exact, so we only take the 
+  // first few terms in the series expansion.
+  // 
+  // In practice, I see good results at with the
+  // linear approximation (i_max == 1)
+  int i_max = 2;
 
-  // use a single step of secant method to improve
-  // the acceleration when residual changes sign
-  if (ri * rf < 0.0f) {
-		alpha *= (2.0f * (ri / (ri - rf)) - 1.0f);
-	}
-
-  return alpha;
-}
-
-float solve_PWL(float a, float b, float c) {
-  float xp = (fabs(a+b) > 10e-6) ? c/(a+b) : -1.0f;
-  float xm = (fabs(a-b) > 10e-6) ? c/(a-b) :  1.0f;
-
-  if ((xm <= 0) && (0 <= xp)) {
-    if (fabs(xp) < fabs(xm)) {
-      return clip(xp,  0.0f, 1.0f);
-    } else {
-      return clip(xm, -1.0f, 0.0f);
+  // Sum the first few terms in the series expansion
+  mat3 Z_approx = eye<3>();
+  mat3 Omega = antisym(q);
+  mat3 Omega_to_the_ith_power = Omega;
+  for (int i = 1; i <= i_max; i++) {
+    if (series_coefficients[i] != 0.0f) {
+      Z_approx = Z_approx + series_coefficients[i] * Omega_to_the_ith_power;
     }
-  } else {
-      if (0 <= xp) return clip(xp,  0.0f, 1.0f);
-      if (xm <= 0) return clip(xm, -1.0f, 0.0f);
+    if (i != i_max) {
+      Omega_to_the_ith_power = dot(Omega_to_the_ith_power, Omega);
+    }
   }
 
-  return 0;
+  return Z_approx;
 }
 
-vec3 aerial_rpy(const vec3 & w0, const vec3 & w1, const mat3 & theta, float dt) {
+// This function provides a guideline for when 
+// control swiching should take place. 
+vec3 AerialTurn::G(const vec3 & q, const vec3 & dq_dt) {
+  const vec3 T = angular_acceleration;
+  const vec3 D = angular_damping;
 
-  // car's moment of inertia (spherical symmetry)
-  float J = 10.5;
+  float G_roll = -sgn(dq_dt[0]) * (
+      (fabs(dq_dt[0]) / D[0]) + 
+      (T[0] / (D[0] * D[0])) * log(T[0] / (T[0] + D[0] * fabs(dq_dt[0])))
+  );
 
-  // aerial control torque coefficients
-  vec3 T = vec3{-400.0f, -130.0f, 95.0f};
+  float G_pitch = -sgn(dq_dt[1]) * dq_dt[1] * dq_dt[1] / (2.0f * T[1]);
+  float G_yaw = sgn(dq_dt[2]) * dq_dt[2] * dq_dt[2] / (2.0f * T[2]);
 
-  // aerial damping torque coefficients
-  vec3 H = vec3{-50.0f, -30.0f, -20.0f};
+  return vec3{G_roll, G_pitch, G_yaw};
+}
 
-  // get angular velocities in local coordinates
-  vec3 w0_local = dot(w0, theta);
-  vec3 w1_local = dot(w1, theta);
+// the error between the predicted state and the precomputed return trajectories
+vec3 AerialTurn::f(const vec3 & alpha_local, const float dt) {
+  vec3 alpha = dot(theta, alpha_local);
+  vec3 omega_pred = omega + alpha * dt;
+  vec3 phi_pred = phi + dot(Z(phi), omega + 0.5f * alpha * dt) * dt;
+  vec3 dphi_pred_dt = dot(Z(phi_pred), omega_pred);
+  return -phi_pred - G(phi_pred, dphi_pred_dt);
+}
 
-	vec3 rpy;
+// Let g(x) be the continuous piecewise linear function
+// that interpolates the points:
+// (-1.0, values[0]), (0.0, values[1]), (1.0, values[2])
+// 
+// solve_pwl() determines a value of x in [-1, 1] 
+// such that || g(x) - y || is minimized.
+float solve_pwl(float y, const vec3 & values) {
+  float min_value = fminf(fminf(values[0], values[1]), values[2]);
+  float max_value = fmaxf(fmaxf(values[0], values[1]), values[2]);
+  float clipped_y = clip(y, min_value, max_value);
 
-	for (int i = 0; i < 3; i++) {
-		float a = T[i] * dt / J;
-		float b = (i == 0) ? 0 : -w0_local[i] * H[i] * dt / J;
-		float c = w1_local[i] - (1 + H[i] * dt / J) * w0_local[i];
-		rpy[i] = solve_PWL(a, b, c);
-	}
+  // if the clipped value can be found in the interval [-1, 0]
+  if ((fminf(values[0], values[1]) <= clipped_y) &&
+      (clipped_y <= fmaxf(values[0], values[1]))) {
+    if (fabs(values[1] - values[0]) > 0.0001f) {
+      return (clipped_y - values[1]) / (values[1] - values[0]);
+    } else {
+      return -0.5f;
+    }
 
-	return rpy;
+  // if the clipped value can be found in the interval [0, 1]
+  } else {
+    if (fabs(values[2] - values[1]) > 0.0001f) {
+      return (clipped_y - values[1]) / (values[2] - values[1]);
+    } else {
+      return 0.5f;
+    }
+  }
+}
+
+vec3 AerialTurn::find_controls_for(const vec3 & ideal_alpha) {
+  const vec3 w = omega_local;
+  const vec3 T = angular_acceleration;
+  const vec3 D = angular_damping;
+
+  vec3 rpy, alpha_values;
+
+  // Note: these controls are calculated differently,
+  // since Rocket League never disables roll damping.
+  alpha_values = vec3{-T[0] + D[0] * w[0], D[0] * w[0], T[0] + D[0] * w[0]};
+  //std::cout << "possible alpha[0]: " << alpha_values << std::endl;
+  rpy[0] = solve_pwl(ideal_alpha[0], alpha_values);
+
+  alpha_values = vec3{-T[1], D[1] * w[1], T[1]};
+  //std::cout << "possible alpha[1]: " << alpha_values << std::endl;
+  rpy[1] = solve_pwl(ideal_alpha[1], alpha_values);
+
+  alpha_values = vec3{-T[2], D[2] * w[2], T[2]};
+  //std::cout << "possible alpha[2]: " << alpha_values << std::endl;
+  rpy[2] = solve_pwl(ideal_alpha[2], alpha_values);
+
+  return rpy;
 }
 
 void AerialTurn::step(float dt) {
-  mat3 relative_rotation = dot(transpose(car.o), target);
-  vec3 geodesic_local = rotation_to_axis(relative_rotation);
 
-  // figure out the axis of minimal rotation to target
-  vec3 geodesic_world = dot(car.o, geodesic_local);
+  omega = dot(transpose(target), car.w);
+  theta = dot(transpose(target), car.o);
+  omega_local = dot(omega, theta);
+  phi = rotation_to_axis(theta);
+  dphi_dt = dot(Z(phi), omega);
 
-  // get the angular acceleration
-  vec3 alpha = vec3{
-      bangbang(geodesic_world[0], car.w[0], dt),
-      bangbang(geodesic_world[1], car.w[1], dt),
-      bangbang(geodesic_world[2], car.w[2], dt)
-  };
+  // Apply a few Newton iterations to find
+  // local angular accelerations that try not to overshoot
+  // the guideline trajectories defined by AerialTurn::G().
+  // 
+  // This helps to ensure monotonic convergence to the
+  // desired orientation, when possible.
+  int n_iter = 5;
+  float eps = 0.001f;
+  vec3 alpha{0.0f, 0.0f, 0.0f};
+  for (int i = 0; i < n_iter; i++) {
+    vec3 f0 = f(alpha, horizon_time);
 
-  // reduce the corrections for when the solution is nearly converged
-	alpha[0] *= q(abs(geodesic_world[0]) + abs(car.w[0]));
-	alpha[1] *= q(abs(geodesic_world[1]) + abs(car.w[1]));
-	alpha[2] *= q(abs(geodesic_world[2]) + abs(car.w[2]));
+    mat3 J;
+    for (int j = 0; j < 3; j++) {
+      vec3 df_j = (f0 - f(alpha + eps * e[j], horizon_time)) / eps;
+      J(0, j) = df_j[0]; J(1, j) = df_j[1]; J(2, j) = df_j[2];
+    }
 
-  // set the desired next angular velocity
-  vec3 omega_next = car.w + alpha * dt;
+    alpha += dot(inv(J), f0);
+  }
 
-  // determine the controls that produce that angular velocity
-  vec3 roll_pitch_yaw = aerial_rpy(car.w, omega_next, car.o, dt);
+  vec3 rpy = find_controls_for(alpha); 
 
-  controls.roll  = roll_pitch_yaw[0];
-  controls.pitch = roll_pitch_yaw[1];
-  controls.yaw   = roll_pitch_yaw[2];
+  rpy[0] *= clip(0.5f * ((fabs(phi[0]) / eps_phi) + (fabs(omega[0]) / eps_omega)), 0.0f, 1.0f);
+  rpy[1] *= clip(0.5f * ((fabs(phi[1]) / eps_phi) + (fabs(omega[1]) / eps_omega)), 0.0f, 1.0f);
+  rpy[2] *= clip(0.5f * ((fabs(phi[2]) / eps_phi) + (fabs(omega[2]) / eps_omega)), 0.0f, 1.0f);
 
-	float eps_omega = 0.01f;
-	float eps_theta = 0.04f;
+  controls.roll  = rpy[0];
+  controls.pitch = rpy[1];
+  controls.yaw   = rpy[2];
 
-  if ((norm(car.w) < eps_omega && norm(geodesic_world) < eps_theta) || car.on_ground) {
-    finished = true;
-	}
+  finished = (norm(phi) < eps_phi) && (norm(omega) < eps_omega);
+
 }
 
-float AerialTurn::time_to_complete() {
-  Car car_copy = Car(car);
-  AerialTurn copy = AerialTurn(car_copy, target);
+Car AerialTurn::simulate() {
 
-  // make a copy of the car's state and get a pointer to it
-  float t = 0.0f;
+  Car car_copy = Car(car);
+  AerialTurn copy = AerialTurn(car_copy);
+  copy.target = target;
+  copy.eps_phi = eps_phi;
+  copy.eps_omega = eps_omega;
+  copy.horizon_time = horizon_time;
+
   float dt = 0.01666f;
-  for (int i = 0; i < 120; i++) {
-    t += dt;
-    copy.step(dt); // get the new controls
-    copy.car.step(copy.controls, dt); // and simulate their effect on the car
+  for (float t = dt; t < 2.0f; t += dt) {
+
+    // get the new controls
+    copy.step(dt); 
+
+    // and simulate their effect on the car
+    car_copy.step(copy.controls, dt); 
+
     if (copy.finished) break;
   }
 
-  return t;
+  return car_copy;
 }
+
+#ifdef GENERATE_PYTHON_BINDINGS
+#include <pybind11/pybind11.h>
+void init_aerialturn(pybind11::module & m) {
+  pybind11::class_<AerialTurn>(m, "AerialTurn")
+    .def(pybind11::init<Car &>())
+    .def_readwrite("target", &AerialTurn::target)
+    .def_readwrite("eps_phi", &AerialTurn::eps_phi)
+    .def_readwrite("eps_omega", &AerialTurn::eps_omega)
+    .def_readwrite("horizon_time", &AerialTurn::horizon_time)
+    .def_readwrite("finished", &AerialTurn::finished)
+    .def_readwrite("controls", &AerialTurn::controls)
+    .def("step", &AerialTurn::step)
+    .def("simulate", &AerialTurn::simulate);
+}
+#endif

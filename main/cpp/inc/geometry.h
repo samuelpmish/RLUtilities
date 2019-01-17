@@ -60,6 +60,15 @@ struct aabb{
   float max_z;
 
   aabb() {}
+  aabb(float min_x_, float min_y_, float min_z_,
+       float max_x_, float max_y_, float max_z_) {
+    min_x = min_x_; 
+    min_y = min_y_; 
+    min_z = min_z_; 
+    max_x = max_x_; 
+    max_y = max_y_; 
+    max_z = max_z_; 
+  }
   explicit aabb(const tri &);
   explicit aabb(const obb &);
   explicit aabb(const sphere & s);

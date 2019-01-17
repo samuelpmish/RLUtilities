@@ -8,20 +8,37 @@ class AerialTurn {
 
  public:
   Car & car;
+
   mat3 target;
+  float eps_phi;
+  float eps_omega;
+  float horizon_time;
+
   bool finished;
   Input controls;
 
-  AerialTurn(Car & c, const mat3 & t);
+  AerialTurn(Car & c);
 
   void step(float dt);
 
-	float time_to_complete();
+	Car simulate();
+
+  static const float scale;
+  static const vec3 angular_acceleration;
+  static const vec3 angular_damping;
 
  private:
-  float q(float x);
-  float r(float delta, float v);
-  float bangbang(float delta, float v, float dt);
 
-  const float ALPHA_MAX = 9.0f;
+  vec3 phi;
+  vec3 dphi_dt;
+  vec3 omega;
+  vec3 omega_local;
+  mat3 theta;
+
+  mat3 Z(const vec3 & q);
+  vec3 G(const vec3 & q, const vec3 & dq_dt);
+  vec3 f(const vec3 & alpha, const float dt);
+
+  vec3 find_controls_for(const vec3 & ideal_alpha);
+
 };

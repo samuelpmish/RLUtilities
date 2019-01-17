@@ -1,7 +1,7 @@
-from RLUtilities.LinearAlgebra import vec3, euler_rotation
-from RLUtilities.Simulation import Ball, Pitch, Car
+from .Simulation import Car, Ball
+from .LinearAlgebra import vec3, euler_rotation, rotation
 
-from RLUtilities.Goal import Goal
+from .Goal import Goal
 
 
 class BoostPad:
@@ -14,39 +14,20 @@ class BoostPad:
 
 
 class GameInfo:
+
     DT = 0.01666
 
-    def __init__(self, index, team, field_info=None):
+    def __init__(self, index, team, fieldInfo=None):
 
         self.time = 0
         self.ball = Ball()
-        self.pitch = Pitch()
 
-        if field_info is None:
+        if fieldInfo is None:
             self.my_goal = Goal(team)
             self.their_goal = Goal(1 - team)
-            self.boost_pads = [
-                BoostPad(3, vec3(-3072.0, -4096.0, 73.0), True, 0.0),
-                BoostPad(4, vec3(3072.0, -4096.0, 73.0), True, 0.0),
-                BoostPad(15, vec3(-3584.0, 0.0, 73.0), True, 0.0),
-                BoostPad(18, vec3(3584.0, 0.0, 73.0), True, 0.0),
-                BoostPad(29, vec3(-3072.0, 4096.0, 73.0), True, 0.0),
-                BoostPad(30, vec3(3072.0, 4096.0, 73.0), True, 0.0)
-            ]
-            self.small_boost_pads = []
         else:
-            self.my_goal = Goal(team, field_info)
-            self.their_goal = Goal(1 - team, field_info)
-            self.boost_pads = []
-            self.small_boost_pads = []
-            for i in range(field_info.num_boosts):
-                current = field_info.boost_pads[i]
-                if field_info.boost_pads[i].is_full_boost:
-                    self.boost_pads.append(
-                        BoostPad(i, vec3(current.location.x, current.location.y, current.location.z), True, 0.0))
-                else:
-                    self.small_boost_pads.append(
-                        BoostPad(i, vec3(current.location.x, current.location.y, current.location.z), True, 0.0))
+            self.my_goal = Goal(team, fieldInfo)
+            self.their_goal = Goal(1 - team, fieldInfo)
 
         self.team = team
         self.index = index
@@ -56,6 +37,23 @@ class GameInfo:
         self.opponents = []
 
         self.my_car = Car()
+
+        if fieldInfo is None:
+            self.boost_pads = [
+                BoostPad(3, vec3(-3072.0, -4096.0, 73.0), True, 0.0),
+                BoostPad(4, vec3(3072.0, -4096.0, 73.0), True, 0.0),
+                BoostPad(15, vec3(-3584.0, 0.0, 73.0), True, 0.0),
+                BoostPad(18, vec3(3584.0, 0.0, 73.0), True, 0.0),
+                BoostPad(29, vec3(-3072.0, 4096.0, 73.0), True, 0.0),
+                BoostPad(30, vec3(3072.0, 4096.0, 73.0), True, 0.0)
+            ]
+        else:
+            self.boost_pads = []
+            for i in range(fieldInfo.num_boosts):
+                current = fieldInfo.boost_pads[i]
+                if current.is_full_boost:
+                    self.boost_pads.append(
+                        BoostPad(i, vec3(current.location.x, current.location.y, current.location.z), True, 0.0))
 
         self.ball_predictions = []
 
@@ -105,6 +103,7 @@ class GameInfo:
             car.theta = euler_rotation(vec3(dyn.rotation.pitch,
                                             dyn.rotation.yaw,
                                             dyn.rotation.roll))
+            car.theta_dodge = rotation(dyn.rotation.yaw)
             car.on_ground = game_car.has_wheel_contact
             car.supersonic = game_car.is_super_sonic
             car.jumped = game_car.jumped
@@ -121,7 +120,9 @@ class GameInfo:
                 self.cars.append(car)
 
                 if game_car.team == self.team:
+
                     if i == self.index:
+
                         self.my_car = car
                     else:
                         self.teammates.append(car)
@@ -129,18 +130,12 @@ class GameInfo:
                     self.opponents.append(car)
 
         for i in range(0, len(self.boost_pads)):
+
             boost_pad = packet.game_boosts[self.boost_pads[i].index]
 
             self.boost_pads[i].is_active = boost_pad.is_active
 
             self.boost_pads[i].timer = boost_pad.timer
-
-        for i in range(0, len(self.small_boost_pads)):
-            boost_pad = packet.game_boosts[self.small_boost_pads[i].index]
-
-            self.small_boost_pads[i].is_active = boost_pad.is_active
-
-            self.small_boost_pads[i].timer = boost_pad.timer
 
         self.time += GameInfo.DT
 

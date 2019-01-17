@@ -64,8 +64,12 @@ inline float clip(float x, float minimum, float maximum) {
   return fmax(fmin(x, maximum), minimum);
 }
 
+inline float angle_between(const vec < 2 > & a, const vec < 2 > & b) {
+  return acos(clip(dot(normalize(a), normalize(b)), -1.0f, 1.0f));
+}
+
 inline float angle_between(const vec < 3 > & a, const vec < 3 > & b) {
-  return acos(dot(normalize(a), normalize(b)));
+  return acos(clip(dot(normalize(a), normalize(b)), -1.0f, 1.0f));
 }
 
 // angle between proper orthogonal matrices
@@ -123,6 +127,18 @@ inline vec < 3 > rotation_to_axis(const mat < 3, 3 > & R) {
 
   return vec3{R(2,1)-R(1,2), R(0,2)-R(2,0), R(1,0)-R(0,1)} * scale;
 
+}
+
+inline mat < 3, 3 > look_at(const vec < 3 > & direction, const vec < 3 > & up = vec3{0.0f, 0.0f, 1.0f}) {
+  vec3 f = normalize(direction);  
+  vec3 u = normalize(cross(f, cross(up, f)));
+  vec3 l = normalize(cross(u, f));
+
+  return mat3 {
+    {f[0], l[0], u[0]},
+    {f[1], l[1], u[1]},
+    {f[2], l[2], u[2]}
+  };
 }
 
 template < typename T >

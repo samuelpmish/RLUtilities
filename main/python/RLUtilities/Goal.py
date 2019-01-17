@@ -1,18 +1,18 @@
+from .LinearAlgebra import vec3, dot, norm, cross
 import math
-
-from RLUtilities.LinearAlgebra import vec3, norm, dot, cross
 
 
 class Goal:
+
     WIDTH = 1784.0
     HEIGHT = 640.0
     DISTANCE = 5120.0
 
-    def __init__(self, team, field_info=None):
+    def __init__(self, team, fieldInfo=None):
 
         self.team = team
         self.sign = -1 if team == 0 else 1
-        if field_info is None:
+        if fieldInfo is None:
             self.center = vec3(0, self.sign * Goal.DISTANCE, Goal.HEIGHT / 2.0)
             self.corners = [
                 vec3(-Goal.WIDTH / 2.0, self.sign * Goal.DISTANCE, 0),
@@ -21,8 +21,8 @@ class Goal:
                 vec3(-Goal.WIDTH / 2.0, self.sign * Goal.DISTANCE, Goal.HEIGHT)
             ]
         else:
-            for i in range(len(field_info.goals)):
-                current = field_info.goals[i]
+            for i in range(len(fieldInfo.goals)):
+                current = fieldInfo.goals[i]
                 current_pos = current.location
                 if current.team_num == team:
                     self.center = vec3(current_pos.x, current_pos.y, current_pos.z)
@@ -53,9 +53,9 @@ class Goal:
 
         numerator = abs(dot(a, cross(b, c)))
         denominator = norm(a) * norm(b) * norm(c) + \
-                      dot(a, b) * norm(c) + \
-                      dot(b, c) * norm(a) + \
-                      dot(c, a) * norm(b)
+            dot(a, b) * norm(c) +                   \
+            dot(b, c) * norm(a) +                   \
+            dot(c, a) * norm(b)
 
         angle = 2 * math.atan(numerator / denominator)
 
@@ -70,9 +70,9 @@ class Goal:
 
         numerator = abs(dot(a, cross(b, c)))
         denominator = norm(a) * norm(b) * norm(c) + \
-                      dot(a, b) * norm(c) + \
-                      dot(b, c) * norm(a) + \
-                      dot(c, a) * norm(b)
+            dot(a, b) * norm(c) + \
+            dot(b, c) * norm(a) + \
+            dot(c, a) * norm(b)
 
         angle = 2 * math.atan(numerator / denominator)
 
