@@ -35,12 +35,12 @@ target_include_directories(cpp_lib PUBLIC inc/)
 target_link_libraries(cpp_lib PUBLIC pybind11)
 target_compile_features(cpp_lib PUBLIC cxx_std_17)
 
-pybind11_add_module(from_cpp
+pybind11_add_module(cpp_extension
   ${PROJECT_SOURCE_DIR}/src/python_extensions.cpp
 )
-target_link_libraries(from_cpp PRIVATE cpp_lib)
+target_link_libraries(cpp_extension PRIVATE cpp_lib)
 
-pybind11_add_module(LinearAlgebra
+pybind11_add_module(linear_algebra
   ${PROJECT_SOURCE_DIR}/src/LinearAlgebra.cpp
 )
-target_include_directories(LinearAlgebra PUBLIC inc/)
+target_include_directories(linear_algebra PUBLIC inc/)

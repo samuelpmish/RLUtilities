@@ -9,7 +9,7 @@
 
 #include "linalg.h"
 
-PYBIND11_MODULE(LinearAlgebra, m) {
+PYBIND11_MODULE(linear_algebra, m) {
 
 	m.attr("__name__") = "LinearAlgebra";
 

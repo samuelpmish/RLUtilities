@@ -1,8 +1,8 @@
 import math
-import time
 
-from RLUtilities.LinearAlgebra import *
-from RLUtilities.Simulation import Car, Input, Field, sphere, ray
+from RLUtilities.linear_algebra import *
+from RLUtilities.simulation import Car, Input, Field, sphere
+
 
 class DoNothing:
 

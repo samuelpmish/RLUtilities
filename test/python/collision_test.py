@@ -1,7 +1,5 @@
-import time
-
-from RLUtilities.LinearAlgebra import *
-from RLUtilities.Simulation import gametype, Car, Ball, intersect
+from RLUtilities.linear_algebra import *
+from RLUtilities.simulation import gametype, Car, Ball, intersect
 
 gametype("dropshot")
 

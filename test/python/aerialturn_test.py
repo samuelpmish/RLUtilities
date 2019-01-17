@@ -1,8 +1,6 @@
-import time
-
-from RLUtilities.LinearAlgebra import *
-from RLUtilities.Mechanics import Drive, AerialTurn
-from RLUtilities.Simulation import Car
+from RLUtilities.linear_algebra import *
+from RLUtilities.mechanics import AerialTurn
+from RLUtilities.simulation import Car
 
 c = Car()
 
