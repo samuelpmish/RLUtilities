@@ -1,4 +1,4 @@
-from RLUtilities.simulation import Field, Ball, gametype
+from rlutilities.simulation import Field, Ball, gametype
 
 gametype("soccar")
 print("Field loaded: ", Field.mode)

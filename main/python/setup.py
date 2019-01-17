@@ -5,16 +5,16 @@ with open('../../README.md', 'r') as fh:
 
 setuptools.setup(
     name='RLUtilities',
-    version='0.0.0',
+    version='0.0.1001',
     author='Sam Mish',
     author_email='samuelpmish@gmail.com',
     description='tools for controlling Rocket League bots',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    url='https://github.com/samuelpmish/RLUtilities',
-    packages=['RLUtilities'],
+    url='https://github.com/samuelpmish/rlutilities',
+    packages=['rlutilities'],
     package_data={
-        'RLUtilities': [
+        'rlutilities': [
             '**.*pyd'
         ]
     },

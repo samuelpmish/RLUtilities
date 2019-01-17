@@ -1,5 +1,5 @@
-from RLUtilities.linear_algebra import *
-from RLUtilities.simulation import gametype, Car, Ball, intersect
+from rlutilities.linear_algebra import *
+from rlutilities.simulation import gametype, Car, Ball, intersect
 
 gametype("dropshot")
 

@@ -5,4 +5,4 @@ python -m twine upload dist/*
 
 @RD /S /Q "build"
 @RD /S /Q "dist"
-@RD /S /Q "RLUtilities.egg-info"
+@RD /S /Q "rlutilities.egg-info"

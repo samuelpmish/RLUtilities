@@ -1,4 +1,4 @@
-from RLUtilities.linear_algebra import vec3, dot, norm, cross
+from rlutilities.linear_algebra import vec3, dot, norm, cross
 import math
 
 

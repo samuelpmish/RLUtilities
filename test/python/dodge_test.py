@@ -1,6 +1,6 @@
-from RLUtilities.linear_algebra import *
-from RLUtilities.mechanics import Dodge
-from RLUtilities.simulation import Car
+from rlutilities.linear_algebra import *
+from rlutilities.mechanics import Dodge
+from rlutilities.simulation import Car
 
 c = Car()
 

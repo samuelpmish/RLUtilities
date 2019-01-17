@@ -5,4 +5,4 @@ python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
 @RD /S /Q "build"
 @RD /S /Q "dist"
-@RD /S /Q "RLUtilities.egg-info"
+@RD /S /Q "rlutilities.egg-info"

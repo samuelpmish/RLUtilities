@@ -1,7 +1,7 @@
-from RLUtilities.simulation import Car, Ball
-from RLUtilities.linear_algebra import vec3, euler_rotation, rotation
+from rlutilities.simulation import Car, Ball
+from rlutilities.linear_algebra import vec3, euler_rotation, rotation
 
-from RLUtilities.goal import Goal
+from rlutilities.goal import Goal
 
 
 class BoostPad:

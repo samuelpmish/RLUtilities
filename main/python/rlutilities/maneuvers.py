@@ -1,7 +1,7 @@
 import math
 
-from RLUtilities.linear_algebra import *
-from RLUtilities.simulation import Car, Input, Field, sphere
+from rlutilities.linear_algebra import *
+from rlutilities.simulation import Car, Input, Field, sphere
 
 
 class DoNothing:
