@@ -19,19 +19,19 @@ void init_aerialturn(pybind11::module & m);
 void init_gametype(pybind11::module & m);
 
 PYBIND11_MODULE(from_cpp, m) {
-  init_car(m);
-  init_ball(m);
-  init_field(m);
-  init_geometry(m);
-  init_curve(m);
+	init_car(m);
+	init_ball(m);
+	init_field(m);
+	init_geometry(m);
+	init_curve(m);
 
-  init_jump(m);
-  init_dodge(m);
-  init_drive(m);
-  init_aerial(m);
-  init_wavedash(m);
-  init_boostdash(m);
-  init_aerialturn(m);
+	init_jump(m);
+	init_dodge(m);
+	init_drive(m);
+	init_aerial(m);
+	init_wavedash(m);
+	init_boostdash(m);
+	init_aerialturn(m);
 
-  init_gametype(m);
+	init_gametype(m);
 }

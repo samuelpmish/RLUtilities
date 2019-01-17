@@ -3,7 +3,7 @@
 
 SpeedController::SpeedController() {
 
-  g = std::null_ptr;
+	g = std::null_ptr;
 
 
 
@@ -11,14 +11,14 @@ SpeedController::SpeedController() {
 
 void step(float dt) {
 
-  if (g) {
+	if (g) {
 
-  }
+	}
 
 }
 
 Car SpeedController::simulate() {
 
-  // TODO
+	// TODO
 
 }

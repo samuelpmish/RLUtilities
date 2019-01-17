@@ -7,21 +7,21 @@
 
 class SpeedController {
 
- public:
+public:
 
-  curve * g;
-  bool prefer_wavedashes;
+	curve * g;
+	bool prefer_wavedashes;
 
-  std::optional < float > arrival_time;
-  std::optional < float > arrival_speed;
+	std::optional < float > arrival_time;
+	std::optional < float > arrival_speed;
 
-  bool finished;
-  
-  void step(float dt);
-  Car simulate();
+	bool finished;
 
- private:
+	void step(float dt);
+	Car simulate();
 
-  float vf_old;
+private:
+
+	float vf_old;
 
 };
