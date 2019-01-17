@@ -18,4 +18,4 @@ cmake .. -DPYTHON_EXECUTABLE="%pypath%\Python37\python.exe" .. -G"Visual Studio 
 cmake --build . --config Release
 cd ..
 
-for /R . %%f in (*.pyd) do copy "%%f" ..\..\python\RLUtilities
+for /R . %%f in (*.pyd) do copy "%%f" ..\python\RLUtilities
