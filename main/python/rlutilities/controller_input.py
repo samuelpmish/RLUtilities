@@ -91,7 +91,7 @@ class ControllerInput:
         while 1:
             events = get_gamepad()  # Blocking
             for event in events:
-                #print(repr((event.ev_type, event.code, event.state)))
+                # print(repr((event.ev_type, event.code, event.state)))
                 if False:
                     pass
                 elif event.ev_type == 'Absolute' and event.code == 'ABS_RZ':

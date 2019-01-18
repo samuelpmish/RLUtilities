@@ -1,14 +1,14 @@
-from rlutilities.linear_algebra import *
+from rlutilities.linear_algebra import vec3, axis_rotation, look_at
 from rlutilities.mechanics import AerialTurn
 from rlutilities.simulation import Car
 
 c = Car()
 
 c.time = 0.0
-c.pos = vec3(0, 0, 500)
-c.vel = vec3(0, 0, 0)
-c.omega = vec3(0.1, -2.0, 1.2)
-c.theta = axis_rotation(vec3(1.7, -0.5, 0.3))
+c.location = vec3(0, 0, 500)
+c.velocity = vec3(0, 0, 0)
+c.angular_velocity = vec3(0.1, -2.0, 1.2)
+c.rotation = axis_rotation(vec3(1.7, -0.5, 0.3))
 c.on_ground = False
 
 turn = AerialTurn(c)

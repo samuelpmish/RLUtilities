@@ -6,9 +6,9 @@ from rlutilities.goal import Goal
 
 class BoostPad:
 
-    def __init__(self, index, pos, is_active, timer):
+    def __init__(self, index, location, is_active, timer):
         self.index = index
-        self.pos = pos
+        self.location = location
         self.is_active = is_active
         self.timer = timer
 
@@ -67,16 +67,16 @@ class GameInfo:
 
         dyn = packet.game_ball.physics
 
-        self.ball.pos = vec3(dyn.location.x,
-                             dyn.location.y,
-                             dyn.location.z)
-        self.ball.vel = vec3(dyn.velocity.x,
-                             dyn.velocity.y,
-                             dyn.velocity.z)
-        self.ball.omega = vec3(dyn.angular_velocity.x,
-                               dyn.angular_velocity.y,
-                               dyn.angular_velocity.z)
-        self.ball.t = self.time
+        self.ball.location = vec3(dyn.location.x,
+                                  dyn.location.y,
+                                  dyn.location.z)
+        self.ball.velocity = vec3(dyn.velocity.x,
+                                  dyn.velocity.y,
+                                  dyn.velocity.z)
+        self.ball.angular_velocity = vec3(dyn.angular_velocity.x,
+                                          dyn.angular_velocity.y,
+                                          dyn.angular_velocity.z)
+        self.ball.time = self.time
 
         self.ball.step(GameInfo.DT)
 
@@ -91,19 +91,19 @@ class GameInfo:
             if i < len(self.cars):
                 car = self.cars[i]
 
-            car.pos = vec3(dyn.location.x,
-                           dyn.location.y,
-                           dyn.location.z)
-            car.vel = vec3(dyn.velocity.x,
-                           dyn.velocity.y,
-                           dyn.velocity.z)
-            car.omega = vec3(dyn.angular_velocity.x,
-                             dyn.angular_velocity.y,
-                             dyn.angular_velocity.z)
-            car.theta = euler_rotation(vec3(dyn.rotation.pitch,
-                                            dyn.rotation.yaw,
-                                            dyn.rotation.roll))
-            car.theta_dodge = rotation(dyn.rotation.yaw)
+            car.location = vec3(dyn.location.x,
+                                dyn.location.y,
+                                dyn.location.z)
+            car.velocity = vec3(dyn.velocity.x,
+                                dyn.velocity.y,
+                                dyn.velocity.z)
+            car.angular_velocity = vec3(dyn.angular_velocity.x,
+                                        dyn.angular_velocity.y,
+                                        dyn.angular_velocity.z)
+            car.rotation = euler_rotation(vec3(dyn.rotation.pitch,
+                                               dyn.rotation.yaw,
+                                               dyn.rotation.roll))
+            car.dodge_rotation = rotation(dyn.rotation.yaw)
             car.on_ground = game_car.has_wheel_contact
             car.supersonic = game_car.is_super_sonic
             car.jumped = game_car.jumped
@@ -152,9 +152,9 @@ class GameInfo:
             self.ball_predictions.append(Ball(prediction))
 
             if self.time_of_goal == -1:
-                if self.my_goal.inside(prediction.pos):
+                if self.my_goal.inside(prediction.location):
                     self.about_to_be_scored_on = True
                     self.time_of_goal = prediction.t
-                if self.their_goal.inside(prediction.pos):
+                if self.their_goal.inside(prediction.location):
                     self.about_to_score = True
                     self.time_of_goal = prediction.t

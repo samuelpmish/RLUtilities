@@ -23,7 +23,6 @@ struct Input {
 	float throttle;
 	bool jump;
 	bool boost;
-	bool slide;
 	bool handbrake;
 };
 

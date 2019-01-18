@@ -22,24 +22,28 @@ class Goal:
             ]
         else:
             for i in range(len(fieldInfo.goals)):
-                current = fieldInfo.goals[i]
-                current_pos = current.location
-                if current.team_num == team:
-                    self.center = vec3(current_pos.x, current_pos.y, current_pos.z)
+                goal = fieldInfo.goals[i]
+                goal_location = goal.location
+                if goal.team_num == team:
+                    self.center = vec3(goal_location.x, goal_location.y, goal_location.z)
                     if abs(self.center[1]) > 5000:
                         self.corners = [
-                            vec3(current_pos.x - Goal.WIDTH / 2.0, current_pos.y, current_pos.z - Goal.HEIGHT / 2.0),
-                            vec3(current_pos.x + Goal.WIDTH / 2.0, current_pos.y, current_pos.z - Goal.HEIGHT / 2.0),
-                            vec3(current_pos.x + Goal.WIDTH / 2.0, current_pos.y, current_pos.z + Goal.HEIGHT / 2.0),
-                            vec3(current_pos.x - Goal.WIDTH / 2.0, current_pos.y, current_pos.z + Goal.HEIGHT / 2.0)
+                            vec3(goal_location.x - Goal.WIDTH / 2.0, goal_location.y,
+                                 goal_location.z - Goal.HEIGHT / 2.0),
+                            vec3(goal_location.x + Goal.WIDTH / 2.0, goal_location.y,
+                                 goal_location.z - Goal.HEIGHT / 2.0),
+                            vec3(goal_location.x + Goal.WIDTH / 2.0, goal_location.y,
+                                 goal_location.z + Goal.HEIGHT / 2.0),
+                            vec3(goal_location.x - Goal.WIDTH / 2.0, goal_location.y,
+                                 goal_location.z + Goal.HEIGHT / 2.0)
                         ]
                     else:
-                        radius = 3564 - abs(current_pos.y)
+                        radius = 3564 - abs(goal_location.y)
                         self.corners = [
-                            vec3(-radius, current_pos.y - radius, current_pos.z * 2.0),
-                            vec3(radius, current_pos.y - radius, current_pos.z * 2.0),
-                            vec3(radius, current_pos.y + radius, current_pos.z * 2.0),
-                            vec3(-radius, current_pos.y + radius, current_pos.z * 2.0)
+                            vec3(-radius, goal_location.y - radius, goal_location.z * 2.0),
+                            vec3(radius, goal_location.y - radius, goal_location.z * 2.0),
+                            vec3(radius, goal_location.y + radius, goal_location.z * 2.0),
+                            vec3(-radius, goal_location.y + radius, goal_location.z * 2.0)
                         ]
                     break
 
