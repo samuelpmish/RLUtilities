@@ -13,17 +13,17 @@ public:
 	// cars
 	Car my_car;
 
-	std::vector<Car*> opponents;
-	std::vector<Car*> teammates;
+	std::vector<Car> opponents;
+	std::vector<Car> teammates;
 
 	// ball
 	Ball ball;
 
 	// boost pads
-	std::vector<Pad*> large_pads;
-	std::vector<Pad*> small_pads;
+	std::vector<Pad> large_pads;
+	std::vector<Pad> small_pads;
 
 	// goals
-	std::vector<Goal*> opp_goals;
-	std::vector<Goal*> own_goals;
+	std::vector<Goal> opp_goals;
+	std::vector<Goal> own_goals;
 };

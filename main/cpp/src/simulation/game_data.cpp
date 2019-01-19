@@ -4,6 +4,7 @@
 #ifdef GENERATE_PYTHON_BINDINGS
 
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 void init_game_data(pybind11::module & m) {
 
