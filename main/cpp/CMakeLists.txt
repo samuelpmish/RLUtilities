@@ -9,6 +9,9 @@ add_library(cpp_lib
   # simulation
   ${PROJECT_SOURCE_DIR}/src/simulation/car.cpp
   ${PROJECT_SOURCE_DIR}/src/simulation/ball.cpp
+  ${PROJECT_SOURCE_DIR}/src/simulation/pad.cpp
+  ${PROJECT_SOURCE_DIR}/src/simulation/goal.cpp
+  ${PROJECT_SOURCE_DIR}/src/simulation/game_data.cpp
   ${PROJECT_SOURCE_DIR}/src/simulation/geometry.cpp
   ${PROJECT_SOURCE_DIR}/src/simulation/mesh.cpp
   ${PROJECT_SOURCE_DIR}/src/simulation/field.cpp

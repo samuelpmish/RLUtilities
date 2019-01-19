@@ -5,6 +5,9 @@
 void init_gametype(pybind11::module & m);
 void init_car(pybind11::module & m);
 void init_ball(pybind11::module & m);
+void init_pad(pybind11::module & m);
+void init_goal(pybind11::module & m);
+void init_game_data(pybind11::module & m);
 void init_field(pybind11::module & m);
 void init_geometry(pybind11::module & m);
 void init_curve(pybind11::module & m);
@@ -25,6 +28,9 @@ PYBIND11_MODULE(rlutilities, m) {
 	init_gametype(simulation);
 	init_car(simulation);
 	init_ball(simulation);
+	init_pad(simulation);
+	init_goal(simulation);
+	init_game_data(simulation);
 	init_field(simulation);
 	init_geometry(simulation);
 	init_curve(simulation);

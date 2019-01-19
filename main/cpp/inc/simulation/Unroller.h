@@ -1,6 +1,6 @@
 #pragma once
 
-#include "simulation/Car.h"
+#include "simulation/car.h"
 #include "simulation/Curve.h"
 #include "simulation/RL_structs.h"
 

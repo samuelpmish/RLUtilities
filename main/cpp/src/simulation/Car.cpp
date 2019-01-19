@@ -1,4 +1,4 @@
-#include "simulation/Car.h"
+#include "simulation/car.h"
 
 #include "mechanics/Jump.h"
 #include "mechanics/Dodge.h"

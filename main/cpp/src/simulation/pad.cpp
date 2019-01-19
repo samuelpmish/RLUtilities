@@ -1,0 +1,18 @@
+#include "simulation/pad.h"
+
+
+#ifdef GENERATE_PYTHON_BINDINGS
+
+#include <pybind11/pybind11.h>
+
+void init_pad(pybind11::module & m) {
+
+	pybind11::class_<Pad>(m, "Pad")
+		.def(pybind11::init<>())
+		.def_readwrite("index", &Pad::index)
+		.def_readwrite("location", &Pad::location)
+		.def_readwrite("is_active", &Pad::is_active)
+		.def_readwrite("timer", &Pad::timer);
+
+}
+#endif
