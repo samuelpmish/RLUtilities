@@ -66,8 +66,8 @@ void GameData::read_game_boosts(pybind11::list game_boosts)
 		for (int j = 0; j < pad_type->size(); j++)
 		{
 			Pad* pad = pad_type->at(j);
-			/*pad->is_active = game_boosts[pad->index].attr("is_active").cast<bool>();
-			pad->timer = game_boosts[pad->index].attr("timer").cast<float>();*/
+			pad->is_active = game_boosts[pad->index].attr("is_active").cast<bool>();
+			pad->timer = game_boosts[pad->index].attr("timer").cast<float>();
 		}
 	}
 }
@@ -105,8 +105,10 @@ void GameData::read_field_info(pybind11::object field_info)
 
 void GameData::read_boost_pads(pybind11::list boost_pads, int num_boosts)
 {
-	if ((int)large_pads.size() + (int)small_pads.size() != num_boosts)
+	if ((int)pads.size() != num_boosts)
 	{
+		pads.resize(num_boosts);
+
 		large_pads.clear();
 		small_pads.clear();
 
@@ -115,7 +117,7 @@ void GameData::read_boost_pads(pybind11::list boost_pads, int num_boosts)
 			pybind11::object boost_pad = boost_pads[i];
 			bool is_full_boost = boost_pad.attr("is_full_boost").cast<bool>();
 
-			Pad* pad = &Pad();
+			Pad* pad = &pads[i];
 			pad->index = i;
 			pad->location = convert::vector3_to_vec3(boost_pad.attr("location"));
 			pad->is_full_boost = is_full_boost;
@@ -139,7 +141,7 @@ void GameData::read_goals(pybind11::list goals, int num_goals)
 			pybind11::object goal_info = goals[i];
 			int goal_team = goal_info.attr("team_num").cast<bool>();
 
-			Goal* goal = &Goal();
+			Goal* goal = new Goal;
 			goal->team = goal_team;
 			goal->location = convert::vector3_to_vec3(goal_info.attr("location"));
 			goal->direction = convert::vector3_to_vec3(goal_info.attr("direction"));
@@ -176,6 +178,7 @@ void init_game_data(pybind11::module & m) {
 
 		.def_property_readonly("ball", &GameData::GetBall)
 
+		.def_property_readonly("pads", &GameData::GetPads)
 		.def_property_readonly("large_pads", &GameData::GetLargePads)
 		.def_property_readonly("small_pads", &GameData::GetSmallPads)
 

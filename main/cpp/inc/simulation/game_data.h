@@ -33,6 +33,7 @@ public:
 	const Ball &GetBall() const { return ball; }
 
 	// boost pads
+	const std::vector<Pad> &GetPads() const { return pads; }
 	const std::vector<Pad*> &GetLargePads() const { return large_pads; }
 	const std::vector<Pad*> &GetSmallPads() const { return small_pads; }
 
@@ -75,6 +76,7 @@ private:
 	Ball ball;
 
 	// boost pads
+	std::vector<Pad> pads;
 	std::vector<Pad*> large_pads;
 	std::vector<Pad*> small_pads;
 
