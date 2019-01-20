@@ -22,21 +22,23 @@ public:
 	int index;
 
 	// cars
-	const Car &GetMyCar() const { return my_car; }
+	const std::vector<Car> &GetCars() const { return cars; }
 
-	const std::vector<Car> &GetOpponents() const { return opponents; }
-	const std::vector<Car> &GetTeammates() const { return teammates; }
+	const Car &GetMyCar() const { return *my_car; }
+
+	const std::vector<Car*> &GetOpponents() const { return opponents; }
+	const std::vector<Car*> &GetTeammates() const { return teammates; }
 
 	// ball
 	const Ball &GetBall() const { return ball; }
 
 	// boost pads
-	const std::vector<Pad> &GetLargePads() const { return large_pads; }
-	const std::vector<Pad> &GetSmallPads() const { return small_pads; }
+	const std::vector<Pad*> &GetLargePads() const { return large_pads; }
+	const std::vector<Pad*> &GetSmallPads() const { return small_pads; }
 
 	// goals
-	const std::vector<Goal> &GetOppGoals() const { return opp_goals; }
-	const std::vector<Goal> &GetOwnGoals() const { return own_goals; }
+	const std::vector<Goal*> &GetOppGoals() const { return opp_goals; }
+	const std::vector<Goal*> &GetOwnGoals() const { return own_goals; }
 
 	// game info
 	float time;
@@ -62,19 +64,21 @@ public:
 private:
 
 	// cars
-	Car my_car;
+	std::vector<Car> cars;
 
-	std::vector<Car> opponents;
-	std::vector<Car> teammates;
+	Car* my_car;
+
+	std::vector<Car*> opponents;
+	std::vector<Car*> teammates;
 
 	// ball
 	Ball ball;
 
 	// boost pads
-	std::vector<Pad> large_pads;
-	std::vector<Pad> small_pads;
+	std::vector<Pad*> large_pads;
+	std::vector<Pad*> small_pads;
 
 	// goals
-	std::vector<Goal> opp_goals;
-	std::vector<Goal> own_goals;
+	std::vector<Goal*> opp_goals;
+	std::vector<Goal*> own_goals;
 };
