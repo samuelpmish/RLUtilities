@@ -1,6 +1,8 @@
 #include "simulation/ball.h"
 #include "simulation/field.h"
 
+#include "misc/convert.h"
+
 const float Ball::restitution = 0.6f;
 const float Ball::drag = -0.0305f;
 const float Ball::mu = 2.0f;
@@ -151,8 +153,21 @@ void Ball::step(float dt, const Car & c) {
 
 }
 
+
+void Ball::read_game_ball(pybind11::object game_ball)
+{
+	pybind11::object physics = game_ball.attr("physics");
+
+	x = convert::vector3_to_vec3(physics.attr("location"));
+	v = convert::vector3_to_vec3(physics.attr("velocity"));
+	w = convert::vector3_to_vec3(physics.attr("angular_velocity"));
+}
+
+
 #ifdef GENERATE_PYTHON_BINDINGS
+
 #include <pybind11/pybind11.h>
+
 void init_ball(pybind11::module & m) {
 	pybind11::class_<Ball>(m, "Ball")
 		.def(pybind11::init<>())

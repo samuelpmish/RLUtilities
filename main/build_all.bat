@@ -19,3 +19,4 @@ cmake --build . --config Release
 cd ..
 
 for /R . %%f in (*.pyd) do copy "%%f" ..\python\rlutilities
+cd ..

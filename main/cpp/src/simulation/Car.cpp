@@ -4,6 +4,8 @@
 #include "mechanics/Dodge.h"
 #include "mechanics/Aerial.h"
 
+#include "misc/convert.h"
+
 const float Car::m = 180.0f;
 const float Car::v_max = 2300.0f;
 const float Car::w_max = 5.5f;
@@ -88,6 +90,7 @@ void Car::air_dodge(const Input& in, float dt) {
 	}
 
 }
+
 
 void Car::aerial_control(const Input& in, float dt) {
 
@@ -375,6 +378,27 @@ Car::Car() {
 
 	last = Input();
 }
+
+
+void Car::read_game_car(pybind11::object game_car)
+{
+	// physics
+	pybind11::object physics = game_car.attr("physics");
+
+	x = convert::vector3_to_vec3(physics.attr("location"));
+	v = convert::vector3_to_vec3(physics.attr("velocity"));
+	w = convert::vector3_to_vec3(physics.attr("angular_velocity"));
+	o = convert::rotator_to_mat3(physics.attr("rotation"));
+
+	// other car data
+	boost = game_car.attr("boost").cast<int>();
+	jumped = game_car.attr("jumped").cast<bool>();
+	double_jumped = game_car.attr("double_jumped").cast<bool>();
+	on_ground = game_car.attr("has_wheel_contact").cast<bool>();
+	supersonic = game_car.attr("is_super_sonic").cast<bool>();
+	team = game_car.attr("team").cast<int>();
+}
+
 
 #ifdef GENERATE_PYTHON_BINDINGS
 #include <pybind11/pybind11.h>

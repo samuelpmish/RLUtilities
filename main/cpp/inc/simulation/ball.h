@@ -5,6 +5,9 @@
 
 #include "linear_algebra/math.h"
 
+#include <pybind11/pybind11.h>
+
+
 class Ball {
 public:
 	vec3 x;
@@ -38,4 +41,5 @@ public:
 	void step(float dt);
 	void step(float dt, const Car & c);
 
+	void read_game_ball(pybind11::object game_ball);
 };

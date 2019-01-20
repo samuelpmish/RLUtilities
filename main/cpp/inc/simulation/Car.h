@@ -5,6 +5,8 @@
 
 #include "linear_algebra/math.h"
 
+#include <pybind11/pybind11.h>
+
 #define DELTA_T 0.01666
 
 class Car {
@@ -56,6 +58,8 @@ public:
 	vec3 up() const;
 
 	obb hitbox() const;
+
+	void read_game_car(pybind11::object game_car);
 
 private:
 

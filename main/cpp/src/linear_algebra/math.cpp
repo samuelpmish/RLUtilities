@@ -9,6 +9,7 @@
 
 #include "linear_algebra/math.h"
 
+
 #ifdef GENERATE_PYTHON_BINDINGS
 #include <pybind11/pybind11.h>
 void init_linalg(pybind11::module & m) {

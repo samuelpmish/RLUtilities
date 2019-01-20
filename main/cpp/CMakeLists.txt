@@ -36,7 +36,10 @@ add_library(cpp_lib
   # linear algebra
   ${PROJECT_SOURCE_DIR}/src/linear_algebra/math.cpp
 
+  # misc
+  ${PROJECT_SOURCE_DIR}/src/misc/convert.cpp
 )
+
 target_include_directories(cpp_lib PUBLIC inc/)
 target_link_libraries(cpp_lib PUBLIC pybind11)
 target_compile_features(cpp_lib PUBLIC cxx_std_17)

@@ -11,7 +11,7 @@ class SkeletonAgent(BaseAgent):
     def __init__(self, name: str = 'skeleton', team: int = 0, index: int = 0):
 
         super(SkeletonAgent, self).__init__(name, team, index)
-        self.game_data = GameData()
+        self.game_data = GameData(name, team, index)
         self.controls = SimpleControllerState()
 
     def get_output(self, game_tick_packet: GameTickPacket) -> SimpleControllerState:
@@ -27,6 +27,8 @@ class SkeletonAgent(BaseAgent):
 
     def pre_process(self, game_tick_packet: GameTickPacket):
         """First thing executed in get_output()."""
+        self.game_data.read_field_info(self.get_field_info())
+        self.game_data.read_game_tick_packet(game_tick_packet)
 
     def feedback(self):
         """Last thing executed in get_output() before return statement."""
