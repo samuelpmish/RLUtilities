@@ -1,4 +1,4 @@
-#include "simulation/CompositeArc.h"
+#include "simulation/composite_arc.h"
 
 #define _USE_MATH_DEFINES
 #include <cmath>
@@ -108,8 +108,8 @@ CompositeArc::CompositeArc(const float   _L0,
 
 float CompositeArc::time_lower_bound() {
 	return (L0 / Drive::max_speed) +
-		(L1 / Drive::max_turning_speed(1.0 / r1)) +
+		(L1 / Drive::max_turning_speed(1.0f / r1)) +
 		(L2 / Drive::max_speed) +
-		(L3 / Drive::max_turning_speed(1.0 / r1)) +
+		(L3 / Drive::max_turning_speed(1.0f / r1)) +
 		(L4 / Drive::max_speed);
 }

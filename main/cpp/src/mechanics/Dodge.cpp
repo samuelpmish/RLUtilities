@@ -1,4 +1,4 @@
-#include "mechanics/Dodge.h"
+#include "mechanics/dodge.h"
 
 #include <optional>
 #include <variant>

@@ -85,6 +85,26 @@ void init_linalg(pybind11::module & m) {
 		return s;
 	});
 
+	pybind11::class_<vec4>(m, "vec4")
+		.def(pybind11::init< float, float, float, float >())
+		.def("__getitem__", [](const vec4 & v, size_t i) { return v[i]; })
+		.def("__setitem__", [](vec4 & v, size_t i, float f) { v[i] = f; })
+		.def("__str__", [](const vec4 & v) {
+		return std::to_string(v[0]) + std::string(" ") +
+           std::to_string(v[1]) + std::string(" ") +
+           std::to_string(v[2]) + std::string(" ") +
+			     std::to_string(v[3]);
+	  })
+		.def(pybind11::self - pybind11::self)
+		.def(pybind11::self + pybind11::self)
+		.def(pybind11::self -= pybind11::self)
+		.def(pybind11::self += pybind11::self)
+		.def(pybind11::self *= float())
+		.def(pybind11::self /= float())
+		.def(float() * pybind11::self)
+		.def(pybind11::self * float())
+		.def(pybind11::self / float());
+
 	pybind11::class_<mat3>(m, "mat3")
 		.def(pybind11::init([](float a11, float a12, float a13,
 			float a21, float a22, float a23,
@@ -124,6 +144,8 @@ void init_linalg(pybind11::module & m) {
 	m.def("dot", (vec3(*)(const mat3 &, const vec3 &)) &dot);
 	m.def("dot", (mat3(*)(const mat3 &, const mat3 &)) &dot);
 
+	m.def("dot", (float(*)(const vec4 &, const vec4 &)) &dot);
+
 	m.def("cross", (vec3(*)(const vec3 &, const vec3 &)) &cross);
 	m.def("cross", (vec3(*)(const vec3 &)) &cross);
 	m.def("cross", (vec2(*)(const vec2 &)) &cross);
@@ -132,8 +154,8 @@ void init_linalg(pybind11::module & m) {
 	m.def("inv", (mat3(*)(const mat3 &)) &inv);
 	m.def("look_at", &look_at);
 	m.def("rotation", &rotation);
-	m.def("euler_rotation", &euler_rotation);
-	m.def("axis_rotation", &axis_rotation);
+	m.def("euler_to_rotation", &euler_to_rotation);
+	m.def("axis_to_rotation", &axis_to_rotation);
 	m.def("rotation_to_axis", &rotation_to_axis);
 	m.def("transpose", (mat2(*)(const mat2 &)) &transpose);
 	m.def("transpose", (mat3(*)(const mat3 &)) &transpose);
@@ -149,7 +171,6 @@ void init_linalg(pybind11::module & m) {
 	m.def("norm", (float(*)(const vec2 &)) &norm);
 	m.def("normalize", (vec3(*)(const vec3 &)) &normalize);
 	m.def("normalize", (vec2(*)(const vec2 &)) &normalize);
-
 
 }
 #endif

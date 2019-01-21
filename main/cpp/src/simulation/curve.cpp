@@ -16,13 +16,13 @@ Curve::Curve(const CompositeArc &path) {
 
 	if (path.L0 > 0) {
 		const vec2 p0 = path.p1 - path.L0 * path.t1;
-		size_t n0 = ceil(path.L0 / length_per_straight_segment);
+		auto n0 = ceil(path.L0 / length_per_straight_segment);
 		for (size_t i = 0; i < n0; i++) {
 			points.push_back(lerp(p0, path.p1, float(i) / float(n0)));
 		}
 	}
 
-	size_t n1 = ceil(path.phi1 / radians_per_arc_segment);
+	auto n1 = ceil(path.phi1 / radians_per_arc_segment);
 	mat2 Q = rotation(sgn(path.r1) * path.phi1 / n1);
 	vec2 delta = path.p1 - path.o1;
 	for (size_t i = 0; i <= n1; i++) {
@@ -31,13 +31,13 @@ Curve::Curve(const CompositeArc &path) {
 	}
 
 	if (path.L2 > 0) {
-		size_t n2 = ceil(path.L2 / length_per_straight_segment);
+		auto n2 = ceil(path.L2 / length_per_straight_segment);
 		for (size_t i = 1; i < n2; i++) {
 			points.push_back(lerp(path.q1, path.q2, float(i) / float(n2)));
 		}
 	}
 
-	size_t n3 = ceil(path.phi2 / radians_per_arc_segment);
+	auto n3 = ceil(path.phi2 / radians_per_arc_segment);
 	Q = rotation(sgn(path.r2) * path.phi2 / n3);
 	delta = path.q2 - path.o2;
 	for (size_t i = 0; i <= n3; i++) {
@@ -47,7 +47,7 @@ Curve::Curve(const CompositeArc &path) {
 
 	if (path.L4 > 0) {
 		vec2 p3 = path.p2 + path.L4 * path.t2;
-		size_t n4 = ceil(path.L4 / length_per_straight_segment);
+		auto n4 = ceil(path.L4 / length_per_straight_segment);
 		for (size_t i = 1; i <= n4; i++) {
 			points.push_back(lerp(path.p2, p3, float(i) / float(n4)));
 		}
@@ -140,14 +140,14 @@ void Curve::calculate_distances_and_tangents() {
 	size_t last = points.size() - 1;
 
 	// measure distances from the end of the curve
-	for (int i = last - 1; i >= 0; i--) {
+	for (size_t i = last - 1; i >= 0; i--) {
 		distances[i] = distances[i + 1] + norm(points[i + 1] - points[i]);
 	}
 
 	length = distances[0];
 
 	tangents[0] = normalize(points[1] - points[0]);
-	for (int i = 1; i < last; i++) {
+	for (size_t i = 1; i < last; i++) {
 		tangents[i] = normalize(points[i + 1] - points[i - 1]);
 	}
 	tangents[last] = normalize(points[last] - points[last - 1]);

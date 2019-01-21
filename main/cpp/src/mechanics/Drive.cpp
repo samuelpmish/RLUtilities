@@ -1,8 +1,8 @@
-#include "mechanics/Drive.h"
+#include "mechanics/drive.h"
 
-#include "simulation/Field.h"
+#include "simulation/field.h"
 #include "simulation/circles.h"
-#include "simulation/CompositeArc.h"
+#include "simulation/composite_arc.h"
 
 #include <cmath>
 #include <numeric>

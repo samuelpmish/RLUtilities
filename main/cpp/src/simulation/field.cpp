@@ -162,7 +162,7 @@ void Field::initialize_dropshot() {
 	float scale = 0.393f;
 	float z_offset = -207.565f;
 
-	mat3 R = axis_rotation(vec3{ 0.0f, 0.0f, 0.52359877559f });
+	mat3 R = axis_to_rotation(vec3{ 0.0f, 0.0f, 0.52359877559f });
 
 	mat3 S = {
 	  {scale, 0.0f, 0.0f},
@@ -188,7 +188,7 @@ void Field::initialize_dropshot() {
 	// Walls
 	vec3 p = vec3{ 0.0f, 11683.6f * scale, 2768.64f * scale - z_offset };
 	vec3 n = vec3{ 0.0f, -1.0f, 0.0f };
-	R = axis_rotation(vec3{ 0.0f, 0.0f, 1.047197551196598f });
+	R = axis_to_rotation(vec3{ 0.0f, 0.0f, 1.047197551196598f });
 	for (int i = 2; i < 8; i++) {
 		walls[i] = wall{ p, n, true };
 		p = dot(R, p);

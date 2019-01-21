@@ -3,11 +3,9 @@
 #include "misc/convert.h"
 
 
-namespace convert
-{
+namespace convert {
 
-	vec3 vector3_to_vec3(pybind11::object vector3)
-	{
+	vec3 vector3_to_vec3(pybind11::object vector3) {
 		return vec3{
 			vector3.attr("x").cast<float>(),
 			vector3.attr("y").cast<float>(),
@@ -15,15 +13,12 @@ namespace convert
 		};
 	}
 
-
-	mat3 rotator_to_mat3(pybind11::object rotator)
-	{
-		return euler_rotation(
-			vec3{
+	mat3 rotator_to_mat3(pybind11::object rotator) {
+		return euler_to_rotation(vec3{
 			rotator.attr("pitch").cast<float>(),
 			rotator.attr("yaw").cast<float>(),
-			rotator.attr("roll").cast<float>() }
-		);
+			rotator.attr("roll").cast<float>() 
+    });
 	}
 
 }

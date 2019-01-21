@@ -88,7 +88,7 @@ inline mat < 2, 2 > rotation(const float theta) {
 	};
 }
 
-inline mat < 3, 3 > axis_rotation(const vec < 3 > & omega) {
+inline mat < 3, 3 > axis_to_rotation(const vec < 3 > & omega) {
 
 	float theta = norm(omega);
 
@@ -130,6 +130,76 @@ inline vec < 3 > rotation_to_axis(const mat < 3, 3 > & R) {
 	return vec3{ R(2,1) - R(1,2), R(0,2) - R(2,0), R(1,0) - R(0,1) } *scale;
 
 }
+
+inline mat<3, 3> antisym(const vec<3>& w) {
+	// clang-format off
+	return mat < 3, 3 >{
+		{  0.0, -w[2], w[1]},
+		{ w[2],   0.0, -w[0] },
+		{ -w[1],  w[0],   0.0 }
+	};
+	// clang-format on
+}
+
+inline mat<3, 3> euler_to_rotation(const vec<3>& pyr) {
+	float CP = cos(pyr[0]);
+	float SP = sin(pyr[0]);
+	float CY = cos(pyr[1]);
+	float SY = sin(pyr[1]);
+	float CR = cos(pyr[2]);
+	float SR = sin(pyr[2]);
+
+	mat<3, 3> theta;
+
+	// front direction
+	theta(0, 0) = CP * CY;
+	theta(1, 0) = CP * SY;
+	theta(2, 0) = SP;
+
+	// left direction
+	theta(0, 1) = CY * SP * SR - CR * SY;
+	theta(1, 1) = SY * SP * SR + CR * CY;
+	theta(2, 1) = -CP * SR;
+
+	// up direction
+	theta(0, 2) = -CR * CY * SP - SR * SY;
+	theta(1, 2) = -CR * SY * SP + SR * CY;
+	theta(2, 2) = CP * CR;
+
+	return theta;
+}
+
+// to use this with the quaternions directly from Rocket League,
+// you have to do the following:
+//
+// vec4 q = get_quaternion_from_phys_tick();
+// mat3 theta = quaterion_rotation(-q[3], -q[0], -q[1], -q[2])
+//
+inline mat<3, 3> quaternion_to_rotation(vec4 q) {
+
+	float s = 1.0f / dot(q, q);
+
+	mat<3, 3> theta;
+
+	// front direction
+	theta(0, 0) = 1.0f - 2.0f * s * (q[2] * q[2] + q[3] * q[3]);
+	theta(1, 0) = 2.0f * s * (q[1] * q[2] + q[3] * q[0]);
+	theta(2, 0) = 2.0f * s * (q[1] * q[3] - q[2] * q[0]);
+
+	// left direction
+	theta(0, 1) = 2.0f * s * (q[1] * q[2] - q[3] * q[0]);
+	theta(1, 1) = 1.0f - 2.0f * s * (q[1] * q[1] + q[3] * q[3]);
+	theta(2, 1) = 2.0f * s * (q[2] * q[3] + q[1] * q[0]);
+
+	// up direction
+	theta(0, 2) = 2.0f * s * (q[1] * q[3] + q[2] * q[0]);
+	theta(1, 2) = 2.0f * s * (q[2] * q[3] - q[1] * q[0]);
+	theta(2, 2) = 1.0f - 2.0f * s * (q[1] * q[1] + q[2] * q[2]);
+
+	return theta;
+}
+
+
 
 inline mat < 3, 3 > look_at(const vec < 3 > & direction, const vec < 3 > & up = vec3{ 0.0f, 0.0f, 1.0f }) {
 	vec3 f = normalize(direction);

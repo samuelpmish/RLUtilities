@@ -1,7 +1,7 @@
 #pragma once
 
 #include "simulation/car.h"
-#include "simulation/RL_structs.h"
+#include "simulation/input.h"
 
 #include "linear_algebra/math.h"
 

@@ -3,6 +3,7 @@ project(RLUtilities)
 
 add_subdirectory(pybind11)
 add_definitions(-DGENERATE_PYTHON_BINDINGS)
+add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
 
 add_library(cpp_lib
 
@@ -21,7 +22,7 @@ add_library(cpp_lib
   ${PROJECT_SOURCE_DIR}/src/simulation/hoops.cpp
   ${PROJECT_SOURCE_DIR}/src/simulation/dropshot.cpp
   ${PROJECT_SOURCE_DIR}/src/simulation/gametype.cpp
-  ${PROJECT_SOURCE_DIR}/src/simulation/compositearc.cpp
+  ${PROJECT_SOURCE_DIR}/src/simulation/composite_arc.cpp
   ${PROJECT_SOURCE_DIR}/src/simulation/unroller.cpp
 
   # mechanics
