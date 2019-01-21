@@ -11,40 +11,40 @@
 
 class Dodge {
 
-public:
-	Car & car;
+ public:
+  Car & car;
 
-	std::optional < vec3 > target;
-	std::optional < vec2 > direction;
-	std::optional < mat3 > preorientation;
-	std::optional < float > duration;
-	std::optional < float > delay;
+  std::optional < vec3 > target;
+  std::optional < vec2 > direction;
+  std::optional < mat3 > preorientation;
+  std::optional < float > duration;
+  std::optional < float > delay;
 
-	bool finished;
-	Input controls;
+  bool finished;
+  Input controls;
 
-	float timer;
-	bool dodged;
+  float timer;
+  bool dodged;
 
-	Dodge(Car & c);
+  Dodge(Car & c);
 
-	void step(float dt);
+  void step(float dt);
 
-	Car simulate();
+  Car simulate();
 
-	static const float timeout;
-	static const float input_threshold;
+  static const float timeout;
+  static const float input_threshold;
 
-	static const float z_damping;
-	static const float z_damping_start;
-	static const float z_damping_end;
+  static const float z_damping;
+  static const float z_damping_start;
+  static const float z_damping_end;
 
-	static const float torque_time;
-	static const float side_torque;
-	static const float forward_torque;
+  static const float torque_time;
+  static const float side_torque;
+  static const float forward_torque;
 
-private:
+ private:
 
-	AerialTurn turn;
+  AerialTurn turn;
 
 };

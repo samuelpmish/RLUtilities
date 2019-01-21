@@ -13,26 +13,26 @@
 
 class Wavedash {
 
-public:
+ public:
 
-	Car & car;
+  Car & car;
 
-	std::optional < vec3 > direction;
+  std::optional < vec3 > direction;
 
-	Input controls;
-	bool finished;
+  Input controls;
+  bool finished;
 
-	Wavedash(Car & c);
+  Wavedash(Car & c);
 
-	void step(float dt);
+  void step(float dt);
 
-	Car simulate();
+  Car simulate();
 
-private:
+ private:
 
-	float timer;
+  float timer;
 
-	Dodge dodge;
-	AerialTurn turn;
+  Dodge dodge;
+  AerialTurn turn;
 
 };

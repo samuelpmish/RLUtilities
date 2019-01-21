@@ -7,28 +7,28 @@
 
 class Jump {
 
-public:
-	Car & car;
+ public:
+  Car & car;
 
-	float duration;
+  float duration;
 
-	bool finished;
-	Input controls;
+  bool finished;
+  Input controls;
 
-	Jump(Car & c);
+  Jump(Car & c);
 
-	void step(float dt);
+  void step(float dt);
 
-	Car simulate();
+  Car simulate();
 
-	static const float speed;
-	static const float acceleration;
-	static const float min_duration;
-	static const float max_duration;
+  static const float speed;
+  static const float acceleration;
+  static const float min_duration;
+  static const float max_duration;
 
-private:
+ private:
 
-	float timer;
-	int counter;
+  float timer;
+  int counter;
 
 };

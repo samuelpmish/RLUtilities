@@ -11,26 +11,26 @@
 
 class Boostdash {
 
-public:
+ public:
 
-	Car & car;
+  Car & car;
 
-	Input controls;
-	bool finished;
+  Input controls;
+  bool finished;
 
-	Boostdash(Car & c);
+  Boostdash(Car & c);
 
-	void step(float dt);
+  void step(float dt);
 
-	Car simulate();
+  Car simulate();
 
-private:
+ private:
 
-	float timer;
-	float turn_up;
-	float boost_off;
+  float timer;
+  float turn_up;
+  float boost_off;
 
-	Dodge dodge;
-	AerialTurn turn;
+  Dodge dodge;
+  AerialTurn turn;
 
 };
