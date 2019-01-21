@@ -9,11 +9,12 @@
 
 #include <pybind11/pybind11.h>
 
+
 class GameData {
  public:
   // initialization
   GameData() {}
-  GameData(std::string name, int team, int index) : name(name), team(team), index(index) {}
+  GameData(std::string name, int team, int index) : name(name), team(team), index(index) { }
 
   std::string name;
   int team;
@@ -31,6 +32,7 @@ class GameData {
   const Ball &GetBall() const { return ball; }
 
   // boost pads
+  const std::vector<Pad> &GetPads() const { return pads; }
   const std::vector<Pad*> &GetLargePads() const { return large_pads; }
   const std::vector<Pad*> &GetSmallPads() const { return small_pads; }
 
@@ -58,6 +60,7 @@ class GameData {
   void read_boost_pads(pybind11::list boost_pads, int num_boosts);
   void read_goals(pybind11::list goals, int num_goals);
 
+
  private:
 
   // cars
@@ -72,6 +75,7 @@ class GameData {
   Ball ball;
 
   // boost pads
+  std::vector<Pad> pads;
   std::vector<Pad*> large_pads;
   std::vector<Pad*> small_pads;
 
