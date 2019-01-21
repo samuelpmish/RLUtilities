@@ -79,11 +79,11 @@ public:
 template < typename T >
 void bvh< T >::build_radix_tree() {
 
-	parents[num_leaves] = num_leaves;
+	parents[num_leaves] = int32_t(num_leaves);
 
 	for (int i = 0; i < num_leaves - 1; i++) {
 
-		PrefixComparator shared_prefix(code_ids[i], &code_ids[0], num_leaves);
+		PrefixComparator shared_prefix(code_ids[i], &code_ids[0], int(num_leaves));
 
 		// Choose search direction.
 		int prefix_prev = shared_prefix(i - 1);
@@ -104,7 +104,7 @@ void bvh< T >::build_radix_tree() {
 		int l = 0;
 		for (int t = lmax >> 1; t > 0; t >>= 1) {
 			probe = i + (l + t) * d;
-			if (probe < num_leaves & shared_prefix(probe) > prefix_min) {
+			if (probe < num_leaves && shared_prefix(probe) > prefix_min) {
 				l += t;
 			}
 		}
@@ -127,11 +127,11 @@ void bvh< T >::build_radix_tree() {
 		int32_t lo = std::min(i, j);
 		int32_t hi = std::max(i, j);
 
-		int32_t left = (lo == k) ? k + 0 : (k + 0 + num_leaves);
-		int32_t right = (hi == k + 1) ? k + 1 : (k + 1 + num_leaves);
+		int32_t left = (lo == k) ? k + 0 : (k + 0 + int32_t(num_leaves));
+		int32_t right = (hi == k + 1) ? k + 1 : (k + 1 + int32_t(num_leaves));
 
-		parents[left] = i + num_leaves;
-		parents[right] = i + num_leaves;
+		parents[left] = i + int32_t(num_leaves);
+		parents[right] = i + int32_t(num_leaves);
 		siblings[left] = right;
 		siblings[right] = left;
 		nodes[i + num_leaves].code = (uint64_t(left) << 32) + uint64_t(right);
@@ -206,7 +206,7 @@ bvh< T >::bvh(const std::vector < T > & _primitives) {
 	parents.resize(2 * num_leaves - 1);
 	siblings.resize(2 * num_leaves - 1);
 
-	mask = (uint64_t(1) << bits_needed(num_leaves)) - 1;
+	mask = (uint64_t(1) << bits_needed(uint32_t(num_leaves))) - uint64_t(1);
 
 	std::vector < aabb > boxes(num_leaves);
 	for (int i = 0; i < num_leaves; i++) {
@@ -241,7 +241,7 @@ ray bvh< tri >::raycast_any(const ray & query_ray) const {
 	*stack_ptr++ = -1;
 
 	// Traverse nodes starting from the root.
-	int n = num_leaves;
+	size_t n = num_leaves;
 	do {
 
 		// Check each child node for overlap.
@@ -303,7 +303,7 @@ std::vector < int > bvh< T >::intersect(const S & query_object) const {
 	*stack_ptr++ = -1;
 
 	// Traverse nodes starting from the root.
-	int n = num_leaves;
+	size_t n = num_leaves;
 	do {
 
 		// Check each child node for overlap.
@@ -362,7 +362,7 @@ std::vector < int > bvh< aabb >::intersect(const S & query_object) const {
 	*stack_ptr++ = -1;
 
 	// Traverse nodes starting from the root.
-	int n = num_leaves;
+	size_t n = num_leaves;
 	do {
 
 		// Check each child node for overlap.

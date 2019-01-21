@@ -7,12 +7,12 @@ mesh::mesh(std::vector < int > ids_, std::vector < float > vertices_) {
 
 mesh::mesh(std::initializer_list < mesh > other_meshes) {
 
-	int id_offset = 0;
+	size_t id_offset = 0;
 	ids = std::vector < int >();
 	vertices = std::vector < float >();
 
-	int nids = 0;
-	int nvertices = 0;
+	size_t nids = 0;
+	size_t nvertices = 0;
 
 	for (auto m : other_meshes) {
 		nids += m.ids.size();
@@ -25,7 +25,7 @@ mesh::mesh(std::initializer_list < mesh > other_meshes) {
 	for (auto m : other_meshes) {
 
 		for (int i = 0; i < m.ids.size(); i++) {
-			ids.push_back(m.ids[i] + id_offset);
+			ids.push_back(m.ids[i] + int(id_offset));
 		}
 
 		for (int i = 0; i < m.vertices.size(); i++) {
@@ -42,7 +42,7 @@ mesh mesh::transform(mat3 A) {
 
 	mesh transformed(ids, vertices);
 
-	int n = vertices.size() / 3;
+	size_t n = vertices.size() / 3;
 	for (int i = 0; i < n; i++) {
 		vec3 v{ vertices[i * 3 + 0], vertices[i * 3 + 1], vertices[i * 3 + 2] };
 		v = dot(A, v);
@@ -70,7 +70,7 @@ mesh mesh::translate(vec3 p) {
 
 	mesh translated(ids, vertices);
 
-	int n = translated.vertices.size() / 3;
+	size_t n = translated.vertices.size() / 3;
 	for (int i = 0; i < n; i++) {
 		translated.vertices[i * 3 + 0] += p[0];
 		translated.vertices[i * 3 + 1] += p[1];

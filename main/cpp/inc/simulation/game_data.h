@@ -9,13 +9,11 @@
 
 #include <pybind11/pybind11.h>
 
-
-class GameData
-{
-public:
+class GameData {
+ public:
 	// initialization
 	GameData() {}
-	GameData(std::string name, int team, int index) : name(name), team(team), index(index) { }
+	GameData(std::string name, int team, int index) : name(name), team(team), index(index) {}
 
 	std::string name;
 	int team;
@@ -60,8 +58,7 @@ public:
 	void read_boost_pads(pybind11::list boost_pads, int num_boosts);
 	void read_goals(pybind11::list goals, int num_goals);
 
-
-private:
+ private:
 
 	// cars
 	std::vector<Car> cars;
