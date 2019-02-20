@@ -31,10 +31,10 @@ class vec {
     }
   }
 
-  float& operator[](const size_t i) { return data[i]; }
-  float operator[](const size_t i) const { return data[i]; }
-  float& operator()(const size_t i) { return data[i]; }
-  float operator()(const size_t i) const { return data[i]; }
+  constexpr float& operator[](const size_t i) { return data[i]; }
+  constexpr float operator[](const size_t i) const { return data[i]; }
+  constexpr float& operator()(const size_t i) { return data[i]; }
+  constexpr float operator()(const size_t i) const { return data[i]; }
 
   // elementwise addition
   vec<n> operator+(const vec<n>& other) const {

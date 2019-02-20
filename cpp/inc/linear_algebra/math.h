@@ -90,15 +90,15 @@ inline mat < 2, 2 > rotation(const float theta) {
 
 inline mat < 3, 3 > axis_to_rotation(const vec < 3 > & omega) {
 
-  float theta = norm(omega);
+  float norm_omega = norm(omega);
 
-  if (fabs(theta) < 0.000001f) {
+  if (fabs(norm_omega) < 0.000001f) {
 
     return eye< 3 >();
 
-  }
-  else {
+  } else {
 
+#if 0
     vec3 axis = normalize(omega);
 
     mat < 3, 3 > K = {
@@ -107,7 +107,30 @@ inline mat < 3, 3 > axis_to_rotation(const vec < 3 > & omega) {
       {-axis[1],  axis[0],    0.0f }
     };
 
-    return eye< 3 >() + sin(theta) * K + (1.0f - cos(theta)) * dot(K, K);
+    return eye< 3 >() + sin(norm_omega) * K + (1.0f - cos(norm_omega)) * dot(K, K);
+#else
+    vec3 u = omega / norm_omega;
+
+    float c = cos(norm_omega);
+    float s = sin(norm_omega);
+
+    return mat < 3, 3 >{
+      {
+        u[0]*u[0]*(1.0f - c) + c,
+        u[0]*u[1]*(1.0f - c) - u[2]*s,
+        u[0]*u[2]*(1.0f - c) + u[1]*s
+      },{
+        u[1]*u[0]*(1.0f - c) + u[2]*s,
+        u[1]*u[1]*(1.0f - c) + c,
+        u[1]*u[2]*(1.0f - c) - u[0]*s
+      },{
+        u[2]*u[0]*(1.0f - c) - u[1]*s,
+        u[2]*u[1]*(1.0f - c) + u[0]*s,
+        u[2]*u[2]*(1.0f - c) + c
+      }
+    };
+
+#endif
 
   }
 
@@ -208,6 +231,28 @@ inline mat < 3, 3 > look_at(const vec < 3 > & direction, const vec < 3 > & up = 
     {f[0], l[0], u[0]},
     {f[1], l[1], u[1]},
     {f[2], l[2], u[2]}
+  };
+}
+
+inline mat < 3, 3 > R3_basis(const vec3 & n) {
+  float sign = (n[2] >= 0.0f) ? 1.0f : -1.0f;
+  float a = -1.0f / (sign + n[2]); 
+  float b = n[0] * n[1] * a;
+
+  return mat < 3, 3 >{
+    {
+      1.0f + sign * n[0] * n[0] * a,
+      b,
+      n[0],
+    },{
+      sign * b,
+      sign + n[1] * n[1] * a,
+      n[1]
+    },{
+      -sign * n[0],
+      -n[1],
+      n[2]
+    }
   };
 }
 

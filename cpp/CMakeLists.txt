@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.8)
 project(RLUtilities)
 
+add_subdirectory(pybind11)
 add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
 
 set(rlutilities_src
@@ -22,11 +23,14 @@ set(rlutilities_src
   ${PROJECT_SOURCE_DIR}/src/simulation/gametype.cc
   ${PROJECT_SOURCE_DIR}/src/simulation/composite_arc.cc
   ${PROJECT_SOURCE_DIR}/src/simulation/unroller.cc
+  ${PROJECT_SOURCE_DIR}/src/simulation/path.cc
 
   # mechanics
   ${PROJECT_SOURCE_DIR}/src/mechanics/jump.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/drive.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/dodge.cc
+  #${PROJECT_SOURCE_DIR}/src/mechanics/slide.cc
+  #${PROJECT_SOURCE_DIR}/src/mechanics/slide_LUTs.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/aerial.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/wavedash.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/boostdash.cc
@@ -40,27 +44,23 @@ set(rlutilities_src
 
 )		
 
-add_subdirectory(pybind11)
-add_library(rlutilities_with_pybind11 ${rlutilities_src})
-target_compile_definitions(rlutilities_with_pybind11 PUBLIC -DGENERATE_PYTHON_BINDINGS)
-target_include_directories(rlutilities_with_pybind11 PUBLIC inc/)
-target_link_libraries(rlutilities_with_pybind11 PUBLIC pybind11)
-target_compile_features(rlutilities_with_pybind11 PUBLIC cxx_std_17)
+if (WITH_PYTHON)
 
-pybind11_add_module(rlutilities
-  ${PROJECT_SOURCE_DIR}/src/python_extensions.cc
-)
-target_link_libraries(rlutilities PRIVATE rlutilities_with_pybind11)
+  pybind11_add_module(rlutilities
+    ${PROJECT_SOURCE_DIR}/src/python_extensions.cc
+    ${rlutilities_src}
+  )
+  target_include_directories(rlutilities PUBLIC inc/)
+  target_compile_definitions(rlutilities PUBLIC -DGENERATE_PYTHON_BINDINGS)
+  target_compile_features(rlutilities PUBLIC cxx_std_17)
 
-set(unit_tests
-  ${PROJECT_SOURCE_DIR}/src/test/unit_test.cc
-)		
-
+endif()
 
 if (WITH_TESTS)
 
   enable_testing()
-  
+
+  file(GLOB unit_tests "${PROJECT_SOURCE_DIR}/src/test/*.cc")
   add_library(rlutilities_without_pybind11 ${rlutilities_src})
   target_include_directories(rlutilities_without_pybind11 PUBLIC inc/)
   target_compile_features(rlutilities_without_pybind11 PUBLIC cxx_std_17)

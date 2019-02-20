@@ -107,26 +107,26 @@ void Aerial::step(float dt) {
     controls.throttle = 0.0f;
   }
 
-  // estimate the time required to turn
-  float total_turn_time = turn.time_estimate();
-  float phi = angle_between(car.o, turn.target);
-
-  // the time when we start boosting (coarse estimate!)
-  float tau_1 = total_turn_time * clip(1.0f - angle_threshold / phi, 0.0f, 1.0f);
-
-  // see if the boost acceleration needed to reach the target is achievable
-  float required_accel = 2.0f * norm(delta_x) / ((T - tau_1) * (T - tau_1));
-
-  float ratio = required_accel / boost_accel;
-
-  // the time when we stop boosting
-  float tau_2 = T - (T - tau_1) * sqrt(1.0f - clip(ratio, 0.0f, 1.0f));
-
-  velocity_estimate = vf + boost_accel * (tau_2 - tau_1) * direction;
+//  // estimate the time required to turn
+//  float total_turn_time = turn.time_estimate();
+//  float phi = angle_between(car.o, turn.target);
+//
+//  // the time when we start boosting (coarse estimate!)
+//  float tau_1 = total_turn_time * clip(1.0f - angle_threshold / phi, 0.0f, 1.0f);
+//
+//  // see if the boost acceleration needed to reach the target is achievable
+//  float required_accel = 2.0f * norm(delta_x) / ((T - tau_1) * (T - tau_1));
+//
+//  float ratio = required_accel / boost_accel;
+//
+//  // the time when we stop boosting
+//  float tau_2 = T - (T - tau_1) * sqrt(1.0f - clip(ratio, 0.0f, 1.0f));
+//
+//  velocity_estimate = vf + boost_accel * (tau_2 - tau_1) * direction;
 
   finished = (T <= 0.0f);
 
-  std::cout << T << " " << controls.jump << " " << car.v << " " << velocity_estimate << std::endl;
+  //std::cout << T << " " << controls.jump << " " << car.v << " " << velocity_estimate << std::endl;
 
   if (fabs(T) < 0.05f) {
     //std::cout << T << " " << target << " " << car.x << std::endl;
@@ -200,7 +200,7 @@ Car Aerial::simulate() {
   copy.finished = finished;
   copy.controls = controls;
 
-  float dt = 0.05000f;
+  float dt = 0.01666f;
   for (float t = dt; t < 5.0f; t += dt) {
 
     // get the new controls
@@ -227,7 +227,7 @@ Car Aerial::simulate() {
   //outfile.close();
 
   stopwatch.stop();
-  std::cout << stopwatch.elapsed() << std::endl;
+  //std::cout << stopwatch.elapsed() << std::endl;
 
   return car_copy;
 }

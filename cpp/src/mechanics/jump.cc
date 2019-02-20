@@ -1,4 +1,4 @@
-#include "mechanics/Jump.h"
+#include "mechanics/jump.h"
 
 const float Jump::speed = 291.667f;
 const float Jump::acceleration = 1458.3333f;

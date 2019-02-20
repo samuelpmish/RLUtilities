@@ -194,8 +194,6 @@ aabb global_aabb(const std::vector < aabb > & boxes) {
 template < typename T >
 bvh< T >::bvh(const std::vector < T > & _primitives) {
 
-	timer stopwatch;
-
 	num_leaves = int(_primitives.size());
 
 	primitives.resize(num_leaves);
@@ -230,6 +228,7 @@ bvh< T >::bvh(const std::vector < T > & _primitives) {
 
 template bvh< aabb >::bvh(const std::vector < aabb > &);
 template bvh< tri >::bvh(const std::vector < tri > &);
+template bvh< sphere >::bvh(const std::vector < sphere > &);
 
 template <>
 ray bvh< tri >::raycast_any(const ray & query_ray) const {
@@ -250,7 +249,7 @@ ray bvh< tri >::raycast_any(const ray & query_ray) const {
 
 		bool overlap_left = ::intersect(nodes[left].box, query_ray);
 		if (overlap_left && (left < num_leaves)) {
-			int left_id = int(nodes[left].code & mask);
+			//int left_id = int(nodes[left].code & mask);
 			if (::intersect(primitives[left], query_ray)) {
 				float alpha = project_onto_tri(primitives[left], query_ray)[2];
 				vec3 start = query_ray.start + alpha * query_ray.direction;
@@ -260,7 +259,7 @@ ray bvh< tri >::raycast_any(const ray & query_ray) const {
 
 		bool overlap_right = ::intersect(nodes[right].box, query_ray);
 		if (overlap_right && (right < num_leaves)) {
-			int right_id = int(nodes[right].code & mask);
+			//int right_id = int(nodes[right].code & mask);
 			if (::intersect(primitives[right], query_ray)) {
 				float alpha = project_onto_tri(primitives[right], query_ray)[2];
 				vec3 start = query_ray.start + alpha * query_ray.direction;

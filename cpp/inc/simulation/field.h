@@ -20,6 +20,7 @@ class Field {
   static std::vector<tri> triangles;
   static std::vector<aabb> obstacles;
   static float r;
+  static float R;
   static std::string mode;
 
   static void initialize_soccar();
@@ -28,6 +29,7 @@ class Field {
 
   static ray snap(vec3 p);
   static ray collide(const obb & o);
+  static ray collide(const aabb & a);
   static ray collide(const sphere & o);
 
   static ray raycast_any(const ray &);

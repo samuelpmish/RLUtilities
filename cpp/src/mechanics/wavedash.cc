@@ -1,4 +1,4 @@
-#include "mechanics/Wavedash.h"
+#include "mechanics/wavedash.h"
 
 #include <iostream>
 

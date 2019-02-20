@@ -1,8 +1,8 @@
 #include "simulation/car.h"
 
-#include "mechanics/Jump.h"
-#include "mechanics/Dodge.h"
-#include "mechanics/Aerial.h"
+#include "mechanics/jump.h"
+#include "mechanics/dodge.h"
+#include "mechanics/aerial.h"
 
 #include "misc/convert.h"
 
@@ -104,8 +104,6 @@ void Car::aerial_control(const Input& in, float dt) {
 				 -20.0f * (1.0f - fabs(in.yaw)) };
 
 	vec3 rpy{ in.roll, in.pitch, in.yaw };
-
-	float thrust = 0.0;
 
 	if (in.boost && boost > 0) {
 		v += (Aerial::boost_accel + Aerial::throttle_accel) * forward() * dt;
@@ -282,7 +280,7 @@ void Car::step(Input in, float dt) {
 	if (on_ground) {
 
 		if (in.jump == 1) {
-			std::cout << time << " Jump" << std::endl;
+			//std::cout << time << " Jump" << std::endl;
 			jump(in, dt);
 		}
 		else {
@@ -301,7 +299,7 @@ void Car::step(Input in, float dt) {
 			last.jump == 0 &&
 			jump_timer < Dodge::timeout &&
 			double_jumped == false) {
-			std::cout << time << " Air Dodge" << std::endl;
+			//std::cout << time << " Air Dodge" << std::endl;
 			air_dodge(in, dt);
 		}
 		else {

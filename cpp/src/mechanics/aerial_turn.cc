@@ -17,12 +17,22 @@ const vec3 e[] = {
  {0.0f, 0.0f, 1.0f}
 };
 
+inline vec3 dot3(const mat3 & A, const vec3 & b) {
+  return vec3{
+    A(0, 0) * b(0) + A(0, 1) * b(1) + A(0, 2) * b(2),
+    A(1, 0) * b(0) + A(1, 1) * b(1) + A(1, 2) * b(2),
+    A(2, 0) * b(0) + A(2, 1) * b(1) + A(2, 2) * b(2)
+  };
+}
+
 AerialTurn::AerialTurn(Car & c) : car(c) {
   target = eye<3>();
 	eps_phi = 0.10f;
 	eps_omega = 0.15f;
   horizon_time = 0.05f;
   target = mat3(0.0f);
+
+  alpha = vec3{0.0f, 0.0f, 0.0f};
 
   finished = false;
   controls = Input();
@@ -39,6 +49,7 @@ AerialTurn::AerialTurn(Car & c) : car(c) {
 //
 mat3 AerialTurn::Z(const vec3 & q) {
 
+#if 0
   // in general, these coefficients are
   // given by:
   //
@@ -78,6 +89,53 @@ mat3 AerialTurn::Z(const vec3 & q) {
   }
 
   return Z_approx;
+#else
+  float norm_q = norm(q);
+
+  // for small enough values, use the taylor expansion
+  if (norm_q < 0.2f) {
+
+    return mat3{
+      {
+        1.0f - (q[1]*q[1] + q[2]*q[2]) / 12.0f,
+        (q[0]*q[1] / 12.0f) + q[2] / 2.0f,
+        (q[0]*q[2] / 12.0f) - q[1] / 2.0f
+      },{
+        (q[1]*q[0] / 12.0f) - q[2] / 2.0f,
+        1.0f - (q[0]*q[0] + q[2]*q[2]) / 12.0f,
+        (q[1]*q[2] / 12.0f) + q[0] / 2.0f
+      },{
+        (q[2]*q[0] / 12.0f) + q[1] / 2.0f,
+        (q[2]*q[1] / 12.0f) - q[0] / 2.0f,
+        1.0f - (q[0]*q[0] + q[1]*q[1]) / 12.0f
+      }
+    };
+
+  // otherwise, use the real thing
+  } else {
+
+    float qq = norm_q * norm_q;
+    float c = 0.5f * norm_q * cos(0.5f * norm_q) / sin(0.5f * norm_q);
+
+    return mat3{
+      {
+        (q[0]*q[0] + c * (q[1]*q[1] + q[2]*q[2])) / qq,
+        ((1.0f - c) * q[0]*q[1] / qq) + q[2] / 2.0f,
+        ((1.0f - c) * q[0]*q[2] / qq) - q[1] / 2.0f
+      },{
+        ((1.0f - c) * q[1] * q[0] / qq) - q[2] / 2.0f,
+        (q[1]*q[1] + c * (q[0]*q[0] + q[2]*q[2])) / qq,
+        ((1.0f - c) * q[1] * q[2] / qq) + q[0] / 2.0f
+      },{
+        ((1.0f - c) * q[2] * q[0] / qq) + q[1] / 2.0f,
+        ((1.0f - c) * q[2] * q[1] / qq) - q[0] / 2.0f,
+        (q[2]*q[2] + c * (q[0]*q[0] + q[1]*q[1])) / qq
+      }
+    };
+
+  }
+
+#endif
 }
 
 // This function provides a guideline for when 
@@ -99,11 +157,11 @@ vec3 AerialTurn::G(const vec3 & q, const vec3 & dq_dt) {
 
 // the error between the predicted state and the precomputed return trajectories
 vec3 AerialTurn::f(const vec3 & alpha_local, const float dt) {
-  vec3 alpha = dot(theta, alpha_local);
-  vec3 omega_pred = omega + alpha * dt;
-  vec3 phi_pred = phi + dot(Z(phi), omega + 0.5f * alpha * dt) * dt;
-  vec3 dphi_pred_dt = dot(Z(phi_pred), omega_pred);
-  return -phi_pred - G(phi_pred, dphi_pred_dt);
+  vec3 alpha_world = dot(theta, alpha_local);
+  vec3 omega_pred = omega + alpha_world * dt;
+  vec3 phi_pred = phi + dot(Z0, omega + alpha_world * (0.5f * dt)) * dt;
+  vec3 dphi_dt_pred = dot(Z0, omega_pred);
+  return -phi_pred - G(phi_pred, dphi_dt_pred);
 }
 
 // Let g(x) be the continuous piecewise linear function
@@ -146,15 +204,12 @@ vec3 AerialTurn::find_controls_for(const vec3 & ideal_alpha) {
   // Note: these controls are calculated differently,
   // since Rocket League never disables roll damping.
   alpha_values = vec3{-T[0] + D[0] * w[0], D[0] * w[0], T[0] + D[0] * w[0]};
-  //std::cout << "possible alpha[0]: " << alpha_values << std::endl;
   rpy[0] = solve_pwl(ideal_alpha[0], alpha_values);
 
   alpha_values = vec3{-T[1], D[1] * w[1], T[1]};
-  //std::cout << "possible alpha[1]: " << alpha_values << std::endl;
   rpy[1] = solve_pwl(ideal_alpha[1], alpha_values);
 
   alpha_values = vec3{-T[2], D[2] * w[2], T[2]};
-  //std::cout << "possible alpha[2]: " << alpha_values << std::endl;
   rpy[2] = solve_pwl(ideal_alpha[2], alpha_values);
 
   return rpy;
@@ -166,40 +221,56 @@ void AerialTurn::step(float dt) {
   theta = dot(transpose(target), car.o);
   omega_local = dot(omega, theta);
   phi = rotation_to_axis(theta);
-  dphi_dt = dot(Z(phi), omega);
-
-  // Apply a few Newton iterations to find
-  // local angular accelerations that try not to overshoot
-  // the guideline trajectories defined by AerialTurn::G().
-  // 
-  // This helps to ensure monotonic convergence to the
-  // desired orientation, when possible.
-  int n_iter = 5;
-  float eps = 0.001f;
-  vec3 alpha{0.0f, 0.0f, 0.0f};
-  for (int i = 0; i < n_iter; i++) {
-    vec3 f0 = f(alpha, horizon_time);
-
-    mat3 J;
-    for (int j = 0; j < 3; j++) {
-      vec3 df_j = (f0 - f(alpha + eps * e[j], horizon_time)) / eps;
-      J(0, j) = df_j[0]; J(1, j) = df_j[1]; J(2, j) = df_j[2];
-    }
-
-    alpha += dot(inv(J), f0);
-  }
-
-  vec3 rpy = find_controls_for(alpha); 
-
-  rpy[0] *= clip(0.5f * ((fabs(phi[0]) / eps_phi) + (fabs(omega[0]) / eps_omega)), 0.0f, 1.0f);
-  rpy[1] *= clip(0.5f * ((fabs(phi[1]) / eps_phi) + (fabs(omega[1]) / eps_omega)), 0.0f, 1.0f);
-  rpy[2] *= clip(0.5f * ((fabs(phi[2]) / eps_phi) + (fabs(omega[2]) / eps_omega)), 0.0f, 1.0f);
-
-  controls.roll  = rpy[0];
-  controls.pitch = rpy[1];
-  controls.yaw   = rpy[2];
 
   finished = (norm(phi) < eps_phi) && (norm(omega) < eps_omega);
+
+  if (finished) {
+
+    controls.roll  = 0.0f;
+    controls.pitch = 0.0f;
+    controls.yaw   = 0.0f;
+
+  } else {
+
+    Z0 = Z(phi);
+    dphi_dt = dot(Z0, omega);
+
+
+    // Apply a few Newton iterations to find
+    // local angular accelerations that try not to overshoot
+    // the guideline trajectories defined by AerialTurn::G().
+    // 
+    // This helps to ensure monotonic convergence to the
+    // desired orientation, when possible.
+    int n_iter = 5;
+    float eps = 0.001f;
+    for (int i = 0; i < n_iter; i++) {
+      vec3 f0 = f(alpha, horizon_time);
+
+      mat3 J;
+      for (int j = 0; j < 3; j++) {
+        vec3 df_j = (f0 - f(alpha + eps * e[j], horizon_time)) / eps;
+        J(0, j) = df_j[0]; J(1, j) = df_j[1]; J(2, j) = df_j[2];
+      }
+
+      vec3 delta_alpha = dot(inv(J), f0);
+
+      alpha += delta_alpha;
+
+      if (norm(delta_alpha) < 1.0f) break;
+    }
+
+    vec3 rpy = find_controls_for(alpha); 
+
+    rpy[0] *= clip(0.5f * ((fabs(phi[0]) / eps_phi) + (fabs(omega[0]) / eps_omega)), 0.0f, 1.0f);
+    rpy[1] *= clip(0.5f * ((fabs(phi[1]) / eps_phi) + (fabs(omega[1]) / eps_omega)), 0.0f, 1.0f);
+    rpy[2] *= clip(0.5f * ((fabs(phi[2]) / eps_phi) + (fabs(omega[2]) / eps_omega)), 0.0f, 1.0f);
+
+    controls.roll  = rpy[0];
+    controls.pitch = rpy[1];
+    controls.yaw   = rpy[2];
+
+  }
 
 }
 

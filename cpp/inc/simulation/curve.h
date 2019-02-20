@@ -2,8 +2,6 @@
 
 #include <vector>
 
-#include "simulation/composite_arc.h"
-
 #include "linear_algebra/math.h"
 
 class Curve {
@@ -12,9 +10,9 @@ class Curve {
   std::vector<vec3> points;
   std::vector<vec3> tangents;
   std::vector<float> distances;
+  std::vector<float> curvatures;
 
   Curve();
-  explicit Curve(const CompositeArc &path);
   explicit Curve(const std::vector<vec3> &_points);
 
   vec3 point_at(float s);
@@ -26,6 +24,7 @@ class Curve {
   float time_lower_bound();
 
   void pop_front();
-  void calculate_distances_and_tangents();
+  void calculate_distances();
+  void calculate_tangents();
 
 };

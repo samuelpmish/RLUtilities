@@ -344,7 +344,6 @@ vec3 project_onto_tri(const tri & a, const ray & r) {
 	vec3 n = r.direction;
 
 	vec3 e1 = a.p[1] - a.p[0];
-	vec3 e2 = a.p[2] - a.p[1];
 	vec3 e3 = a.p[0] - a.p[2];
 
 	mat3 A = {

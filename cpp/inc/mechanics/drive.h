@@ -5,9 +5,9 @@
 #include "simulation/curve.h"
 #include "simulation/unroller.h"
 
-#include "mechanics/Dodge.h"
-#include "mechanics/Wavedash.h"
-#include "mechanics/Boostdash.h"
+#include "mechanics/dodge.h"
+#include "mechanics/wavedash.h"
+#include "mechanics/boostdash.h"
 
 #include "linear_algebra/math.h"
 
@@ -40,6 +40,7 @@ class Drive {
   void step(float dt);
   bool plan_path(vec3, float, float);
   void recalculate_path(bool force = false);
+  float time_to_traverse(const Curve &);
 
   static const float max_speed;
   static const float max_throttle_speed;

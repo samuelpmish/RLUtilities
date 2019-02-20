@@ -1,5 +1,7 @@
 #pragma once
 
+#include "simulation/curve.h"
+
 #include "linear_algebra/math.h"
 
 class CompositeArc {
@@ -10,23 +12,23 @@ class CompositeArc {
   vec2 n1, n2;  // normals at start of arc-line-arc curve
   vec2 o1, o2;  // centers of turning circles
 
-  float r1, r2;  // radius of turning circles
-  float phi1, phi2;  // turning angle for each circle
+  float r1, r2;     // radius of each turning circle
+  float phi1, phi2; // turning angle for each circle
 
-  float L0, L1, L2, L3, L4;  // length of each curve segment
-  float length;              // total arc length of curve
+  float L[5];   // length of each curve segment
+  float length; // total arc length of curve
 
   CompositeArc();
 
   CompositeArc(const float  _L0,
-    const vec2 & _p1,
-    const vec2 & _t1,
-    const float  _r1,
-    const float  _L4,
-    const vec2 & _p2,
-    const vec2 & _t2,
-    const float  _r2);
+    const vec2  _p1,
+    const vec2  _t1,
+    const float _r1,
+    const float _L4,
+    const vec2  _p2,
+    const vec2  _t2,
+    const float _r2);
 
-  float time_lower_bound();
+  Curve discretize(int n);
 
 };

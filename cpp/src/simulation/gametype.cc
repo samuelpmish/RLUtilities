@@ -1,5 +1,5 @@
-#include "simulation/Ball.h"
-#include "simulation/Field.h"
+#include "simulation/ball.h"
+#include "simulation/field.h"
 
 void gametype(std::string mode) {
 

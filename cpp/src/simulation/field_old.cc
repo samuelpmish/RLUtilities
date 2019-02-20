@@ -31,7 +31,6 @@ std::vector < Field::wall > Field::walls;
 std::vector < tri > Field::triangles;
 std::vector < aabb > Field::obstacles;
 float Field::r;
-float Field::R;
 std::string Field::mode = std::string("Uninitialized");
 
 void Field::initialize_soccar() {
@@ -75,11 +74,10 @@ void Field::initialize_soccar() {
 
   obstacles = std::vector<aabb>(2);
 
-  obstacles[0] = aabb(-893.0f,  5100.0f, 25.0f, 893.0f,  5400.0f, 642.0f);
+  obstacles[0] = aabb(-893.0f, 5100.0f, 25.0f, 893.0f, 5400.0f, 642.0f);
   obstacles[1] = aabb(-893.0f, -5400.0f, 25.0f, 893.0f, -5100.0f, 642.0f);
 
   r = 250.0f;
-  R = 900.0f;
 
   mode = std::string("soccar");
 
@@ -153,8 +151,7 @@ void Field::initialize_hoops() {
   obstacles[2] = aabb{ 650.0f,  3500.0f, 300.0f,  800.0f,  3600.0f, 400.0f };
   obstacles[3] = aabb{ -800.0f,  3500.0f, 300.0f, -650.0f,  3600.0f, 400.0f };
 
-  r = 200.0f;
-  R = 640.0f;
+  r = 250.0f;
 
   mode = std::string("hoops");
 
@@ -165,7 +162,7 @@ void Field::initialize_dropshot() {
   float scale = 0.393f;
   float z_offset = -207.565f;
 
-  mat3 Q = axis_to_rotation(vec3{ 0.0f, 0.0f, 0.52359877559f });
+  mat3 R = axis_to_rotation(vec3{ 0.0f, 0.0f, 0.52359877559f });
 
   mat3 S = {
     {scale, 0.0f, 0.0f},
@@ -175,7 +172,7 @@ void Field::initialize_dropshot() {
 
   vec3 dz = vec3{ 0.0f, 0.0f, z_offset };
 
-  mesh transformed_dropshot = dropshot.transform(dot(Q, S)).translate(dz);
+  mesh transformed_dropshot = dropshot.transform(dot(R, S)).translate(dz);
 
   triangles = transformed_dropshot.to_triangles();
   collision_mesh = bvh<tri>(triangles);
@@ -191,18 +188,17 @@ void Field::initialize_dropshot() {
   // Walls
   vec3 p = vec3{ 0.0f, 11683.6f * scale, 2768.64f * scale - z_offset };
   vec3 n = vec3{ 0.0f, -1.0f, 0.0f };
-  Q = axis_to_rotation(vec3{ 0.0f, 0.0f, 1.047197551196598f });
+  R = axis_to_rotation(vec3{ 0.0f, 0.0f, 1.047197551196598f });
   for (int i = 2; i < 8; i++) {
     walls[i] = wall{ p, n, true };
-    p = dot(Q, p);
-    n = dot(Q, n);
+    p = dot(R, p);
+    n = dot(R, n);
   }
 
   // dropshot doesn't have any obstacles
   obstacles = std::vector<aabb>(0);
 
-  r = 900.0f * scale;
-  R = 3750.0f * scale;
+  r = 350.0f;
 
   mode = std::string("dropshot");
 
@@ -227,7 +223,7 @@ ray Field::snap(vec3 p) {
     vec3 v = walls[i].p;
     vec3 n = walls[i].n;
 
-    distances[i] = dot(p - v, n) - R;
+    distances[i] = dot(p - v, n) - r;
 
     if (distances[i] < 0.0f) {
       violations.push_back(i);
@@ -275,26 +271,25 @@ ray Field::snap(vec3 p) {
         {n1[1], n2[1]}
       });
 
-      vec2 o = dot(vec2{ dot(n1, v1) + R, dot(n2, v2) + R }, invA);
-      vec2 op = vec2(p) - o;
+      vec2 o = dot(vec2{ dot(n1, v1) + r, dot(n2, v2) + r }, invA);
 
-      vec2 g = dot(invA, op);
+      vec2 g = dot(invA, vec2(p) - o);
 
       if (g[0] < 0 && g[1] > 0) q = p - d1 * n1;
       if (g[0] > 0 && g[1] < 0) q = p - d2 * n2;
-      if (g[0] < 0 && g[1] < 0) q = vec3(o + (R - r) * normalize(op));
+      if (g[0] < 0 && g[1] < 0) q = vec3(o);
     } break;
 
-    // if the point is only out of bounds with respect to exactly
-    // three halfspaces, then only the largest violation matters,
-    // and enforcement is similar to the single violation case.
+      // if the point is only out of bounds with respect to exactly
+      // three halfspaces, then only the largest violation matters,
+      // and enforcement is similar to the single violation case.
     case 3:
       q = p - min_distance * walls[min_id].n;
       break;
 
-    // for the given shapes of soccar, hoops, and dropshop maps,
-    // no point should be able to violate more than 3 halfspace
-    // constraints. 
+      // for the given shapes of soccar, hoops, and dropshop maps,
+      // no point should be able to violate more than 3 halfspace
+      // constraints. 
     default:
       std::cout << "this should never happen" << std::endl;
       break;
@@ -315,63 +310,6 @@ ray Field::snap(vec3 p) {
 
 ray Field::collide(const obb & o) {
   return ray{ vec3{0.0f, 0.0f, 0.0f}, vec3{0.0f, 0.0f, 0.0f} };
-}
-
-ray Field::collide(const aabb & a) {
-
-	vec3 center = 0.5f * vec3{ 
-    a.max_x + a.min_x, 
-    a.max_y + a.min_y, 
-    a.max_z + a.min_z 
-  };
-	vec3 diagonal{a.max_x - a.min_x, a.max_y - a.min_y, a.max_z - a.min_z};
-
-  auto contact_point = ray{ vec3{0.0, 0.0, 0.0}, vec3{0.0f, 0.0f, 0.0f} };
-
-  if (mode == std::string("Uninitialized")) {
-    std::cout << "Attempting to query an uninitialized Field." << std::endl;
-  }
-  else {
-    float count = 0.0f;
-
-    for (const auto w : walls) {
-
-	    vec3 abs_axis{ fabs(w.n[0]), fabs(w.n[1]), fabs(w.n(2)) };
-      float radius = 0.5f * dot(abs_axis, diagonal);
-
-      float separation = dot(center - w.p, w.n);
-      if (fabs(separation) <= radius && w.collidable) {
-        count++;
-        contact_point.start += center - separation * w.n;
-        contact_point.direction += w.n * (radius - separation);
-      }
-    }
-
-    auto tris_hit = collision_mesh.intersect(a);
-
-    for (const auto id : tris_hit) {
-
-      vec3 p = triangles[id].center();
-      vec3 n = triangles[id].unit_normal();
-
-	    vec3 abs_axis{ fabs(n[0]), fabs(n[1]), fabs(n(2)) };
-      float radius = 0.5f * dot(abs_axis, diagonal);
-
-      float separation = dot(center - p, n);
-      if (fabs(separation) <= radius) {
-        count++;
-        contact_point.start += center - separation * n;
-        contact_point.direction += n * (radius - separation);
-      }
-    }
-
-    if (count > 0) {
-      contact_point.start /= count;
-      contact_point.direction = normalize(contact_point.direction);
-    }
-  }
-
-  return contact_point;
 }
 
 ray Field::collide(const sphere & s) {

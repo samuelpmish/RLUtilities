@@ -41,6 +41,8 @@ class AerialTurn {
   vec3 dphi_dt;
   vec3 omega;
   vec3 omega_local;
+  vec3 alpha;
+  mat3 Z0;
   mat3 theta;
 
   mat3 target_prev;
