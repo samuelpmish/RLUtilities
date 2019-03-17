@@ -1,5 +1,3 @@
-**This code is NOT intended to be used by bots in its current state.**
-
 # Overview
 
 This project aims to provide a way for members of the RLBot community to contribute
@@ -15,12 +13,7 @@ Get a copy of the repo
 git clone https://github.com/samuelpmish/RLUtilities
 ```
 
-Run the build script to build the C++ tools and their python bindings
-
-```
-cd RLUtilities/main
-./build.bat
-```
+Run build.sh to build the C++ tools and their python bindings
 
 ## Adding to a project
 
@@ -30,27 +23,17 @@ Add this repo as a submodule to your project, so that you might easily receive u
 
 ```
 > cd my_rlbot_folder
-> git submodule add -b master git@github.com:samuelpmish/Utilities.git
+> git submodule add -b master git@github.com:samuelpmish/RLUtilities.git
 > git submodule update --remote
 ```
 
-The project uses CMake, so doing ```add_directory(path/to/RLUtilities/main/cpp)``` should allow you to
+The project uses CMake, so doing ```add_directory(path/to/RLUtilities/rlutilities/cpp)``` should allow you to
 include it in an existing CMake project.
 
 ### Python
 
-If you just want to use RLUtilites for your python bot you can use:
+If you just want to use RLUtilites for your python bot you can clone this repo and install it by:
 
 ```
-pip install RLUtilities
-```
-
-For RLUtilies developpers you can install pip package in editable mode instead:
-
-```
-cd main/python
 pip install -e .
 ```
-
-Check out [ExampleBots](https://github.com/samuelpmish/ExampleBots) for demonstrations of how to use these
-tools in Python.
