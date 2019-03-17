@@ -1,0 +1,2072 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[    119439,       2064]
+NotebookOptionsPosition[    117361,       2022]
+NotebookOutlinePosition[    117739,       2038]
+CellTagsIndexPosition[    117696,       2035]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"Biarc", "[", 
+    RowBox[{
+    "p1_", ",", " ", "t1_", ",", " ", "p2_", ",", " ", "t2_", ",", " ", 
+     "\[Theta]_"}], "]"}], " ", ":=", " ", 
+   RowBox[{"Module", "[", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "A", ",", "n1", ",", "r1", ",", "n\[Theta]", ",", " ", "o1", ",", " ", 
+       "n2", ",", " ", "r2", ",", " ", "o2", ",", " ", "\[CapitalDelta]p", 
+       ",", " ", "\[CapitalDelta]n", ",", " ", "\[Phi]1", ",", " ", "pq1", 
+       ",", " ", "q1", ",", " ", "q2", ",", " ", "pq2", ",", " ", "\[Phi]2"}],
+       "}"}], ",", "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     RowBox[{
+      RowBox[{"n1", " ", "=", " ", 
+       RowBox[{"Cross", "[", "t1", "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"n2", " ", "=", " ", 
+       RowBox[{"Cross", "[", "t2", "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"n\[Theta]", " ", "=", " ", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"-", 
+          RowBox[{"Sin", "[", "\[Theta]", "]"}]}], ",", " ", 
+         RowBox[{"Cos", "[", "\[Theta]", "]"}]}], "}"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"A", " ", "=", " ", 
+       RowBox[{"Transpose", "[", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"n1", "-", "n\[Theta]"}], ",", " ", 
+          RowBox[{
+           RowBox[{"-", "n2"}], "+", "n\[Theta]"}]}], "}"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\[CapitalDelta]p", " ", "=", " ", 
+       RowBox[{"p2", " ", "-", " ", "p1"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"r1", ",", " ", "r2"}], "}"}], " ", "=", " ", 
+       RowBox[{"LinearSolve", "[", 
+        RowBox[{"A", ",", " ", "\[CapitalDelta]p"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", "\[IndentingNewLine]", 
+      RowBox[{"o1", " ", "=", " ", 
+       RowBox[{"p1", " ", "+", " ", 
+        RowBox[{"r1", " ", "n1"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"o2", " ", "=", " ", 
+       RowBox[{"p2", " ", "+", " ", 
+        RowBox[{"r2", " ", "n2"}]}]}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"q1", " ", "=", " ", 
+       RowBox[{"o1", " ", "-", " ", 
+        RowBox[{"r1", " ", "n\[Theta]"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"pq1", "=", 
+       RowBox[{"Normalize", "[", 
+        RowBox[{"q1", "-", "p1"}], "]"}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"\[Phi]1", "=", 
+       RowBox[{"2", " ", 
+        RowBox[{"Sign", "[", 
+         RowBox[{"pq1", ".", "t1"}], "]"}], " ", 
+        RowBox[{"ArcSin", "[", 
+         RowBox[{"Abs", "[", 
+          RowBox[{"pq1", ".", "n1"}], "]"}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"\[Phi]1", " ", "<", " ", "0"}], ",", " ", 
+        RowBox[{"\[Phi]1", " ", "+=", " ", 
+         RowBox[{"2", "\[Pi]"}]}]}], "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"q2", " ", "=", " ", 
+       RowBox[{"o2", " ", "-", " ", 
+        RowBox[{"r2", " ", "n\[Theta]"}]}]}], ";", "\[IndentingNewLine]", 
+      RowBox[{"pq2", " ", "=", " ", 
+       RowBox[{"Normalize", "[", 
+        RowBox[{"q2", " ", "-", " ", "p2"}], "]"}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"\[Phi]2", " ", "=", " ", 
+       RowBox[{
+        RowBox[{"-", "2"}], " ", 
+        RowBox[{"Sign", "[", 
+         RowBox[{"pq2", ".", "t2"}], "]"}], " ", 
+        RowBox[{"ArcSin", "[", 
+         RowBox[{"Abs", "[", 
+          RowBox[{"pq2", ".", "n2"}], "]"}], "]"}]}]}], ";", 
+      "\[IndentingNewLine]", 
+      RowBox[{"If", "[", 
+       RowBox[{
+        RowBox[{"\[Phi]2", " ", "<", " ", "0"}], ",", " ", 
+        RowBox[{"\[Phi]2", " ", "+=", " ", 
+         RowBox[{"2", "\[Pi]"}]}]}], "]"}], ";", "\[IndentingNewLine]", 
+      "\[IndentingNewLine]", 
+      RowBox[{"<|", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"\"\<n1\>\"", "\[Rule]", "n1"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"\"\<o1\>\"", "\[Rule]", "o1"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"\"\<p1\>\"", "\[Rule]", "p1"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"\"\<q1\>\"", "\[Rule]", "q1"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"\"\<r1\>\"", "\[Rule]", "r1"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"\"\<t1\>\"", "\[Rule]", "t1"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"\"\<\[Phi]1\>\"", "\[Rule]", "\[Phi]1"}], ",", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"\"\<n2\>\"", "\[Rule]", "n2"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"\"\<o2\>\"", "\[Rule]", "o2"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"\"\<p2\>\"", "\[Rule]", "p2"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"\"\<q2\>\"", "\[Rule]", "q2"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"\"\<r2\>\"", "\[Rule]", "r2"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"\"\<t2\>\"", "\[Rule]", "t2"}], ",", "\[IndentingNewLine]", 
+        RowBox[{"\"\<\[Phi]2\>\"", "\[Rule]", "\[Phi]2"}], ",", 
+        "\[IndentingNewLine]", "\[IndentingNewLine]", 
+        RowBox[{"\"\<L1\>\"", " ", "->", " ", 
+         RowBox[{"\[Phi]1", " ", 
+          RowBox[{"Abs", "[", "r1", "]"}]}]}], ",", "\[IndentingNewLine]", 
+        RowBox[{"\"\<L2\>\"", " ", "->", " ", 
+         RowBox[{"\[Phi]2", " ", 
+          RowBox[{"Abs", "[", "r2", "]"}]}]}], ",", "\[IndentingNewLine]", 
+        RowBox[{"\"\<L\>\"", "\[Rule]", " ", 
+         RowBox[{
+          RowBox[{"\[Phi]1", " ", 
+           RowBox[{"Abs", "[", "r1", "]"}]}], " ", "+", " ", 
+          RowBox[{"\[Phi]2", " ", 
+           RowBox[{"Abs", "[", "r2", "]"}]}]}]}]}], "\[IndentingNewLine]", 
+       "|>"}]}]}], "\[IndentingNewLine]", "\[IndentingNewLine]", "]"}]}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"DrawBiarc", "[", "path_", "]"}], " ", ":=", " ", 
+  RowBox[{"{", "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"Opacity", "[", "0.4", "]"}], ",", "\[IndentingNewLine]", 
+    RowBox[{"RGBColor", "[", "\"\<#99AAB5\>\"", "]"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Circle", "[", 
+     RowBox[{
+      RowBox[{"path", "[", "\"\<o1\>\"", "]"}], ",", " ", 
+      RowBox[{"Abs", "[", 
+       RowBox[{"path", "[", "\"\<r1\>\"", "]"}], "]"}]}], "]"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Circle", "[", 
+     RowBox[{
+      RowBox[{"path", "[", "\"\<o2\>\"", "]"}], ",", " ", 
+      RowBox[{"Abs", "[", 
+       RowBox[{"path", "[", "\"\<r2\>\"", "]"}], "]"}]}], "]"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Opacity", "[", "1.0", "]"}], ",", "\[IndentingNewLine]", "Red", 
+    ",", "\[IndentingNewLine]", 
+    RowBox[{"Point", "[", 
+     RowBox[{"path", "[", "\"\<p1\>\"", "]"}], "]"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Point", "[", 
+     RowBox[{"path", "[", "\"\<p2\>\"", "]"}], "]"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Point", "[", 
+     RowBox[{"path", "[", "\"\<q1\>\"", "]"}], "]"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Point", "[", 
+     RowBox[{"path", "[", "\"\<q2\>\"", "]"}], "]"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"RGBColor", "[", "\"\<#7289DA\>\"", "]"}], ",", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Line", "[", 
+     RowBox[{"Join", "[", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{
+          RowBox[{"path", "[", "\"\<o1\>\"", "]"}], "-", 
+          RowBox[{
+           RowBox[{"path", "[", "\"\<r1\>\"", "]"}], 
+           RowBox[{
+            RowBox[{"RotationMatrix", "[", 
+             RowBox[{
+              RowBox[{"Sign", "[", 
+               RowBox[{"path", "[", "\"\<r1\>\"", "]"}], "]"}], "\[Theta]"}], 
+             "]"}], ".", 
+            RowBox[{"path", "[", "\"\<n1\>\"", "]"}]}]}]}], ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"\[Theta]", ",", " ", "0", ",", " ", 
+           RowBox[{"path", "[", "\"\<\[Phi]1\>\"", "]"}], ",", " ", "0.01"}], 
+          "}"}]}], "]"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"Reverse", "[", 
+        RowBox[{"Table", "[", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"path", "[", "\"\<o2\>\"", "]"}], "-", 
+           RowBox[{
+            RowBox[{"path", "[", "\"\<r2\>\"", "]"}], 
+            RowBox[{
+             RowBox[{"RotationMatrix", "[", 
+              RowBox[{
+               RowBox[{"-", 
+                RowBox[{"Sign", "[", 
+                 RowBox[{"path", "[", "\"\<r2\>\"", "]"}], "]"}]}], 
+               "\[Theta]"}], "]"}], ".", 
+             RowBox[{"path", "[", "\"\<n2\>\"", "]"}]}]}]}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{"\[Theta]", ",", " ", "0", ",", " ", 
+            RowBox[{"path", "[", "\"\<\[Phi]2\>\"", "]"}], ",", " ", "0.01"}],
+            "}"}]}], "]"}], "]"}]}], "\[IndentingNewLine]", "]"}], "]"}]}], 
+   "\[IndentingNewLine]", "}"}]}]}], "Input",
+ CellChangeTimes->{{3.7555587753852777`*^9, 3.7555588575168405`*^9}, {
+   3.7555589655818367`*^9, 3.755558971802272*^9}, {3.7555590246217256`*^9, 
+   3.755559054160551*^9}, {3.7555591209629936`*^9, 3.7555592462452464`*^9}, {
+   3.755559278298715*^9, 3.755559320255725*^9}, 3.7555595736998816`*^9, {
+   3.755559613463215*^9, 3.7555596142890387`*^9}, 3.7555596965689316`*^9, {
+   3.755559782316537*^9, 3.7555598641491666`*^9}, {3.7555599020887012`*^9, 
+   3.755559956716961*^9}, {3.7555603856150675`*^9, 3.755560388380275*^9}, {
+   3.7555604328527513`*^9, 
+   3.7555605146472797`*^9}},ExpressionUUID->"236a9bae-9533-4eed-ac6c-\
+8884462dddf2"],
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"b", " ", "=", " ", 
+     RowBox[{"Biarc", "[", 
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{"0", ",", " ", "0"}], "}"}], ",", " ", 
+       RowBox[{"{", 
+        RowBox[{"1", ",", " ", "0"}], "}"}], ",", "endpt", ",", " ", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Cos", "[", "zz", "]"}], ",", " ", 
+         RowBox[{"Sin", "[", "zz", "]"}]}], "}"}], ",", "t"}], "]"}]}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Graphics", "[", 
+     RowBox[{
+      RowBox[{"{", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"DrawBiarc", "[", "b", "]"}], ",", "\[IndentingNewLine]", 
+        "Red", ",", "\[IndentingNewLine]", 
+        RowBox[{"Line", "[", 
+         RowBox[{"5", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"{", 
+             RowBox[{
+              RowBox[{"Sin", "[", "t", "]"}], ",", " ", 
+              RowBox[{"1", "-", 
+               RowBox[{"Cos", "[", "t", "]"}]}]}], "}"}], ",", 
+            RowBox[{"-", 
+             RowBox[{"{", 
+              RowBox[{
+               RowBox[{"Sin", "[", "t", "]"}], ",", " ", 
+               RowBox[{"1", "-", 
+                RowBox[{"Cos", "[", "t", "]"}]}]}], "}"}]}]}], "}"}]}], 
+         "]"}]}], "\[IndentingNewLine]", "}"}], ",", " ", 
+      RowBox[{"Background", "\[Rule]", "DiscordGray"}], ",", " ", 
+      RowBox[{"PlotRange", "\[Rule]", 
+       RowBox[{"5", 
+        RowBox[{"{", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"-", "1"}], ",", "1"}], "}"}], ",", " ", 
+          RowBox[{"{", 
+           RowBox[{
+            RowBox[{"-", "1"}], ",", " ", "1"}], "}"}]}], "}"}]}]}]}], 
+     "]"}]}], ",", "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"t", ",", "0", ",", 
+     RowBox[{"2", "\[Pi]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"endpt", ",", 
+       RowBox[{"{", 
+        RowBox[{"3", ",", "2"}], "}"}]}], "}"}], ",", "Locator"}], "}"}], ",",
+    "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"zz", ",", "0", ",", 
+     RowBox[{"2", "\[Pi]"}]}], "}"}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.755559324329723*^9, 3.755559352819516*^9}, {
+   3.7555596529475317`*^9, 3.7555596685267935`*^9}, {3.755559723102332*^9, 
+   3.7555597455000677`*^9}, {3.7555605228079424`*^9, 
+   3.7555605646936235`*^9}, {3.755560596523966*^9, 3.755560620164998*^9}, 
+   3.7555606551080055`*^9, {3.7555607740697603`*^9, 3.7555607807803864`*^9}, {
+   3.7555617482863083`*^9, 3.7555618404980693`*^9}, {3.7555663199978843`*^9, 
+   3.755566320452442*^9}, {3.7555667904175034`*^9, 3.755566829234373*^9}, {
+   3.7555668677141037`*^9, 3.7555669047844086`*^9}, {3.755566937873448*^9, 
+   3.7555669388712435`*^9}, {3.7555670389873514`*^9, 
+   3.75556709913577*^9}},ExpressionUUID->"1484954a-9a4b-4c60-9550-\
+90cf690e6a3c"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"n\[Theta]", " ", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{"n\[Theta]x", ",", " ", "n\[Theta]y"}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"n1", " ", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{"n1x", ",", " ", "n1y"}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"n2", " ", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{"n2x", ",", " ", "n2y"}], "}"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"\[CapitalDelta]p", " ", "=", " ", 
+   RowBox[{"{", 
+    RowBox[{"\[CapitalDelta]px", ",", " ", "\[CapitalDelta]py"}], "}"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"A", " ", "=", " ", 
+   RowBox[{"Transpose", "[", 
+    RowBox[{"{", 
+     RowBox[{"n1", ",", 
+      RowBox[{"-", "n2"}]}], "}"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"B", " ", "=", " ", 
+   RowBox[{"Transpose", "[", 
+    RowBox[{"{", 
+     RowBox[{
+      RowBox[{"-", "n\[Theta]"}], ",", "n\[Theta]"}], "}"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"{", 
+   RowBox[{"r1", ",", " ", "r2"}], "}"}], " ", "=", " ", 
+  RowBox[{"FullSimplify", "[", 
+   RowBox[{"LinearSolve", "[", 
+    RowBox[{
+     RowBox[{"A", "+", "B"}], ",", " ", "\[CapitalDelta]p"}], "]"}], 
+   "]"}]}]}], "Input",
+ CellChangeTimes->{{3.7578181486773033`*^9, 3.7578181838992853`*^9}, {
+  3.757818553071977*^9, 3.7578185614393325`*^9}, {3.757818773913437*^9, 
+  3.757818792561641*^9}},ExpressionUUID->"ac28bace-5631-440d-ac0a-\
+eab9a2472918"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   FractionBox[
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", "n2y"}], " ", "\[CapitalDelta]px"}], "+", 
+     RowBox[{"n\[Theta]y", " ", "\[CapitalDelta]px"}], "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"n2x", "-", "n\[Theta]x"}], ")"}], " ", 
+      "\[CapitalDelta]py"}]}], 
+    RowBox[{
+     RowBox[{"n1y", " ", 
+      RowBox[{"(", 
+       RowBox[{"n2x", "-", "n\[Theta]x"}], ")"}]}], "+", 
+     RowBox[{"n2y", " ", "n\[Theta]x"}], "-", 
+     RowBox[{"n2x", " ", "n\[Theta]y"}], "+", 
+     RowBox[{"n1x", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "n2y"}], "+", "n\[Theta]y"}], ")"}]}]}]], ",", 
+   FractionBox[
+    RowBox[{
+     RowBox[{
+      RowBox[{"-", "n1y"}], " ", "\[CapitalDelta]px"}], "+", 
+     RowBox[{"n\[Theta]y", " ", "\[CapitalDelta]px"}], "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"n1x", "-", "n\[Theta]x"}], ")"}], " ", 
+      "\[CapitalDelta]py"}]}], 
+    RowBox[{
+     RowBox[{"n1y", " ", 
+      RowBox[{"(", 
+       RowBox[{"n2x", "-", "n\[Theta]x"}], ")"}]}], "+", 
+     RowBox[{"n2y", " ", "n\[Theta]x"}], "-", 
+     RowBox[{"n2x", " ", "n\[Theta]y"}], "+", 
+     RowBox[{"n1x", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "n2y"}], "+", "n\[Theta]y"}], ")"}]}]}]]}], 
+  "}"}]], "Output",
+ CellChangeTimes->{{3.757818169731033*^9, 3.757818184435216*^9}, 
+   3.757818562131999*^9, {3.757818787535774*^9, 
+   3.757818792841919*^9}},ExpressionUUID->"2ae31933-e513-4bcd-939e-\
+10e95803f14b"]
+}, Open  ]],
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.7578204480822954`*^9, 3.757820452074677*^9}, 
+   3.7578207442105856`*^9},ExpressionUUID->"989fa621-7731-4bdd-92f2-\
+17ac00352e3f"],
+
+Cell[BoxData[
+ RowBox[{"RegionFunction", "\[Rule]", 
+  RowBox[{"Function", "[", 
+   RowBox[{
+    RowBox[{"{", 
+     RowBox[{"r1", ",", "r2"}], "}"}], ",", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"Abs", "[", "r1", "]"}], ">", "0.5"}], " ", "&&", " ", 
+     RowBox[{
+      RowBox[{"Abs", "[", "r2", "]"}], " ", ">", " ", "0.5"}]}]}], 
+   "]"}]}]], "Input",
+ CellChangeTimes->{{3.75782061516864*^9, 
+  3.7578206245624065`*^9}},ExpressionUUID->"5865ca32-7cc9-4ce9-834a-\
+539109a772ce"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"RegionPlot", "[", 
+  RowBox[{
+   RowBox[{
+    RowBox[{
+     RowBox[{"Abs", "[", "r1", "]"}], ">", "0.5"}], " ", "&&", " ", 
+    RowBox[{
+     RowBox[{"Abs", "[", "r2", "]"}], " ", ">", " ", "0.5"}]}], ",", " ", 
+   RowBox[{"{", 
+    RowBox[{"r1", ",", 
+     RowBox[{"-", "3"}], ",", "3"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"r2", ",", 
+     RowBox[{"-", "3"}], ",", "3"}], "}"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.757820357956149*^9, 3.757820359716996*^9}, {
+  3.757820445462263*^9, 3.757820479740815*^9}, {3.7578207570384665`*^9, 
+  3.757820761468589*^9}},ExpressionUUID->"3ff52f32-ba38-4661-ba2f-\
+2f4c68256f00"],
+
+Cell[BoxData[
+ GraphicsBox[GraphicsComplexBox[CompressedData["
+1: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
+UTD3gjD3cjD3cDD3bjD3bMd+flww92hen9cx8JWnZkyZtDu7rg3T7nu164K/
+Z9c55wdTV/atya974Zo1r40O5nXcufZzE3t/ntd1xTc2n9O7O69z0zc/rFVu
+z+u+5qbKrHp9vM9DTf3BM9L5Cd6Svj/yDn4F830w3wcT92DOF4xfwswPe37i
+JuzzuCnFg+Bq2r8Yj9/DjIc9nrgM+3xfkeJR8LJkz8iznCuY8bDHE/dhx4vF
+KR4G35H8K8ZzbmHGwx5PXoEdfxameBw8L/l7jCcuRF4vxsMeT96CHc9uTfkg
++NV0/mI8cSfqjGI87PHkRZj4yPevS/ko+CcpHmSfw3wfcQ7mczCfc50Dr919
+cPnAzW8Nr0pt98c9p2XnoMxvy/yszC/K7Og85boY/mmyW7PuS+OD30x+FLwz
++VHwnuTXwfuSXwfvT+cs+EA6Z8HfTec+4ubRWuPcB3ekOBT8QIpDwQ+luBc8
+PsW9bFz+f42rfi9qdxxtd5xsdxxsd5xrdxxrVxyCiUPEJffnziV1FeNpc8+Z
+J/ec94SYv6jTPD43jjqO56w73l+LdcO8h8R+F3Wf52vX91JHxvt9Ec/Cf4p4
+Fv5VvBfF/UBRd8LUneFvRfwL/y7iX/h/8V4V/lzUqTB1Kky8jPNXxEuY9zKY
+uhamroWJrzDxFea9LuJBUQfD1MERT4p4DBOPYd4LI14VdTNM3Rzxr4jfMPFb
+8TmYeO7zkstTx+r4+H5Qlvfa7SdlebTdflSWl9vtZ2V5vt1+WFY3fFJ+6nsR
+5/njdS/pe5f4/wf2Re95vpf1e5nvaf0e5Xtbv/f4HtfvKb7X9T1C/N098+ke
+wfecPse+9/S58z2oz4nvRe3Xvie1H/reFHsdr3ti5qUOoeX5fwC8MB+3
+   "], {{
+     {RGBColor[0.368417, 0.506779, 0.709798], AbsoluteThickness[1.6], Opacity[
+      0.3], EdgeForm[None], GraphicsGroupBox[{PolygonBox[CompressedData["
+1:eJxNmgX4lkUWxd+ZFwEREQUEW8RisTAApQVUpCUEAYOwUHGtJcRFV8XGWN01
+sAsRG2Vt1wI7sFtQMWHtQvb+POd9Pp6H+5xvZt6ZOXfqnpk/LcdM3OeoXBTF
+hLIo4l+xTlgKI69ZWJ2w1cKaFionva7z6oZtGrZWWOOw5s6rF9bEbVCnhfPq
+k47GVw9cL2yDsAZha4RtFNYwbM2wTcIaud2NnUd6/UJ1qbNZ2Nrm28pIn5sb
+4bud26WNLe0P3LcywndrIxzrJPFqHdbG/cFxC7dH/Q3NF65/sR98t4v75tvt
+3Sd+7GBknHYMa2nuOxnhvq3bhes27pP0fmG9w/YO29nf0keDpPwRYbuZL1zq
+Jv3eNayj8/BjD/NrF9bJefTTwWPBGHR2Hly6GBm/bvYHP3rYB7j3Mifa7ek8
+0l1djzp7us/2YXsZ6bN+Ekd8GOJ2aaOP/YF7XyN8+xnh2N8Ix4Hur5vHaFfX
+b+d5YM4H+Nuu7n9L+zzUfeLHMCPjtK8R7sONcB8ctru57hPW3WmsrcdlpHng
+x/7h40Zh0/htH+A+2r6RPsB5cBwTNshtH+g8/BvrPPof7/GC+xHub1TYoeYN
+34ZJ6+KwsMML/WYdTTBS52C3gd/j3Dbttvb4MY5Hum34TrQP8D3aCMdjwg4y
+92ON8D3OSNvHG+F+gpH+D3H/8J7kNH40SuI+OWzKKn5MNeLHiUbGYJoRvicZ
+j7KNNu9RnhPG/e8uw6ch0dfaSX4MD1w3ieO+gc2SuI8IbB72t/h9X+BBYZtx
+ToS1SOI+LLBpkt/7BTZO4j8ycP0kP0YHbpjE/YDAjZP4tgzcNGw6Yxq4SRLH
+UYEbJPn9n8AxYa3CHgwbG7ZF2MNh48K2DHsz7OiwncL+G3Zw2NZhT4QdwrkQ
+tpCxDdsm7LmwCWHbhr0SdmTYDmGPho0P28qcJnrOX4r0EWHbhw0NWydpzt8O
+3CVs57ALI31y2ClhFxn/EfZP46lhr8d3E8N2DFsUdlRY27CLXX5a2CXG08P+
+ZZwRdlnYmWFnhW2X9PvSsMudd3bYrLBzws4Nu8J5pK903nlhVxlnhl1tPD/s
+ukI+wP3asAucvt55+HFjIa5wvMF5pG9yHnxvNv47rH0Sx9lht5gvfswxwv1W
+I3znGvHjNiPcbzfC/Q4j3O9fpe27zRs/7jHCfZ4Rvvca8eM+I9znG+G+a1Kb
+/wl7wG3D966wa9zHg86D+xthT4U9HfaIecP3YftD+lHnwf1xtwXf/4bd6fQT
+zoP7k8Z5bnueuS8w7/nu716nOybxXRj2rMcF7s/YD9LPOQ/uzxsfCnvBCN8X
+jfjxkhHur4Q9Zr6vGvFjkRHurxnh/roR7h+4D9p+07zxo3MS37fC3jZ3+L5j
+xI93jXB/zwj3940V91s91qw59soZYR+6T/xYbB/g/qm5wvET+0D6M+cxn9+G
+fRT2cdhS58F9idugTtck7p+HfbGKH1/ZB7h/Y97wXe6xgNcy55H+0vWo8537
+hO/3Rvr8wQjflW6XNn6yP3D/2Qjf7km8fgn7dRWOv7s/OP7o9qj/tfnC9Td/
+y3foXLQi2g9hvMx+oJHRnGhQdG4Tp9G7TZ3+w+3CdYX7JF3H7fEderm5+8Dv
+lz1P6Fx0JfoSvbuB02jPDZ1Gg27kdKVr0TcpSc/WL2oalzJ09Maug7betJA2
+rTR0panBlkVNT7cyX9qutPAWLmvkNmiXGFnF9pzUbwt/h07c2bzRmW3Me1un
+4bSd07S1vdPwQFu1tf/Uq3Q32Lqo6Wzq1HOfzc2xnfuGe3unGYsOTq+W9Htr
++wnHSpvv5L4/RhcknTGTjAvNGy3ayX13K2r6F+xi3mhE9GKla/u43R4uqzR3
+Z/fZ02Vw6eU0vNGiaNN6SZoU3ru5vUr/gr3t8x6uX2novkVNQ/dznwOcpg76
+cIS5ojkHmd9gp+E0xGk4DXW60s3D7PdAt1vp/j2Lms4e6rIDC+lI+I503/gx
+ymm4jnYarvs7vXqSzq3aHe6+ZyfpNjRcf7dNnZuT9Bl6jr5Zn5WOBseZ1yEu
+Q8+iB//qdg912WB/i65dIyl/uMcLXXqYeaNFJ5grOvPIoqabKx090WWVLqd+
+paGPKWoa+tiipqGPcx204Unmyn47wfwmOb2mNemh5oT2nFzUdPPUoqbFj/cc
+j7Hflc6e4vke6zL4TnffN0T7Taybb0zS0GjBm6wL0cGVFq+0+TT3PcrjQd4t
+SZobbd0uSXcQu25L0tDo5muts9cKuz1JT6OJ70zS09yv7kjSymjru5LuXWjr
+e5L09KbWwuhf4uIYa2f06FhrZ3TnOGtedOd4a2d05+ZJeh9de3eSdkejcw6x
+r9jT6Ou/JMXcCdbI6NEjrKnRoEda56JFj7L+RY+ihdHs6NGjraPRo/SH9kSD
+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
+bfJ/pAK8YA==
+         "]], PolygonBox[CompressedData["
+1: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
+         "]]}]}, {}, {}, {}, {}}, 
+    {RGBColor[0.368417, 0.506779, 0.709798], AbsoluteThickness[1.6], 
+     LineBox[CompressedData["
+1:eJwt0bcyhFEYgOGflVqjMfJegk5mWXoqmV05rdldmV4oGSoqKioqoZNzuBHX
+4NkZxTPv+Wa+4sw54fh8VyIrCIIU2WTOhYSpJkInMZIUWaiyeMsd4yRDQdCs
+Kb3XByZIm1t0QR/1iUkWzRFd0md9YYplc6uu6Ku+Mc2quU3X9F0/mGHdHNUN
+/dQvZvmmnR+uuSHBnr0O3dU5veKSSpoYY5QLzqmgkRHinHFKOQ3EGOaEY8qo
+Z4hBjjiklDoG6OeAfUqopY9edtimmBp66GaLzcwbufev949S4C/yySOXHEL/
+f/gHDasywA==
+      "]], LineBox[CompressedData["
+1:eJwt0TdKBAEYhuFRK7OtnXsDj2BlVsTGViwNG0yduuasawATmMAEJjA1xiuY
+sx7FZ8Hi4eX/hmlmQg2R2nBKEAQxMkin2JCfGgQTTDLONFM0pgXBjM6SYJ45
+muyLusQCKyzTbF/TdVbZZIMW+7busMUeu4TtB3rIPsccEbGf6hknXHBO1H6l
+11xyyw13yXfo8rxEu/VeH5Lv0OMu1bg+6hMxet1l2qfP+kIr/e5yHdBXfaON
+QXeFDum7ftDOsLtSR/RTv+hg1F2lY/qtP3TySzV1hHz/uP8QpZ4aiiikgDxy
+ySGbLDL//98fGRw9mw==
+      "]], LineBox[CompressedData["
+1:eJwl0UcyA1AAx+GXROcSIcpW3zFjhhWDBAtWcgBmbPQSbe8IjmBr5wiOEL23
+SNF9xuKb95v/m7d68fRsciYSQpgjITLOPfY54IhjsjzzQo5X8hQoUqLP++5o
+CBPsskM6FsI0XXqcbbaYsk3SqcfYJPPXthQdOsUG6wzZBmnXSdZYZcDWT5se
+ZYVlem09tOoRllikzlZLix5mgXmqbVXUUE4lFTS7iznLCESJ0GT/5ocPvvik
+kTfeKVCiSIJX8jyT44UGHnnijgfuqeeaGy644pI4Z5yT5ZQTbjmM/P/hL548
+Puo=
+      "]], LineBox[CompressedData["
+1:eJwt0cdJhFEUBtCnrs055+zoGMYsqCOYwDBgAhPmlYJtmMYOLMESLMESbEBw
+a/b84OLwwXff3bxbf3CROs8IIVzyQJqEIp4ZwnhWCBOMMMYoPfohOcwAgyTo
+1vfJ/ugNvcSJ6WPRnA666IxS3ybbaaaVlmimb5RN1NFAfbSrL5cVlFBGabSv
+L5CFZJNHLvnkUEwRV1RRTSW11HDNFNNMMkOSG+aYZ5ZFFrhlmRWWSLHKHets
+sMYWm6TZYZdt9tnjniOOOeSUE8549f9J3t3ig0+++OaHX4L5m3jhmSce/2/4
+B5WUJ/Q=
+      "]]}}],
+  AspectRatio->1,
+  Axes->{False, False},
+  AxesLabel->{None, None},
+  AxesOrigin->{Automatic, Automatic},
+  DisplayFunction->Identity,
+  Frame->{{True, True}, {True, True}},
+  FrameLabel->{{None, None}, {None, None}},
+  FrameTicks->{{Automatic, Automatic}, {Automatic, Automatic}},
+  GridLinesStyle->Directive[
+    GrayLevel[0.5, 0.4]],
+  ImageSize->{492.8571428571529, Automatic},
+  Method->{
+   "ScalingFunctions" -> None, "TransparentPolygonMesh" -> True, 
+    "AxesInFront" -> True},
+  PlotRange->{{-3, 3}, {-3, 3}},
+  PlotRangeClipping->True,
+  PlotRangePadding->{{
+     Scaled[0.02], 
+     Scaled[0.02]}, {
+     Scaled[0.02], 
+     Scaled[0.02]}},
+  Ticks->{Automatic, Automatic}]], "Output",
+ CellChangeTimes->{3.7578204807025146`*^9, 
+  3.757820762502781*^9},ExpressionUUID->"ec409f64-c367-4f98-97f7-\
+c5e00fb60cd7"]
+}, Open  ]],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"dr", " ", "=", " ", "300"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"points", " ", "=", " ", 
+   RowBox[{"{", "\[IndentingNewLine]", 
+    RowBox[{
+     RowBox[{"Flatten", "[", 
+      RowBox[{
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"-", "r1"}], ",", " ", 
+           RowBox[{"-", "r2"}]}], "}"}], ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"r1", ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"500", ",", " ", "1800"}], "}"}]}], "}"}], ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"r2", ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"500", ",", " ", "1800"}], "}"}]}], "}"}]}], "]"}], ",", 
+       "1"}], "]"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"Flatten", "[", 
+      RowBox[{
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"r1", ",", " ", 
+           RowBox[{"-", "r2"}]}], "}"}], ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"r1", ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"500", ",", " ", "1800"}], "}"}]}], "}"}], ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"r2", ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"500", ",", " ", "1800"}], "}"}]}], "}"}]}], "]"}], ",", 
+       "1"}], "]"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"Flatten", "[", 
+      RowBox[{
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"-", "r1"}], ",", " ", "r2"}], "}"}], ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"r1", ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"500", ",", " ", "1800"}], "}"}]}], "}"}], ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"r2", ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"500", ",", " ", "1800"}], "}"}]}], "}"}]}], "]"}], ",", 
+       "1"}], "]"}], ",", "\[IndentingNewLine]", 
+     RowBox[{"Flatten", "[", 
+      RowBox[{
+       RowBox[{"Table", "[", 
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{"r1", ",", " ", "r2"}], "}"}], ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"r1", ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"500", ",", " ", "1800"}], "}"}]}], "}"}], ",", " ", 
+         RowBox[{"{", 
+          RowBox[{"r2", ",", " ", 
+           RowBox[{"{", 
+            RowBox[{"500", ",", " ", "1800"}], "}"}]}], "}"}]}], "]"}], ",", 
+       "1"}], "]"}]}], "\[IndentingNewLine]", "}"}]}], ";"}]}], "Input",
+ CellChangeTimes->{{3.757820836630493*^9, 3.7578209208013687`*^9}, {
+   3.7578211044850063`*^9, 3.757821117867241*^9}, 3.7578213116893983`*^9, {
+   3.7578214715853443`*^9, 
+   3.7578215535350423`*^9}},ExpressionUUID->"1d12eb3c-e19d-4d20-aec5-\
+66910304023c"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData["points"], "Input",
+ CellChangeTimes->{{3.7578215010521107`*^9, 
+  3.757821501342333*^9}},ExpressionUUID->"df39c09c-2ea1-4336-b036-\
+340cffc9b710"],
+
+Cell[BoxData[
+ RowBox[{"{", 
+  RowBox[{
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "500"}], ",", "500"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "500"}], ",", "1800"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "1800"}], ",", "500"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "1800"}], ",", "1800"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "500"}], ",", "500"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "500"}], ",", "1800"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "1800"}], ",", "500"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "1800"}], ",", "1800"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "500"}], ",", "500"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "500"}], ",", "1800"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "1800"}], ",", "500"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "1800"}], ",", "1800"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "500"}], ",", "500"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "500"}], ",", "1800"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "1800"}], ",", "500"}], "}"}], ",", 
+   RowBox[{"{", 
+    RowBox[{
+     RowBox[{"-", "1800"}], ",", "1800"}], "}"}]}], "}"}]], "Output",
+ CellChangeTimes->{{3.757821501666679*^9, 
+  3.7578215177617097`*^9}},ExpressionUUID->"94390c72-e708-4cfa-8045-\
+fe6a4502bf55"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Manipulate", "[", "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"n1", "=", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", 
+        RowBox[{"Sin", "[", "\[Phi]1", "]"}]}], ",", 
+       RowBox[{"Cos", "[", "\[Phi]1", "]"}]}], "}"}]}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"n2", "=", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", 
+        RowBox[{"Sin", "[", "\[Phi]2", "]"}]}], ",", 
+       RowBox[{"Cos", "[", "\[Phi]2", "]"}]}], "}"}]}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"n\[Theta]", "=", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"-", 
+        RowBox[{"Sin", "[", "\[Theta]", "]"}]}], ",", 
+       RowBox[{"Cos", "[", "\[Theta]", "]"}]}], "}"}]}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"A", "=", 
+     RowBox[{"Transpose", "[", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"n1", "-", "n\[Theta]"}], ",", " ", 
+        RowBox[{
+         RowBox[{"-", "n2"}], "+", "n\[Theta]"}]}], "}"}], "]"}]}], ";", 
+    "\[IndentingNewLine]", 
+    RowBox[{"Graphics", "[", 
+     RowBox[{"{", 
+      RowBox[{
+       RowBox[{"Point", " ", "/@", " ", "points"}], ",", " ", "Red", ",", " ", 
+       RowBox[{"Point", " ", "/@", " ", 
+        RowBox[{"(", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"A", ".", "#"}], "&"}], " ", "/@", " ", "points"}], 
+         ")"}]}]}], "}"}], "]"}]}], ",", "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"\[Theta]", ",", " ", "0", ",", " ", 
+     RowBox[{"2", "\[Pi]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"\[Phi]1", ",", " ", "0", ",", " ", 
+     RowBox[{"2", "\[Pi]"}]}], "}"}], ",", "\[IndentingNewLine]", 
+   RowBox[{"{", 
+    RowBox[{"\[Phi]2", ",", " ", "0", ",", " ", 
+     RowBox[{"2", "\[Pi]"}]}], "}"}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.7578209383364325`*^9, 
+  3.7578210686103945`*^9}},ExpressionUUID->"951ec2fe-c18e-404b-991a-\
+64307771ec30"],
+
+Cell[BoxData[
+ TagBox[
+  StyleBox[
+   DynamicModuleBox[{$CellContext`\[Theta]$$ = 0., $CellContext`\[Phi]1$$ = 
+    1.8409732950036186`, $CellContext`\[Phi]2$$ = 0.7225663103256524, 
+    Typeset`show$$ = True, Typeset`bookmarkList$$ = {}, 
+    Typeset`bookmarkMode$$ = "Menu", Typeset`animator$$, Typeset`animvar$$ = 
+    1, Typeset`name$$ = "\"untitled\"", Typeset`specs$$ = {{
+      Hold[$CellContext`\[Theta]$$], 0, 2 Pi}, {
+      Hold[$CellContext`\[Phi]1$$], 0, 2 Pi}, {
+      Hold[$CellContext`\[Phi]2$$], 0, 2 Pi}}, Typeset`size$$ = {
+    504., {248., 255.}}, Typeset`update$$ = 0, Typeset`initDone$$, 
+    Typeset`skipInitDone$$ = True, $CellContext`\[Theta]$10812$$ = 
+    0, $CellContext`\[Phi]1$10813$$ = 0, $CellContext`\[Phi]2$10814$$ = 0}, 
+    DynamicBox[Manipulate`ManipulateBoxes[
+     1, StandardForm, 
+      "Variables" :> {$CellContext`\[Theta]$$ = 0, $CellContext`\[Phi]1$$ = 
+        0, $CellContext`\[Phi]2$$ = 0}, "ControllerVariables" :> {
+        Hold[$CellContext`\[Theta]$$, $CellContext`\[Theta]$10812$$, 0], 
+        Hold[$CellContext`\[Phi]1$$, $CellContext`\[Phi]1$10813$$, 0], 
+        Hold[$CellContext`\[Phi]2$$, $CellContext`\[Phi]2$10814$$, 0]}, 
+      "OtherVariables" :> {
+       Typeset`show$$, Typeset`bookmarkList$$, Typeset`bookmarkMode$$, 
+        Typeset`animator$$, Typeset`animvar$$, Typeset`name$$, 
+        Typeset`specs$$, Typeset`size$$, Typeset`update$$, Typeset`initDone$$,
+         Typeset`skipInitDone$$}, 
+      "Body" :> ($CellContext`n1 = {-Sin[$CellContext`\[Phi]1$$], 
+          Cos[$CellContext`\[Phi]1$$]}; $CellContext`n2 = {-
+          Sin[$CellContext`\[Phi]2$$], 
+          Cos[$CellContext`\[Phi]2$$]}; $CellContext`n\[Theta] = {-
+          Sin[$CellContext`\[Theta]$$], 
+          Cos[$CellContext`\[Theta]$$]}; $CellContext`A = 
+        Transpose[{$CellContext`n1 - $CellContext`n\[Theta], -$CellContext`n2 + \
+$CellContext`n\[Theta]}]; Graphics[{
+          Map[Point, $CellContext`points], Red, 
+          Map[Point, 
+           Map[Dot[$CellContext`A, #]& , $CellContext`points]]}]), 
+      "Specifications" :> {{$CellContext`\[Theta]$$, 0, 2 
+         Pi}, {$CellContext`\[Phi]1$$, 0, 2 Pi}, {$CellContext`\[Phi]2$$, 0, 
+         2 Pi}}, "Options" :> {}, "DefaultOptions" :> {}],
+     ImageSizeCache->{569., {373., 381.}},
+     SingleEvaluation->True],
+    Deinitialization:>None,
+    DynamicModuleValues:>{},
+    SynchronousInitialization->True,
+    UndoTrackedVariables:>{Typeset`show$$, Typeset`bookmarkMode$$},
+    UnsavedVariables:>{Typeset`initDone$$},
+    UntrackedVariables:>{Typeset`size$$}], "Manipulate",
+   Deployed->True,
+   StripOnInput->False],
+  Manipulate`InterpretManipulate[1]]], "Output",
+ CellChangeTimes->{3.757821070225131*^9, 
+  3.7578211214205427`*^9},ExpressionUUID->"39ab0a72-7520-4603-89a8-\
+65bbff2d3696"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[""], "Input",
+ CellChangeTimes->{{3.757820921993826*^9, 
+  3.7578209432002363`*^9}},ExpressionUUID->"ce64395f-6a2d-492b-8d29-\
+422b02ee28dd"],
+
+Cell[BoxData[
+ GraphicsBox[{PointBox[{-500, 500}], PointBox[{-500, 550}], 
+   PointBox[{-500, 600}], PointBox[{-500, 650}], PointBox[{-500, 700}], 
+   PointBox[{-500, 750}], PointBox[{-500, 800}], PointBox[{-500, 850}], 
+   PointBox[{-500, 900}], PointBox[{-500, 950}], PointBox[{-500, 1000}], 
+   PointBox[{-500, 1050}], PointBox[{-500, 1100}], PointBox[{-500, 1150}], 
+   PointBox[{-500, 1200}], PointBox[{-500, 1250}], PointBox[{-500, 1300}], 
+   PointBox[{-500, 1350}], PointBox[{-500, 1400}], PointBox[{-500, 1450}], 
+   PointBox[{-500, 1500}], PointBox[{-500, 1550}], PointBox[{-500, 1600}], 
+   PointBox[{-500, 1650}], PointBox[{-500, 1700}], PointBox[{-500, 1750}], 
+   PointBox[{-500, 1800}], PointBox[{-550, 500}], PointBox[{-550, 550}], 
+   PointBox[{-550, 600}], PointBox[{-550, 650}], PointBox[{-550, 700}], 
+   PointBox[{-550, 750}], PointBox[{-550, 800}], PointBox[{-550, 850}], 
+   PointBox[{-550, 900}], PointBox[{-550, 950}], PointBox[{-550, 1000}], 
+   PointBox[{-550, 1050}], PointBox[{-550, 1100}], PointBox[{-550, 1150}], 
+   PointBox[{-550, 1200}], PointBox[{-550, 1250}], PointBox[{-550, 1300}], 
+   PointBox[{-550, 1350}], PointBox[{-550, 1400}], PointBox[{-550, 1450}], 
+   PointBox[{-550, 1500}], PointBox[{-550, 1550}], PointBox[{-550, 1600}], 
+   PointBox[{-550, 1650}], PointBox[{-550, 1700}], PointBox[{-550, 1750}], 
+   PointBox[{-550, 1800}], PointBox[{-600, 500}], PointBox[{-600, 550}], 
+   PointBox[{-600, 600}], PointBox[{-600, 650}], PointBox[{-600, 700}], 
+   PointBox[{-600, 750}], PointBox[{-600, 800}], PointBox[{-600, 850}], 
+   PointBox[{-600, 900}], PointBox[{-600, 950}], PointBox[{-600, 1000}], 
+   PointBox[{-600, 1050}], PointBox[{-600, 1100}], PointBox[{-600, 1150}], 
+   PointBox[{-600, 1200}], PointBox[{-600, 1250}], PointBox[{-600, 1300}], 
+   PointBox[{-600, 1350}], PointBox[{-600, 1400}], PointBox[{-600, 1450}], 
+   PointBox[{-600, 1500}], PointBox[{-600, 1550}], PointBox[{-600, 1600}], 
+   PointBox[{-600, 1650}], PointBox[{-600, 1700}], PointBox[{-600, 1750}], 
+   PointBox[{-600, 1800}], PointBox[{-650, 500}], PointBox[{-650, 550}], 
+   PointBox[{-650, 600}], PointBox[{-650, 650}], PointBox[{-650, 700}], 
+   PointBox[{-650, 750}], PointBox[{-650, 800}], PointBox[{-650, 850}], 
+   PointBox[{-650, 900}], PointBox[{-650, 950}], PointBox[{-650, 1000}], 
+   PointBox[{-650, 1050}], PointBox[{-650, 1100}], PointBox[{-650, 1150}], 
+   PointBox[{-650, 1200}], PointBox[{-650, 1250}], PointBox[{-650, 1300}], 
+   PointBox[{-650, 1350}], PointBox[{-650, 1400}], PointBox[{-650, 1450}], 
+   PointBox[{-650, 1500}], PointBox[{-650, 1550}], PointBox[{-650, 1600}], 
+   PointBox[{-650, 1650}], PointBox[{-650, 1700}], PointBox[{-650, 1750}], 
+   PointBox[{-650, 1800}], PointBox[{-700, 500}], PointBox[{-700, 550}], 
+   PointBox[{-700, 600}], PointBox[{-700, 650}], PointBox[{-700, 700}], 
+   PointBox[{-700, 750}], PointBox[{-700, 800}], PointBox[{-700, 850}], 
+   PointBox[{-700, 900}], PointBox[{-700, 950}], PointBox[{-700, 1000}], 
+   PointBox[{-700, 1050}], PointBox[{-700, 1100}], PointBox[{-700, 1150}], 
+   PointBox[{-700, 1200}], PointBox[{-700, 1250}], PointBox[{-700, 1300}], 
+   PointBox[{-700, 1350}], PointBox[{-700, 1400}], PointBox[{-700, 1450}], 
+   PointBox[{-700, 1500}], PointBox[{-700, 1550}], PointBox[{-700, 1600}], 
+   PointBox[{-700, 1650}], PointBox[{-700, 1700}], PointBox[{-700, 1750}], 
+   PointBox[{-700, 1800}], PointBox[{-750, 500}], PointBox[{-750, 550}], 
+   PointBox[{-750, 600}], PointBox[{-750, 650}], PointBox[{-750, 700}], 
+   PointBox[{-750, 750}], PointBox[{-750, 800}], PointBox[{-750, 850}], 
+   PointBox[{-750, 900}], PointBox[{-750, 950}], PointBox[{-750, 1000}], 
+   PointBox[{-750, 1050}], PointBox[{-750, 1100}], PointBox[{-750, 1150}], 
+   PointBox[{-750, 1200}], PointBox[{-750, 1250}], PointBox[{-750, 1300}], 
+   PointBox[{-750, 1350}], PointBox[{-750, 1400}], PointBox[{-750, 1450}], 
+   PointBox[{-750, 1500}], PointBox[{-750, 1550}], PointBox[{-750, 1600}], 
+   PointBox[{-750, 1650}], PointBox[{-750, 1700}], PointBox[{-750, 1750}], 
+   PointBox[{-750, 1800}], PointBox[{-800, 500}], PointBox[{-800, 550}], 
+   PointBox[{-800, 600}], PointBox[{-800, 650}], PointBox[{-800, 700}], 
+   PointBox[{-800, 750}], PointBox[{-800, 800}], PointBox[{-800, 850}], 
+   PointBox[{-800, 900}], PointBox[{-800, 950}], PointBox[{-800, 1000}], 
+   PointBox[{-800, 1050}], PointBox[{-800, 1100}], PointBox[{-800, 1150}], 
+   PointBox[{-800, 1200}], PointBox[{-800, 1250}], PointBox[{-800, 1300}], 
+   PointBox[{-800, 1350}], PointBox[{-800, 1400}], PointBox[{-800, 1450}], 
+   PointBox[{-800, 1500}], PointBox[{-800, 1550}], PointBox[{-800, 1600}], 
+   PointBox[{-800, 1650}], PointBox[{-800, 1700}], PointBox[{-800, 1750}], 
+   PointBox[{-800, 1800}], PointBox[{-850, 500}], PointBox[{-850, 550}], 
+   PointBox[{-850, 600}], PointBox[{-850, 650}], PointBox[{-850, 700}], 
+   PointBox[{-850, 750}], PointBox[{-850, 800}], PointBox[{-850, 850}], 
+   PointBox[{-850, 900}], PointBox[{-850, 950}], PointBox[{-850, 1000}], 
+   PointBox[{-850, 1050}], PointBox[{-850, 1100}], PointBox[{-850, 1150}], 
+   PointBox[{-850, 1200}], PointBox[{-850, 1250}], PointBox[{-850, 1300}], 
+   PointBox[{-850, 1350}], PointBox[{-850, 1400}], PointBox[{-850, 1450}], 
+   PointBox[{-850, 1500}], PointBox[{-850, 1550}], PointBox[{-850, 1600}], 
+   PointBox[{-850, 1650}], PointBox[{-850, 1700}], PointBox[{-850, 1750}], 
+   PointBox[{-850, 1800}], PointBox[{-900, 500}], PointBox[{-900, 550}], 
+   PointBox[{-900, 600}], PointBox[{-900, 650}], PointBox[{-900, 700}], 
+   PointBox[{-900, 750}], PointBox[{-900, 800}], PointBox[{-900, 850}], 
+   PointBox[{-900, 900}], PointBox[{-900, 950}], PointBox[{-900, 1000}], 
+   PointBox[{-900, 1050}], PointBox[{-900, 1100}], PointBox[{-900, 1150}], 
+   PointBox[{-900, 1200}], PointBox[{-900, 1250}], PointBox[{-900, 1300}], 
+   PointBox[{-900, 1350}], PointBox[{-900, 1400}], PointBox[{-900, 1450}], 
+   PointBox[{-900, 1500}], PointBox[{-900, 1550}], PointBox[{-900, 1600}], 
+   PointBox[{-900, 1650}], PointBox[{-900, 1700}], PointBox[{-900, 1750}], 
+   PointBox[{-900, 1800}], PointBox[{-950, 500}], PointBox[{-950, 550}], 
+   PointBox[{-950, 600}], PointBox[{-950, 650}], PointBox[{-950, 700}], 
+   PointBox[{-950, 750}], PointBox[{-950, 800}], PointBox[{-950, 850}], 
+   PointBox[{-950, 900}], PointBox[{-950, 950}], PointBox[{-950, 1000}], 
+   PointBox[{-950, 1050}], PointBox[{-950, 1100}], PointBox[{-950, 1150}], 
+   PointBox[{-950, 1200}], PointBox[{-950, 1250}], PointBox[{-950, 1300}], 
+   PointBox[{-950, 1350}], PointBox[{-950, 1400}], PointBox[{-950, 1450}], 
+   PointBox[{-950, 1500}], PointBox[{-950, 1550}], PointBox[{-950, 1600}], 
+   PointBox[{-950, 1650}], PointBox[{-950, 1700}], PointBox[{-950, 1750}], 
+   PointBox[{-950, 1800}], PointBox[{-1000, 500}], PointBox[{-1000, 550}], 
+   PointBox[{-1000, 600}], PointBox[{-1000, 650}], PointBox[{-1000, 700}], 
+   PointBox[{-1000, 750}], PointBox[{-1000, 800}], PointBox[{-1000, 850}], 
+   PointBox[{-1000, 900}], PointBox[{-1000, 950}], PointBox[{-1000, 1000}], 
+   PointBox[{-1000, 1050}], PointBox[{-1000, 1100}], PointBox[{-1000, 1150}], 
+   PointBox[{-1000, 1200}], PointBox[{-1000, 1250}], PointBox[{-1000, 1300}], 
+   PointBox[{-1000, 1350}], PointBox[{-1000, 1400}], PointBox[{-1000, 1450}], 
+   PointBox[{-1000, 1500}], PointBox[{-1000, 1550}], PointBox[{-1000, 1600}], 
+   PointBox[{-1000, 1650}], PointBox[{-1000, 1700}], PointBox[{-1000, 1750}], 
+   PointBox[{-1000, 1800}], PointBox[{-1050, 500}], PointBox[{-1050, 550}], 
+   PointBox[{-1050, 600}], PointBox[{-1050, 650}], PointBox[{-1050, 700}], 
+   PointBox[{-1050, 750}], PointBox[{-1050, 800}], PointBox[{-1050, 850}], 
+   PointBox[{-1050, 900}], PointBox[{-1050, 950}], PointBox[{-1050, 1000}], 
+   PointBox[{-1050, 1050}], PointBox[{-1050, 1100}], PointBox[{-1050, 1150}], 
+   PointBox[{-1050, 1200}], PointBox[{-1050, 1250}], PointBox[{-1050, 1300}], 
+   PointBox[{-1050, 1350}], PointBox[{-1050, 1400}], PointBox[{-1050, 1450}], 
+   PointBox[{-1050, 1500}], PointBox[{-1050, 1550}], PointBox[{-1050, 1600}], 
+   PointBox[{-1050, 1650}], PointBox[{-1050, 1700}], PointBox[{-1050, 1750}], 
+   PointBox[{-1050, 1800}], PointBox[{-1100, 500}], PointBox[{-1100, 550}], 
+   PointBox[{-1100, 600}], PointBox[{-1100, 650}], PointBox[{-1100, 700}], 
+   PointBox[{-1100, 750}], PointBox[{-1100, 800}], PointBox[{-1100, 850}], 
+   PointBox[{-1100, 900}], PointBox[{-1100, 950}], PointBox[{-1100, 1000}], 
+   PointBox[{-1100, 1050}], PointBox[{-1100, 1100}], PointBox[{-1100, 1150}], 
+   PointBox[{-1100, 1200}], PointBox[{-1100, 1250}], PointBox[{-1100, 1300}], 
+   PointBox[{-1100, 1350}], PointBox[{-1100, 1400}], PointBox[{-1100, 1450}], 
+   PointBox[{-1100, 1500}], PointBox[{-1100, 1550}], PointBox[{-1100, 1600}], 
+   PointBox[{-1100, 1650}], PointBox[{-1100, 1700}], PointBox[{-1100, 1750}], 
+   PointBox[{-1100, 1800}], PointBox[{-1150, 500}], PointBox[{-1150, 550}], 
+   PointBox[{-1150, 600}], PointBox[{-1150, 650}], PointBox[{-1150, 700}], 
+   PointBox[{-1150, 750}], PointBox[{-1150, 800}], PointBox[{-1150, 850}], 
+   PointBox[{-1150, 900}], PointBox[{-1150, 950}], PointBox[{-1150, 1000}], 
+   PointBox[{-1150, 1050}], PointBox[{-1150, 1100}], PointBox[{-1150, 1150}], 
+   PointBox[{-1150, 1200}], PointBox[{-1150, 1250}], PointBox[{-1150, 1300}], 
+   PointBox[{-1150, 1350}], PointBox[{-1150, 1400}], PointBox[{-1150, 1450}], 
+   PointBox[{-1150, 1500}], PointBox[{-1150, 1550}], PointBox[{-1150, 1600}], 
+   PointBox[{-1150, 1650}], PointBox[{-1150, 1700}], PointBox[{-1150, 1750}], 
+   PointBox[{-1150, 1800}], PointBox[{-1200, 500}], PointBox[{-1200, 550}], 
+   PointBox[{-1200, 600}], PointBox[{-1200, 650}], PointBox[{-1200, 700}], 
+   PointBox[{-1200, 750}], PointBox[{-1200, 800}], PointBox[{-1200, 850}], 
+   PointBox[{-1200, 900}], PointBox[{-1200, 950}], PointBox[{-1200, 1000}], 
+   PointBox[{-1200, 1050}], PointBox[{-1200, 1100}], PointBox[{-1200, 1150}], 
+   PointBox[{-1200, 1200}], PointBox[{-1200, 1250}], PointBox[{-1200, 1300}], 
+   PointBox[{-1200, 1350}], PointBox[{-1200, 1400}], PointBox[{-1200, 1450}], 
+   PointBox[{-1200, 1500}], PointBox[{-1200, 1550}], PointBox[{-1200, 1600}], 
+   PointBox[{-1200, 1650}], PointBox[{-1200, 1700}], PointBox[{-1200, 1750}], 
+   PointBox[{-1200, 1800}], PointBox[{-1250, 500}], PointBox[{-1250, 550}], 
+   PointBox[{-1250, 600}], PointBox[{-1250, 650}], PointBox[{-1250, 700}], 
+   PointBox[{-1250, 750}], PointBox[{-1250, 800}], PointBox[{-1250, 850}], 
+   PointBox[{-1250, 900}], PointBox[{-1250, 950}], PointBox[{-1250, 1000}], 
+   PointBox[{-1250, 1050}], PointBox[{-1250, 1100}], PointBox[{-1250, 1150}], 
+   PointBox[{-1250, 1200}], PointBox[{-1250, 1250}], PointBox[{-1250, 1300}], 
+   PointBox[{-1250, 1350}], PointBox[{-1250, 1400}], PointBox[{-1250, 1450}], 
+   PointBox[{-1250, 1500}], PointBox[{-1250, 1550}], PointBox[{-1250, 1600}], 
+   PointBox[{-1250, 1650}], PointBox[{-1250, 1700}], PointBox[{-1250, 1750}], 
+   PointBox[{-1250, 1800}], PointBox[{-1300, 500}], PointBox[{-1300, 550}], 
+   PointBox[{-1300, 600}], PointBox[{-1300, 650}], PointBox[{-1300, 700}], 
+   PointBox[{-1300, 750}], PointBox[{-1300, 800}], PointBox[{-1300, 850}], 
+   PointBox[{-1300, 900}], PointBox[{-1300, 950}], PointBox[{-1300, 1000}], 
+   PointBox[{-1300, 1050}], PointBox[{-1300, 1100}], PointBox[{-1300, 1150}], 
+   PointBox[{-1300, 1200}], PointBox[{-1300, 1250}], PointBox[{-1300, 1300}], 
+   PointBox[{-1300, 1350}], PointBox[{-1300, 1400}], PointBox[{-1300, 1450}], 
+   PointBox[{-1300, 1500}], PointBox[{-1300, 1550}], PointBox[{-1300, 1600}], 
+   PointBox[{-1300, 1650}], PointBox[{-1300, 1700}], PointBox[{-1300, 1750}], 
+   PointBox[{-1300, 1800}], PointBox[{-1350, 500}], PointBox[{-1350, 550}], 
+   PointBox[{-1350, 600}], PointBox[{-1350, 650}], PointBox[{-1350, 700}], 
+   PointBox[{-1350, 750}], PointBox[{-1350, 800}], PointBox[{-1350, 850}], 
+   PointBox[{-1350, 900}], PointBox[{-1350, 950}], PointBox[{-1350, 1000}], 
+   PointBox[{-1350, 1050}], PointBox[{-1350, 1100}], PointBox[{-1350, 1150}], 
+   PointBox[{-1350, 1200}], PointBox[{-1350, 1250}], PointBox[{-1350, 1300}], 
+   PointBox[{-1350, 1350}], PointBox[{-1350, 1400}], PointBox[{-1350, 1450}], 
+   PointBox[{-1350, 1500}], PointBox[{-1350, 1550}], PointBox[{-1350, 1600}], 
+   PointBox[{-1350, 1650}], PointBox[{-1350, 1700}], PointBox[{-1350, 1750}], 
+   PointBox[{-1350, 1800}], PointBox[{-1400, 500}], PointBox[{-1400, 550}], 
+   PointBox[{-1400, 600}], PointBox[{-1400, 650}], PointBox[{-1400, 700}], 
+   PointBox[{-1400, 750}], PointBox[{-1400, 800}], PointBox[{-1400, 850}], 
+   PointBox[{-1400, 900}], PointBox[{-1400, 950}], PointBox[{-1400, 1000}], 
+   PointBox[{-1400, 1050}], PointBox[{-1400, 1100}], PointBox[{-1400, 1150}], 
+   PointBox[{-1400, 1200}], PointBox[{-1400, 1250}], PointBox[{-1400, 1300}], 
+   PointBox[{-1400, 1350}], PointBox[{-1400, 1400}], PointBox[{-1400, 1450}], 
+   PointBox[{-1400, 1500}], PointBox[{-1400, 1550}], PointBox[{-1400, 1600}], 
+   PointBox[{-1400, 1650}], PointBox[{-1400, 1700}], PointBox[{-1400, 1750}], 
+   PointBox[{-1400, 1800}], PointBox[{-1450, 500}], PointBox[{-1450, 550}], 
+   PointBox[{-1450, 600}], PointBox[{-1450, 650}], PointBox[{-1450, 700}], 
+   PointBox[{-1450, 750}], PointBox[{-1450, 800}], PointBox[{-1450, 850}], 
+   PointBox[{-1450, 900}], PointBox[{-1450, 950}], PointBox[{-1450, 1000}], 
+   PointBox[{-1450, 1050}], PointBox[{-1450, 1100}], PointBox[{-1450, 1150}], 
+   PointBox[{-1450, 1200}], PointBox[{-1450, 1250}], PointBox[{-1450, 1300}], 
+   PointBox[{-1450, 1350}], PointBox[{-1450, 1400}], PointBox[{-1450, 1450}], 
+   PointBox[{-1450, 1500}], PointBox[{-1450, 1550}], PointBox[{-1450, 1600}], 
+   PointBox[{-1450, 1650}], PointBox[{-1450, 1700}], PointBox[{-1450, 1750}], 
+   PointBox[{-1450, 1800}], PointBox[{-1500, 500}], PointBox[{-1500, 550}], 
+   PointBox[{-1500, 600}], PointBox[{-1500, 650}], PointBox[{-1500, 700}], 
+   PointBox[{-1500, 750}], PointBox[{-1500, 800}], PointBox[{-1500, 850}], 
+   PointBox[{-1500, 900}], PointBox[{-1500, 950}], PointBox[{-1500, 1000}], 
+   PointBox[{-1500, 1050}], PointBox[{-1500, 1100}], PointBox[{-1500, 1150}], 
+   PointBox[{-1500, 1200}], PointBox[{-1500, 1250}], PointBox[{-1500, 1300}], 
+   PointBox[{-1500, 1350}], PointBox[{-1500, 1400}], PointBox[{-1500, 1450}], 
+   PointBox[{-1500, 1500}], PointBox[{-1500, 1550}], PointBox[{-1500, 1600}], 
+   PointBox[{-1500, 1650}], PointBox[{-1500, 1700}], PointBox[{-1500, 1750}], 
+   PointBox[{-1500, 1800}], PointBox[{-1550, 500}], PointBox[{-1550, 550}], 
+   PointBox[{-1550, 600}], PointBox[{-1550, 650}], PointBox[{-1550, 700}], 
+   PointBox[{-1550, 750}], PointBox[{-1550, 800}], PointBox[{-1550, 850}], 
+   PointBox[{-1550, 900}], PointBox[{-1550, 950}], PointBox[{-1550, 1000}], 
+   PointBox[{-1550, 1050}], PointBox[{-1550, 1100}], PointBox[{-1550, 1150}], 
+   PointBox[{-1550, 1200}], PointBox[{-1550, 1250}], PointBox[{-1550, 1300}], 
+   PointBox[{-1550, 1350}], PointBox[{-1550, 1400}], PointBox[{-1550, 1450}], 
+   PointBox[{-1550, 1500}], PointBox[{-1550, 1550}], PointBox[{-1550, 1600}], 
+   PointBox[{-1550, 1650}], PointBox[{-1550, 1700}], PointBox[{-1550, 1750}], 
+   PointBox[{-1550, 1800}], PointBox[{-1600, 500}], PointBox[{-1600, 550}], 
+   PointBox[{-1600, 600}], PointBox[{-1600, 650}], PointBox[{-1600, 700}], 
+   PointBox[{-1600, 750}], PointBox[{-1600, 800}], PointBox[{-1600, 850}], 
+   PointBox[{-1600, 900}], PointBox[{-1600, 950}], PointBox[{-1600, 1000}], 
+   PointBox[{-1600, 1050}], PointBox[{-1600, 1100}], PointBox[{-1600, 1150}], 
+   PointBox[{-1600, 1200}], PointBox[{-1600, 1250}], PointBox[{-1600, 1300}], 
+   PointBox[{-1600, 1350}], PointBox[{-1600, 1400}], PointBox[{-1600, 1450}], 
+   PointBox[{-1600, 1500}], PointBox[{-1600, 1550}], PointBox[{-1600, 1600}], 
+   PointBox[{-1600, 1650}], PointBox[{-1600, 1700}], PointBox[{-1600, 1750}], 
+   PointBox[{-1600, 1800}], PointBox[{-1650, 500}], PointBox[{-1650, 550}], 
+   PointBox[{-1650, 600}], PointBox[{-1650, 650}], PointBox[{-1650, 700}], 
+   PointBox[{-1650, 750}], PointBox[{-1650, 800}], PointBox[{-1650, 850}], 
+   PointBox[{-1650, 900}], PointBox[{-1650, 950}], PointBox[{-1650, 1000}], 
+   PointBox[{-1650, 1050}], PointBox[{-1650, 1100}], PointBox[{-1650, 1150}], 
+   PointBox[{-1650, 1200}], PointBox[{-1650, 1250}], PointBox[{-1650, 1300}], 
+   PointBox[{-1650, 1350}], PointBox[{-1650, 1400}], PointBox[{-1650, 1450}], 
+   PointBox[{-1650, 1500}], PointBox[{-1650, 1550}], PointBox[{-1650, 1600}], 
+   PointBox[{-1650, 1650}], PointBox[{-1650, 1700}], PointBox[{-1650, 1750}], 
+   PointBox[{-1650, 1800}], PointBox[{-1700, 500}], PointBox[{-1700, 550}], 
+   PointBox[{-1700, 600}], PointBox[{-1700, 650}], PointBox[{-1700, 700}], 
+   PointBox[{-1700, 750}], PointBox[{-1700, 800}], PointBox[{-1700, 850}], 
+   PointBox[{-1700, 900}], PointBox[{-1700, 950}], PointBox[{-1700, 1000}], 
+   PointBox[{-1700, 1050}], PointBox[{-1700, 1100}], PointBox[{-1700, 1150}], 
+   PointBox[{-1700, 1200}], PointBox[{-1700, 1250}], PointBox[{-1700, 1300}], 
+   PointBox[{-1700, 1350}], PointBox[{-1700, 1400}], PointBox[{-1700, 1450}], 
+   PointBox[{-1700, 1500}], PointBox[{-1700, 1550}], PointBox[{-1700, 1600}], 
+   PointBox[{-1700, 1650}], PointBox[{-1700, 1700}], PointBox[{-1700, 1750}], 
+   PointBox[{-1700, 1800}], PointBox[{-1750, 500}], PointBox[{-1750, 550}], 
+   PointBox[{-1750, 600}], PointBox[{-1750, 650}], PointBox[{-1750, 700}], 
+   PointBox[{-1750, 750}], PointBox[{-1750, 800}], PointBox[{-1750, 850}], 
+   PointBox[{-1750, 900}], PointBox[{-1750, 950}], PointBox[{-1750, 1000}], 
+   PointBox[{-1750, 1050}], PointBox[{-1750, 1100}], PointBox[{-1750, 1150}], 
+   PointBox[{-1750, 1200}], PointBox[{-1750, 1250}], PointBox[{-1750, 1300}], 
+   PointBox[{-1750, 1350}], PointBox[{-1750, 1400}], PointBox[{-1750, 1450}], 
+   PointBox[{-1750, 1500}], PointBox[{-1750, 1550}], PointBox[{-1750, 1600}], 
+   PointBox[{-1750, 1650}], PointBox[{-1750, 1700}], PointBox[{-1750, 1750}], 
+   PointBox[{-1750, 1800}], PointBox[{-1800, 500}], PointBox[{-1800, 550}], 
+   PointBox[{-1800, 600}], PointBox[{-1800, 650}], PointBox[{-1800, 700}], 
+   PointBox[{-1800, 750}], PointBox[{-1800, 800}], PointBox[{-1800, 850}], 
+   PointBox[{-1800, 900}], PointBox[{-1800, 950}], PointBox[{-1800, 1000}], 
+   PointBox[{-1800, 1050}], PointBox[{-1800, 1100}], PointBox[{-1800, 1150}], 
+   PointBox[{-1800, 1200}], PointBox[{-1800, 1250}], PointBox[{-1800, 1300}], 
+   PointBox[{-1800, 1350}], PointBox[{-1800, 1400}], PointBox[{-1800, 1450}], 
+   PointBox[{-1800, 1500}], PointBox[{-1800, 1550}], PointBox[{-1800, 1600}], 
+   PointBox[{-1800, 1650}], PointBox[{-1800, 1700}], PointBox[{-1800, 1750}], 
+   PointBox[{-1800, 1800}], PointBox[{500, 500}], PointBox[{500, 550}], 
+   PointBox[{500, 600}], PointBox[{500, 650}], PointBox[{500, 700}], 
+   PointBox[{500, 750}], PointBox[{500, 800}], PointBox[{500, 850}], 
+   PointBox[{500, 900}], PointBox[{500, 950}], PointBox[{500, 1000}], 
+   PointBox[{500, 1050}], PointBox[{500, 1100}], PointBox[{500, 1150}], 
+   PointBox[{500, 1200}], PointBox[{500, 1250}], PointBox[{500, 1300}], 
+   PointBox[{500, 1350}], PointBox[{500, 1400}], PointBox[{500, 1450}], 
+   PointBox[{500, 1500}], PointBox[{500, 1550}], PointBox[{500, 1600}], 
+   PointBox[{500, 1650}], PointBox[{500, 1700}], PointBox[{500, 1750}], 
+   PointBox[{500, 1800}], PointBox[{550, 500}], PointBox[{550, 550}], 
+   PointBox[{550, 600}], PointBox[{550, 650}], PointBox[{550, 700}], 
+   PointBox[{550, 750}], PointBox[{550, 800}], PointBox[{550, 850}], 
+   PointBox[{550, 900}], PointBox[{550, 950}], PointBox[{550, 1000}], 
+   PointBox[{550, 1050}], PointBox[{550, 1100}], PointBox[{550, 1150}], 
+   PointBox[{550, 1200}], PointBox[{550, 1250}], PointBox[{550, 1300}], 
+   PointBox[{550, 1350}], PointBox[{550, 1400}], PointBox[{550, 1450}], 
+   PointBox[{550, 1500}], PointBox[{550, 1550}], PointBox[{550, 1600}], 
+   PointBox[{550, 1650}], PointBox[{550, 1700}], PointBox[{550, 1750}], 
+   PointBox[{550, 1800}], PointBox[{600, 500}], PointBox[{600, 550}], 
+   PointBox[{600, 600}], PointBox[{600, 650}], PointBox[{600, 700}], 
+   PointBox[{600, 750}], PointBox[{600, 800}], PointBox[{600, 850}], 
+   PointBox[{600, 900}], PointBox[{600, 950}], PointBox[{600, 1000}], 
+   PointBox[{600, 1050}], PointBox[{600, 1100}], PointBox[{600, 1150}], 
+   PointBox[{600, 1200}], PointBox[{600, 1250}], PointBox[{600, 1300}], 
+   PointBox[{600, 1350}], PointBox[{600, 1400}], PointBox[{600, 1450}], 
+   PointBox[{600, 1500}], PointBox[{600, 1550}], PointBox[{600, 1600}], 
+   PointBox[{600, 1650}], PointBox[{600, 1700}], PointBox[{600, 1750}], 
+   PointBox[{600, 1800}], PointBox[{650, 500}], PointBox[{650, 550}], 
+   PointBox[{650, 600}], PointBox[{650, 650}], PointBox[{650, 700}], 
+   PointBox[{650, 750}], PointBox[{650, 800}], PointBox[{650, 850}], 
+   PointBox[{650, 900}], PointBox[{650, 950}], PointBox[{650, 1000}], 
+   PointBox[{650, 1050}], PointBox[{650, 1100}], PointBox[{650, 1150}], 
+   PointBox[{650, 1200}], PointBox[{650, 1250}], PointBox[{650, 1300}], 
+   PointBox[{650, 1350}], PointBox[{650, 1400}], PointBox[{650, 1450}], 
+   PointBox[{650, 1500}], PointBox[{650, 1550}], PointBox[{650, 1600}], 
+   PointBox[{650, 1650}], PointBox[{650, 1700}], PointBox[{650, 1750}], 
+   PointBox[{650, 1800}], PointBox[{700, 500}], PointBox[{700, 550}], 
+   PointBox[{700, 600}], PointBox[{700, 650}], PointBox[{700, 700}], 
+   PointBox[{700, 750}], PointBox[{700, 800}], PointBox[{700, 850}], 
+   PointBox[{700, 900}], PointBox[{700, 950}], PointBox[{700, 1000}], 
+   PointBox[{700, 1050}], PointBox[{700, 1100}], PointBox[{700, 1150}], 
+   PointBox[{700, 1200}], PointBox[{700, 1250}], PointBox[{700, 1300}], 
+   PointBox[{700, 1350}], PointBox[{700, 1400}], PointBox[{700, 1450}], 
+   PointBox[{700, 1500}], PointBox[{700, 1550}], PointBox[{700, 1600}], 
+   PointBox[{700, 1650}], PointBox[{700, 1700}], PointBox[{700, 1750}], 
+   PointBox[{700, 1800}], PointBox[{750, 500}], PointBox[{750, 550}], 
+   PointBox[{750, 600}], PointBox[{750, 650}], PointBox[{750, 700}], 
+   PointBox[{750, 750}], PointBox[{750, 800}], PointBox[{750, 850}], 
+   PointBox[{750, 900}], PointBox[{750, 950}], PointBox[{750, 1000}], 
+   PointBox[{750, 1050}], PointBox[{750, 1100}], PointBox[{750, 1150}], 
+   PointBox[{750, 1200}], PointBox[{750, 1250}], PointBox[{750, 1300}], 
+   PointBox[{750, 1350}], PointBox[{750, 1400}], PointBox[{750, 1450}], 
+   PointBox[{750, 1500}], PointBox[{750, 1550}], PointBox[{750, 1600}], 
+   PointBox[{750, 1650}], PointBox[{750, 1700}], PointBox[{750, 1750}], 
+   PointBox[{750, 1800}], PointBox[{800, 500}], PointBox[{800, 550}], 
+   PointBox[{800, 600}], PointBox[{800, 650}], PointBox[{800, 700}], 
+   PointBox[{800, 750}], PointBox[{800, 800}], PointBox[{800, 850}], 
+   PointBox[{800, 900}], PointBox[{800, 950}], PointBox[{800, 1000}], 
+   PointBox[{800, 1050}], PointBox[{800, 1100}], PointBox[{800, 1150}], 
+   PointBox[{800, 1200}], PointBox[{800, 1250}], PointBox[{800, 1300}], 
+   PointBox[{800, 1350}], PointBox[{800, 1400}], PointBox[{800, 1450}], 
+   PointBox[{800, 1500}], PointBox[{800, 1550}], PointBox[{800, 1600}], 
+   PointBox[{800, 1650}], PointBox[{800, 1700}], PointBox[{800, 1750}], 
+   PointBox[{800, 1800}], PointBox[{850, 500}], PointBox[{850, 550}], 
+   PointBox[{850, 600}], PointBox[{850, 650}], PointBox[{850, 700}], 
+   PointBox[{850, 750}], PointBox[{850, 800}], PointBox[{850, 850}], 
+   PointBox[{850, 900}], PointBox[{850, 950}], PointBox[{850, 1000}], 
+   PointBox[{850, 1050}], PointBox[{850, 1100}], PointBox[{850, 1150}], 
+   PointBox[{850, 1200}], PointBox[{850, 1250}], PointBox[{850, 1300}], 
+   PointBox[{850, 1350}], PointBox[{850, 1400}], PointBox[{850, 1450}], 
+   PointBox[{850, 1500}], PointBox[{850, 1550}], PointBox[{850, 1600}], 
+   PointBox[{850, 1650}], PointBox[{850, 1700}], PointBox[{850, 1750}], 
+   PointBox[{850, 1800}], PointBox[{900, 500}], PointBox[{900, 550}], 
+   PointBox[{900, 600}], PointBox[{900, 650}], PointBox[{900, 700}], 
+   PointBox[{900, 750}], PointBox[{900, 800}], PointBox[{900, 850}], 
+   PointBox[{900, 900}], PointBox[{900, 950}], PointBox[{900, 1000}], 
+   PointBox[{900, 1050}], PointBox[{900, 1100}], PointBox[{900, 1150}], 
+   PointBox[{900, 1200}], PointBox[{900, 1250}], PointBox[{900, 1300}], 
+   PointBox[{900, 1350}], PointBox[{900, 1400}], PointBox[{900, 1450}], 
+   PointBox[{900, 1500}], PointBox[{900, 1550}], PointBox[{900, 1600}], 
+   PointBox[{900, 1650}], PointBox[{900, 1700}], PointBox[{900, 1750}], 
+   PointBox[{900, 1800}], PointBox[{950, 500}], PointBox[{950, 550}], 
+   PointBox[{950, 600}], PointBox[{950, 650}], PointBox[{950, 700}], 
+   PointBox[{950, 750}], PointBox[{950, 800}], PointBox[{950, 850}], 
+   PointBox[{950, 900}], PointBox[{950, 950}], PointBox[{950, 1000}], 
+   PointBox[{950, 1050}], PointBox[{950, 1100}], PointBox[{950, 1150}], 
+   PointBox[{950, 1200}], PointBox[{950, 1250}], PointBox[{950, 1300}], 
+   PointBox[{950, 1350}], PointBox[{950, 1400}], PointBox[{950, 1450}], 
+   PointBox[{950, 1500}], PointBox[{950, 1550}], PointBox[{950, 1600}], 
+   PointBox[{950, 1650}], PointBox[{950, 1700}], PointBox[{950, 1750}], 
+   PointBox[{950, 1800}], PointBox[{1000, 500}], PointBox[{1000, 550}], 
+   PointBox[{1000, 600}], PointBox[{1000, 650}], PointBox[{1000, 700}], 
+   PointBox[{1000, 750}], PointBox[{1000, 800}], PointBox[{1000, 850}], 
+   PointBox[{1000, 900}], PointBox[{1000, 950}], PointBox[{1000, 1000}], 
+   PointBox[{1000, 1050}], PointBox[{1000, 1100}], PointBox[{1000, 1150}], 
+   PointBox[{1000, 1200}], PointBox[{1000, 1250}], PointBox[{1000, 1300}], 
+   PointBox[{1000, 1350}], PointBox[{1000, 1400}], PointBox[{1000, 1450}], 
+   PointBox[{1000, 1500}], PointBox[{1000, 1550}], PointBox[{1000, 1600}], 
+   PointBox[{1000, 1650}], PointBox[{1000, 1700}], PointBox[{1000, 1750}], 
+   PointBox[{1000, 1800}], PointBox[{1050, 500}], PointBox[{1050, 550}], 
+   PointBox[{1050, 600}], PointBox[{1050, 650}], PointBox[{1050, 700}], 
+   PointBox[{1050, 750}], PointBox[{1050, 800}], PointBox[{1050, 850}], 
+   PointBox[{1050, 900}], PointBox[{1050, 950}], PointBox[{1050, 1000}], 
+   PointBox[{1050, 1050}], PointBox[{1050, 1100}], PointBox[{1050, 1150}], 
+   PointBox[{1050, 1200}], PointBox[{1050, 1250}], PointBox[{1050, 1300}], 
+   PointBox[{1050, 1350}], PointBox[{1050, 1400}], PointBox[{1050, 1450}], 
+   PointBox[{1050, 1500}], PointBox[{1050, 1550}], PointBox[{1050, 1600}], 
+   PointBox[{1050, 1650}], PointBox[{1050, 1700}], PointBox[{1050, 1750}], 
+   PointBox[{1050, 1800}], PointBox[{1100, 500}], PointBox[{1100, 550}], 
+   PointBox[{1100, 600}], PointBox[{1100, 650}], PointBox[{1100, 700}], 
+   PointBox[{1100, 750}], PointBox[{1100, 800}], PointBox[{1100, 850}], 
+   PointBox[{1100, 900}], PointBox[{1100, 950}], PointBox[{1100, 1000}], 
+   PointBox[{1100, 1050}], PointBox[{1100, 1100}], PointBox[{1100, 1150}], 
+   PointBox[{1100, 1200}], PointBox[{1100, 1250}], PointBox[{1100, 1300}], 
+   PointBox[{1100, 1350}], PointBox[{1100, 1400}], PointBox[{1100, 1450}], 
+   PointBox[{1100, 1500}], PointBox[{1100, 1550}], PointBox[{1100, 1600}], 
+   PointBox[{1100, 1650}], PointBox[{1100, 1700}], PointBox[{1100, 1750}], 
+   PointBox[{1100, 1800}], PointBox[{1150, 500}], PointBox[{1150, 550}], 
+   PointBox[{1150, 600}], PointBox[{1150, 650}], PointBox[{1150, 700}], 
+   PointBox[{1150, 750}], PointBox[{1150, 800}], PointBox[{1150, 850}], 
+   PointBox[{1150, 900}], PointBox[{1150, 950}], PointBox[{1150, 1000}], 
+   PointBox[{1150, 1050}], PointBox[{1150, 1100}], PointBox[{1150, 1150}], 
+   PointBox[{1150, 1200}], PointBox[{1150, 1250}], PointBox[{1150, 1300}], 
+   PointBox[{1150, 1350}], PointBox[{1150, 1400}], PointBox[{1150, 1450}], 
+   PointBox[{1150, 1500}], PointBox[{1150, 1550}], PointBox[{1150, 1600}], 
+   PointBox[{1150, 1650}], PointBox[{1150, 1700}], PointBox[{1150, 1750}], 
+   PointBox[{1150, 1800}], PointBox[{1200, 500}], PointBox[{1200, 550}], 
+   PointBox[{1200, 600}], PointBox[{1200, 650}], PointBox[{1200, 700}], 
+   PointBox[{1200, 750}], PointBox[{1200, 800}], PointBox[{1200, 850}], 
+   PointBox[{1200, 900}], PointBox[{1200, 950}], PointBox[{1200, 1000}], 
+   PointBox[{1200, 1050}], PointBox[{1200, 1100}], PointBox[{1200, 1150}], 
+   PointBox[{1200, 1200}], PointBox[{1200, 1250}], PointBox[{1200, 1300}], 
+   PointBox[{1200, 1350}], PointBox[{1200, 1400}], PointBox[{1200, 1450}], 
+   PointBox[{1200, 1500}], PointBox[{1200, 1550}], PointBox[{1200, 1600}], 
+   PointBox[{1200, 1650}], PointBox[{1200, 1700}], PointBox[{1200, 1750}], 
+   PointBox[{1200, 1800}], PointBox[{1250, 500}], PointBox[{1250, 550}], 
+   PointBox[{1250, 600}], PointBox[{1250, 650}], PointBox[{1250, 700}], 
+   PointBox[{1250, 750}], PointBox[{1250, 800}], PointBox[{1250, 850}], 
+   PointBox[{1250, 900}], PointBox[{1250, 950}], PointBox[{1250, 1000}], 
+   PointBox[{1250, 1050}], PointBox[{1250, 1100}], PointBox[{1250, 1150}], 
+   PointBox[{1250, 1200}], PointBox[{1250, 1250}], PointBox[{1250, 1300}], 
+   PointBox[{1250, 1350}], PointBox[{1250, 1400}], PointBox[{1250, 1450}], 
+   PointBox[{1250, 1500}], PointBox[{1250, 1550}], PointBox[{1250, 1600}], 
+   PointBox[{1250, 1650}], PointBox[{1250, 1700}], PointBox[{1250, 1750}], 
+   PointBox[{1250, 1800}], PointBox[{1300, 500}], PointBox[{1300, 550}], 
+   PointBox[{1300, 600}], PointBox[{1300, 650}], PointBox[{1300, 700}], 
+   PointBox[{1300, 750}], PointBox[{1300, 800}], PointBox[{1300, 850}], 
+   PointBox[{1300, 900}], PointBox[{1300, 950}], PointBox[{1300, 1000}], 
+   PointBox[{1300, 1050}], PointBox[{1300, 1100}], PointBox[{1300, 1150}], 
+   PointBox[{1300, 1200}], PointBox[{1300, 1250}], PointBox[{1300, 1300}], 
+   PointBox[{1300, 1350}], PointBox[{1300, 1400}], PointBox[{1300, 1450}], 
+   PointBox[{1300, 1500}], PointBox[{1300, 1550}], PointBox[{1300, 1600}], 
+   PointBox[{1300, 1650}], PointBox[{1300, 1700}], PointBox[{1300, 1750}], 
+   PointBox[{1300, 1800}], PointBox[{1350, 500}], PointBox[{1350, 550}], 
+   PointBox[{1350, 600}], PointBox[{1350, 650}], PointBox[{1350, 700}], 
+   PointBox[{1350, 750}], PointBox[{1350, 800}], PointBox[{1350, 850}], 
+   PointBox[{1350, 900}], PointBox[{1350, 950}], PointBox[{1350, 1000}], 
+   PointBox[{1350, 1050}], PointBox[{1350, 1100}], PointBox[{1350, 1150}], 
+   PointBox[{1350, 1200}], PointBox[{1350, 1250}], PointBox[{1350, 1300}], 
+   PointBox[{1350, 1350}], PointBox[{1350, 1400}], PointBox[{1350, 1450}], 
+   PointBox[{1350, 1500}], PointBox[{1350, 1550}], PointBox[{1350, 1600}], 
+   PointBox[{1350, 1650}], PointBox[{1350, 1700}], PointBox[{1350, 1750}], 
+   PointBox[{1350, 1800}], PointBox[{1400, 500}], PointBox[{1400, 550}], 
+   PointBox[{1400, 600}], PointBox[{1400, 650}], PointBox[{1400, 700}], 
+   PointBox[{1400, 750}], PointBox[{1400, 800}], PointBox[{1400, 850}], 
+   PointBox[{1400, 900}], PointBox[{1400, 950}], PointBox[{1400, 1000}], 
+   PointBox[{1400, 1050}], PointBox[{1400, 1100}], PointBox[{1400, 1150}], 
+   PointBox[{1400, 1200}], PointBox[{1400, 1250}], PointBox[{1400, 1300}], 
+   PointBox[{1400, 1350}], PointBox[{1400, 1400}], PointBox[{1400, 1450}], 
+   PointBox[{1400, 1500}], PointBox[{1400, 1550}], PointBox[{1400, 1600}], 
+   PointBox[{1400, 1650}], PointBox[{1400, 1700}], PointBox[{1400, 1750}], 
+   PointBox[{1400, 1800}], PointBox[{1450, 500}], PointBox[{1450, 550}], 
+   PointBox[{1450, 600}], PointBox[{1450, 650}], PointBox[{1450, 700}], 
+   PointBox[{1450, 750}], PointBox[{1450, 800}], PointBox[{1450, 850}], 
+   PointBox[{1450, 900}], PointBox[{1450, 950}], PointBox[{1450, 1000}], 
+   PointBox[{1450, 1050}], PointBox[{1450, 1100}], PointBox[{1450, 1150}], 
+   PointBox[{1450, 1200}], PointBox[{1450, 1250}], PointBox[{1450, 1300}], 
+   PointBox[{1450, 1350}], PointBox[{1450, 1400}], PointBox[{1450, 1450}], 
+   PointBox[{1450, 1500}], PointBox[{1450, 1550}], PointBox[{1450, 1600}], 
+   PointBox[{1450, 1650}], PointBox[{1450, 1700}], PointBox[{1450, 1750}], 
+   PointBox[{1450, 1800}], PointBox[{1500, 500}], PointBox[{1500, 550}], 
+   PointBox[{1500, 600}], PointBox[{1500, 650}], PointBox[{1500, 700}], 
+   PointBox[{1500, 750}], PointBox[{1500, 800}], PointBox[{1500, 850}], 
+   PointBox[{1500, 900}], PointBox[{1500, 950}], PointBox[{1500, 1000}], 
+   PointBox[{1500, 1050}], PointBox[{1500, 1100}], PointBox[{1500, 1150}], 
+   PointBox[{1500, 1200}], PointBox[{1500, 1250}], PointBox[{1500, 1300}], 
+   PointBox[{1500, 1350}], PointBox[{1500, 1400}], PointBox[{1500, 1450}], 
+   PointBox[{1500, 1500}], PointBox[{1500, 1550}], PointBox[{1500, 1600}], 
+   PointBox[{1500, 1650}], PointBox[{1500, 1700}], PointBox[{1500, 1750}], 
+   PointBox[{1500, 1800}], PointBox[{1550, 500}], PointBox[{1550, 550}], 
+   PointBox[{1550, 600}], PointBox[{1550, 650}], PointBox[{1550, 700}], 
+   PointBox[{1550, 750}], PointBox[{1550, 800}], PointBox[{1550, 850}], 
+   PointBox[{1550, 900}], PointBox[{1550, 950}], PointBox[{1550, 1000}], 
+   PointBox[{1550, 1050}], PointBox[{1550, 1100}], PointBox[{1550, 1150}], 
+   PointBox[{1550, 1200}], PointBox[{1550, 1250}], PointBox[{1550, 1300}], 
+   PointBox[{1550, 1350}], PointBox[{1550, 1400}], PointBox[{1550, 1450}], 
+   PointBox[{1550, 1500}], PointBox[{1550, 1550}], PointBox[{1550, 1600}], 
+   PointBox[{1550, 1650}], PointBox[{1550, 1700}], PointBox[{1550, 1750}], 
+   PointBox[{1550, 1800}], PointBox[{1600, 500}], PointBox[{1600, 550}], 
+   PointBox[{1600, 600}], PointBox[{1600, 650}], PointBox[{1600, 700}], 
+   PointBox[{1600, 750}], PointBox[{1600, 800}], PointBox[{1600, 850}], 
+   PointBox[{1600, 900}], PointBox[{1600, 950}], PointBox[{1600, 1000}], 
+   PointBox[{1600, 1050}], PointBox[{1600, 1100}], PointBox[{1600, 1150}], 
+   PointBox[{1600, 1200}], PointBox[{1600, 1250}], PointBox[{1600, 1300}], 
+   PointBox[{1600, 1350}], PointBox[{1600, 1400}], PointBox[{1600, 1450}], 
+   PointBox[{1600, 1500}], PointBox[{1600, 1550}], PointBox[{1600, 1600}], 
+   PointBox[{1600, 1650}], PointBox[{1600, 1700}], PointBox[{1600, 1750}], 
+   PointBox[{1600, 1800}], PointBox[{1650, 500}], PointBox[{1650, 550}], 
+   PointBox[{1650, 600}], PointBox[{1650, 650}], PointBox[{1650, 700}], 
+   PointBox[{1650, 750}], PointBox[{1650, 800}], PointBox[{1650, 850}], 
+   PointBox[{1650, 900}], PointBox[{1650, 950}], PointBox[{1650, 1000}], 
+   PointBox[{1650, 1050}], PointBox[{1650, 1100}], PointBox[{1650, 1150}], 
+   PointBox[{1650, 1200}], PointBox[{1650, 1250}], PointBox[{1650, 1300}], 
+   PointBox[{1650, 1350}], PointBox[{1650, 1400}], PointBox[{1650, 1450}], 
+   PointBox[{1650, 1500}], PointBox[{1650, 1550}], PointBox[{1650, 1600}], 
+   PointBox[{1650, 1650}], PointBox[{1650, 1700}], PointBox[{1650, 1750}], 
+   PointBox[{1650, 1800}], PointBox[{1700, 500}], PointBox[{1700, 550}], 
+   PointBox[{1700, 600}], PointBox[{1700, 650}], PointBox[{1700, 700}], 
+   PointBox[{1700, 750}], PointBox[{1700, 800}], PointBox[{1700, 850}], 
+   PointBox[{1700, 900}], PointBox[{1700, 950}], PointBox[{1700, 1000}], 
+   PointBox[{1700, 1050}], PointBox[{1700, 1100}], PointBox[{1700, 1150}], 
+   PointBox[{1700, 1200}], PointBox[{1700, 1250}], PointBox[{1700, 1300}], 
+   PointBox[{1700, 1350}], PointBox[{1700, 1400}], PointBox[{1700, 1450}], 
+   PointBox[{1700, 1500}], PointBox[{1700, 1550}], PointBox[{1700, 1600}], 
+   PointBox[{1700, 1650}], PointBox[{1700, 1700}], PointBox[{1700, 1750}], 
+   PointBox[{1700, 1800}], PointBox[{1750, 500}], PointBox[{1750, 550}], 
+   PointBox[{1750, 600}], PointBox[{1750, 650}], PointBox[{1750, 700}], 
+   PointBox[{1750, 750}], PointBox[{1750, 800}], PointBox[{1750, 850}], 
+   PointBox[{1750, 900}], PointBox[{1750, 950}], PointBox[{1750, 1000}], 
+   PointBox[{1750, 1050}], PointBox[{1750, 1100}], PointBox[{1750, 1150}], 
+   PointBox[{1750, 1200}], PointBox[{1750, 1250}], PointBox[{1750, 1300}], 
+   PointBox[{1750, 1350}], PointBox[{1750, 1400}], PointBox[{1750, 1450}], 
+   PointBox[{1750, 1500}], PointBox[{1750, 1550}], PointBox[{1750, 1600}], 
+   PointBox[{1750, 1650}], PointBox[{1750, 1700}], PointBox[{1750, 1750}], 
+   PointBox[{1750, 1800}], PointBox[{1800, 500}], PointBox[{1800, 550}], 
+   PointBox[{1800, 600}], PointBox[{1800, 650}], PointBox[{1800, 700}], 
+   PointBox[{1800, 750}], PointBox[{1800, 800}], PointBox[{1800, 850}], 
+   PointBox[{1800, 900}], PointBox[{1800, 950}], PointBox[{1800, 1000}], 
+   PointBox[{1800, 1050}], PointBox[{1800, 1100}], PointBox[{1800, 1150}], 
+   PointBox[{1800, 1200}], PointBox[{1800, 1250}], PointBox[{1800, 1300}], 
+   PointBox[{1800, 1350}], PointBox[{1800, 1400}], PointBox[{1800, 1450}], 
+   PointBox[{1800, 1500}], PointBox[{1800, 1550}], PointBox[{1800, 1600}], 
+   PointBox[{1800, 1650}], PointBox[{1800, 1700}], PointBox[{1800, 1750}], 
+   PointBox[{1800, 1800}], PointBox[{-500, -500}], PointBox[{-500, -550}], 
+   PointBox[{-500, -600}], PointBox[{-500, -650}], PointBox[{-500, -700}], 
+   PointBox[{-500, -750}], PointBox[{-500, -800}], PointBox[{-500, -850}], 
+   PointBox[{-500, -900}], PointBox[{-500, -950}], PointBox[{-500, -1000}], 
+   PointBox[{-500, -1050}], PointBox[{-500, -1100}], PointBox[{-500, -1150}], 
+   PointBox[{-500, -1200}], PointBox[{-500, -1250}], PointBox[{-500, -1300}], 
+   PointBox[{-500, -1350}], PointBox[{-500, -1400}], PointBox[{-500, -1450}], 
+   PointBox[{-500, -1500}], PointBox[{-500, -1550}], PointBox[{-500, -1600}], 
+   PointBox[{-500, -1650}], PointBox[{-500, -1700}], PointBox[{-500, -1750}], 
+   PointBox[{-500, -1800}], PointBox[{-550, -500}], PointBox[{-550, -550}], 
+   PointBox[{-550, -600}], PointBox[{-550, -650}], PointBox[{-550, -700}], 
+   PointBox[{-550, -750}], PointBox[{-550, -800}], PointBox[{-550, -850}], 
+   PointBox[{-550, -900}], PointBox[{-550, -950}], PointBox[{-550, -1000}], 
+   PointBox[{-550, -1050}], PointBox[{-550, -1100}], PointBox[{-550, -1150}], 
+   PointBox[{-550, -1200}], PointBox[{-550, -1250}], PointBox[{-550, -1300}], 
+   PointBox[{-550, -1350}], PointBox[{-550, -1400}], PointBox[{-550, -1450}], 
+   PointBox[{-550, -1500}], PointBox[{-550, -1550}], PointBox[{-550, -1600}], 
+   PointBox[{-550, -1650}], PointBox[{-550, -1700}], PointBox[{-550, -1750}], 
+   PointBox[{-550, -1800}], PointBox[{-600, -500}], PointBox[{-600, -550}], 
+   PointBox[{-600, -600}], PointBox[{-600, -650}], PointBox[{-600, -700}], 
+   PointBox[{-600, -750}], PointBox[{-600, -800}], PointBox[{-600, -850}], 
+   PointBox[{-600, -900}], PointBox[{-600, -950}], PointBox[{-600, -1000}], 
+   PointBox[{-600, -1050}], PointBox[{-600, -1100}], PointBox[{-600, -1150}], 
+   PointBox[{-600, -1200}], PointBox[{-600, -1250}], PointBox[{-600, -1300}], 
+   PointBox[{-600, -1350}], PointBox[{-600, -1400}], PointBox[{-600, -1450}], 
+   PointBox[{-600, -1500}], PointBox[{-600, -1550}], PointBox[{-600, -1600}], 
+   PointBox[{-600, -1650}], PointBox[{-600, -1700}], PointBox[{-600, -1750}], 
+   PointBox[{-600, -1800}], PointBox[{-650, -500}], PointBox[{-650, -550}], 
+   PointBox[{-650, -600}], PointBox[{-650, -650}], PointBox[{-650, -700}], 
+   PointBox[{-650, -750}], PointBox[{-650, -800}], PointBox[{-650, -850}], 
+   PointBox[{-650, -900}], PointBox[{-650, -950}], PointBox[{-650, -1000}], 
+   PointBox[{-650, -1050}], PointBox[{-650, -1100}], PointBox[{-650, -1150}], 
+   PointBox[{-650, -1200}], PointBox[{-650, -1250}], PointBox[{-650, -1300}], 
+   PointBox[{-650, -1350}], PointBox[{-650, -1400}], PointBox[{-650, -1450}], 
+   PointBox[{-650, -1500}], PointBox[{-650, -1550}], PointBox[{-650, -1600}], 
+   PointBox[{-650, -1650}], PointBox[{-650, -1700}], PointBox[{-650, -1750}], 
+   PointBox[{-650, -1800}], PointBox[{-700, -500}], PointBox[{-700, -550}], 
+   PointBox[{-700, -600}], PointBox[{-700, -650}], PointBox[{-700, -700}], 
+   PointBox[{-700, -750}], PointBox[{-700, -800}], PointBox[{-700, -850}], 
+   PointBox[{-700, -900}], PointBox[{-700, -950}], PointBox[{-700, -1000}], 
+   PointBox[{-700, -1050}], PointBox[{-700, -1100}], PointBox[{-700, -1150}], 
+   PointBox[{-700, -1200}], PointBox[{-700, -1250}], PointBox[{-700, -1300}], 
+   PointBox[{-700, -1350}], PointBox[{-700, -1400}], PointBox[{-700, -1450}], 
+   PointBox[{-700, -1500}], PointBox[{-700, -1550}], PointBox[{-700, -1600}], 
+   PointBox[{-700, -1650}], PointBox[{-700, -1700}], PointBox[{-700, -1750}], 
+   PointBox[{-700, -1800}], PointBox[{-750, -500}], PointBox[{-750, -550}], 
+   PointBox[{-750, -600}], PointBox[{-750, -650}], PointBox[{-750, -700}], 
+   PointBox[{-750, -750}], PointBox[{-750, -800}], PointBox[{-750, -850}], 
+   PointBox[{-750, -900}], PointBox[{-750, -950}], PointBox[{-750, -1000}], 
+   PointBox[{-750, -1050}], PointBox[{-750, -1100}], PointBox[{-750, -1150}], 
+   PointBox[{-750, -1200}], PointBox[{-750, -1250}], PointBox[{-750, -1300}], 
+   PointBox[{-750, -1350}], PointBox[{-750, -1400}], PointBox[{-750, -1450}], 
+   PointBox[{-750, -1500}], PointBox[{-750, -1550}], PointBox[{-750, -1600}], 
+   PointBox[{-750, -1650}], PointBox[{-750, -1700}], PointBox[{-750, -1750}], 
+   PointBox[{-750, -1800}], PointBox[{-800, -500}], PointBox[{-800, -550}], 
+   PointBox[{-800, -600}], PointBox[{-800, -650}], PointBox[{-800, -700}], 
+   PointBox[{-800, -750}], PointBox[{-800, -800}], PointBox[{-800, -850}], 
+   PointBox[{-800, -900}], PointBox[{-800, -950}], PointBox[{-800, -1000}], 
+   PointBox[{-800, -1050}], PointBox[{-800, -1100}], PointBox[{-800, -1150}], 
+   PointBox[{-800, -1200}], PointBox[{-800, -1250}], PointBox[{-800, -1300}], 
+   PointBox[{-800, -1350}], PointBox[{-800, -1400}], PointBox[{-800, -1450}], 
+   PointBox[{-800, -1500}], PointBox[{-800, -1550}], PointBox[{-800, -1600}], 
+   PointBox[{-800, -1650}], PointBox[{-800, -1700}], PointBox[{-800, -1750}], 
+   PointBox[{-800, -1800}], PointBox[{-850, -500}], PointBox[{-850, -550}], 
+   PointBox[{-850, -600}], PointBox[{-850, -650}], PointBox[{-850, -700}], 
+   PointBox[{-850, -750}], PointBox[{-850, -800}], PointBox[{-850, -850}], 
+   PointBox[{-850, -900}], PointBox[{-850, -950}], PointBox[{-850, -1000}], 
+   PointBox[{-850, -1050}], PointBox[{-850, -1100}], PointBox[{-850, -1150}], 
+   PointBox[{-850, -1200}], PointBox[{-850, -1250}], PointBox[{-850, -1300}], 
+   PointBox[{-850, -1350}], PointBox[{-850, -1400}], PointBox[{-850, -1450}], 
+   PointBox[{-850, -1500}], PointBox[{-850, -1550}], PointBox[{-850, -1600}], 
+   PointBox[{-850, -1650}], PointBox[{-850, -1700}], PointBox[{-850, -1750}], 
+   PointBox[{-850, -1800}], PointBox[{-900, -500}], PointBox[{-900, -550}], 
+   PointBox[{-900, -600}], PointBox[{-900, -650}], PointBox[{-900, -700}], 
+   PointBox[{-900, -750}], PointBox[{-900, -800}], PointBox[{-900, -850}], 
+   PointBox[{-900, -900}], PointBox[{-900, -950}], PointBox[{-900, -1000}], 
+   PointBox[{-900, -1050}], PointBox[{-900, -1100}], PointBox[{-900, -1150}], 
+   PointBox[{-900, -1200}], PointBox[{-900, -1250}], PointBox[{-900, -1300}], 
+   PointBox[{-900, -1350}], PointBox[{-900, -1400}], PointBox[{-900, -1450}], 
+   PointBox[{-900, -1500}], PointBox[{-900, -1550}], PointBox[{-900, -1600}], 
+   PointBox[{-900, -1650}], PointBox[{-900, -1700}], PointBox[{-900, -1750}], 
+   PointBox[{-900, -1800}], PointBox[{-950, -500}], PointBox[{-950, -550}], 
+   PointBox[{-950, -600}], PointBox[{-950, -650}], PointBox[{-950, -700}], 
+   PointBox[{-950, -750}], PointBox[{-950, -800}], PointBox[{-950, -850}], 
+   PointBox[{-950, -900}], PointBox[{-950, -950}], PointBox[{-950, -1000}], 
+   PointBox[{-950, -1050}], PointBox[{-950, -1100}], PointBox[{-950, -1150}], 
+   PointBox[{-950, -1200}], PointBox[{-950, -1250}], PointBox[{-950, -1300}], 
+   PointBox[{-950, -1350}], PointBox[{-950, -1400}], PointBox[{-950, -1450}], 
+   PointBox[{-950, -1500}], PointBox[{-950, -1550}], PointBox[{-950, -1600}], 
+   PointBox[{-950, -1650}], PointBox[{-950, -1700}], PointBox[{-950, -1750}], 
+   PointBox[{-950, -1800}], PointBox[{-1000, -500}], PointBox[{-1000, -550}], 
+   PointBox[{-1000, -600}], PointBox[{-1000, -650}], PointBox[{-1000, -700}], 
+   PointBox[{-1000, -750}], PointBox[{-1000, -800}], PointBox[{-1000, -850}], 
+   PointBox[{-1000, -900}], PointBox[{-1000, -950}], PointBox[{-1000, -1000}],
+    PointBox[{-1000, -1050}], PointBox[{-1000, -1100}], 
+   PointBox[{-1000, -1150}], PointBox[{-1000, -1200}], 
+   PointBox[{-1000, -1250}], PointBox[{-1000, -1300}], 
+   PointBox[{-1000, -1350}], PointBox[{-1000, -1400}], 
+   PointBox[{-1000, -1450}], PointBox[{-1000, -1500}], 
+   PointBox[{-1000, -1550}], PointBox[{-1000, -1600}], 
+   PointBox[{-1000, -1650}], PointBox[{-1000, -1700}], 
+   PointBox[{-1000, -1750}], PointBox[{-1000, -1800}], 
+   PointBox[{-1050, -500}], PointBox[{-1050, -550}], PointBox[{-1050, -600}], 
+   PointBox[{-1050, -650}], PointBox[{-1050, -700}], PointBox[{-1050, -750}], 
+   PointBox[{-1050, -800}], PointBox[{-1050, -850}], PointBox[{-1050, -900}], 
+   PointBox[{-1050, -950}], PointBox[{-1050, -1000}], 
+   PointBox[{-1050, -1050}], PointBox[{-1050, -1100}], 
+   PointBox[{-1050, -1150}], PointBox[{-1050, -1200}], 
+   PointBox[{-1050, -1250}], PointBox[{-1050, -1300}], 
+   PointBox[{-1050, -1350}], PointBox[{-1050, -1400}], 
+   PointBox[{-1050, -1450}], PointBox[{-1050, -1500}], 
+   PointBox[{-1050, -1550}], PointBox[{-1050, -1600}], 
+   PointBox[{-1050, -1650}], PointBox[{-1050, -1700}], 
+   PointBox[{-1050, -1750}], PointBox[{-1050, -1800}], 
+   PointBox[{-1100, -500}], PointBox[{-1100, -550}], PointBox[{-1100, -600}], 
+   PointBox[{-1100, -650}], PointBox[{-1100, -700}], PointBox[{-1100, -750}], 
+   PointBox[{-1100, -800}], PointBox[{-1100, -850}], PointBox[{-1100, -900}], 
+   PointBox[{-1100, -950}], PointBox[{-1100, -1000}], 
+   PointBox[{-1100, -1050}], PointBox[{-1100, -1100}], 
+   PointBox[{-1100, -1150}], PointBox[{-1100, -1200}], 
+   PointBox[{-1100, -1250}], PointBox[{-1100, -1300}], 
+   PointBox[{-1100, -1350}], PointBox[{-1100, -1400}], 
+   PointBox[{-1100, -1450}], PointBox[{-1100, -1500}], 
+   PointBox[{-1100, -1550}], PointBox[{-1100, -1600}], 
+   PointBox[{-1100, -1650}], PointBox[{-1100, -1700}], 
+   PointBox[{-1100, -1750}], PointBox[{-1100, -1800}], 
+   PointBox[{-1150, -500}], PointBox[{-1150, -550}], PointBox[{-1150, -600}], 
+   PointBox[{-1150, -650}], PointBox[{-1150, -700}], PointBox[{-1150, -750}], 
+   PointBox[{-1150, -800}], PointBox[{-1150, -850}], PointBox[{-1150, -900}], 
+   PointBox[{-1150, -950}], PointBox[{-1150, -1000}], 
+   PointBox[{-1150, -1050}], PointBox[{-1150, -1100}], 
+   PointBox[{-1150, -1150}], PointBox[{-1150, -1200}], 
+   PointBox[{-1150, -1250}], PointBox[{-1150, -1300}], 
+   PointBox[{-1150, -1350}], PointBox[{-1150, -1400}], 
+   PointBox[{-1150, -1450}], PointBox[{-1150, -1500}], 
+   PointBox[{-1150, -1550}], PointBox[{-1150, -1600}], 
+   PointBox[{-1150, -1650}], PointBox[{-1150, -1700}], 
+   PointBox[{-1150, -1750}], PointBox[{-1150, -1800}], 
+   PointBox[{-1200, -500}], PointBox[{-1200, -550}], PointBox[{-1200, -600}], 
+   PointBox[{-1200, -650}], PointBox[{-1200, -700}], PointBox[{-1200, -750}], 
+   PointBox[{-1200, -800}], PointBox[{-1200, -850}], PointBox[{-1200, -900}], 
+   PointBox[{-1200, -950}], PointBox[{-1200, -1000}], 
+   PointBox[{-1200, -1050}], PointBox[{-1200, -1100}], 
+   PointBox[{-1200, -1150}], PointBox[{-1200, -1200}], 
+   PointBox[{-1200, -1250}], PointBox[{-1200, -1300}], 
+   PointBox[{-1200, -1350}], PointBox[{-1200, -1400}], 
+   PointBox[{-1200, -1450}], PointBox[{-1200, -1500}], 
+   PointBox[{-1200, -1550}], PointBox[{-1200, -1600}], 
+   PointBox[{-1200, -1650}], PointBox[{-1200, -1700}], 
+   PointBox[{-1200, -1750}], PointBox[{-1200, -1800}], 
+   PointBox[{-1250, -500}], PointBox[{-1250, -550}], PointBox[{-1250, -600}], 
+   PointBox[{-1250, -650}], PointBox[{-1250, -700}], PointBox[{-1250, -750}], 
+   PointBox[{-1250, -800}], PointBox[{-1250, -850}], PointBox[{-1250, -900}], 
+   PointBox[{-1250, -950}], PointBox[{-1250, -1000}], 
+   PointBox[{-1250, -1050}], PointBox[{-1250, -1100}], 
+   PointBox[{-1250, -1150}], PointBox[{-1250, -1200}], 
+   PointBox[{-1250, -1250}], PointBox[{-1250, -1300}], 
+   PointBox[{-1250, -1350}], PointBox[{-1250, -1400}], 
+   PointBox[{-1250, -1450}], PointBox[{-1250, -1500}], 
+   PointBox[{-1250, -1550}], PointBox[{-1250, -1600}], 
+   PointBox[{-1250, -1650}], PointBox[{-1250, -1700}], 
+   PointBox[{-1250, -1750}], PointBox[{-1250, -1800}], 
+   PointBox[{-1300, -500}], PointBox[{-1300, -550}], PointBox[{-1300, -600}], 
+   PointBox[{-1300, -650}], PointBox[{-1300, -700}], PointBox[{-1300, -750}], 
+   PointBox[{-1300, -800}], PointBox[{-1300, -850}], PointBox[{-1300, -900}], 
+   PointBox[{-1300, -950}], PointBox[{-1300, -1000}], 
+   PointBox[{-1300, -1050}], PointBox[{-1300, -1100}], 
+   PointBox[{-1300, -1150}], PointBox[{-1300, -1200}], 
+   PointBox[{-1300, -1250}], PointBox[{-1300, -1300}], 
+   PointBox[{-1300, -1350}], PointBox[{-1300, -1400}], 
+   PointBox[{-1300, -1450}], PointBox[{-1300, -1500}], 
+   PointBox[{-1300, -1550}], PointBox[{-1300, -1600}], 
+   PointBox[{-1300, -1650}], PointBox[{-1300, -1700}], 
+   PointBox[{-1300, -1750}], PointBox[{-1300, -1800}], 
+   PointBox[{-1350, -500}], PointBox[{-1350, -550}], PointBox[{-1350, -600}], 
+   PointBox[{-1350, -650}], PointBox[{-1350, -700}], PointBox[{-1350, -750}], 
+   PointBox[{-1350, -800}], PointBox[{-1350, -850}], PointBox[{-1350, -900}], 
+   PointBox[{-1350, -950}], PointBox[{-1350, -1000}], 
+   PointBox[{-1350, -1050}], PointBox[{-1350, -1100}], 
+   PointBox[{-1350, -1150}], PointBox[{-1350, -1200}], 
+   PointBox[{-1350, -1250}], PointBox[{-1350, -1300}], 
+   PointBox[{-1350, -1350}], PointBox[{-1350, -1400}], 
+   PointBox[{-1350, -1450}], PointBox[{-1350, -1500}], 
+   PointBox[{-1350, -1550}], PointBox[{-1350, -1600}], 
+   PointBox[{-1350, -1650}], PointBox[{-1350, -1700}], 
+   PointBox[{-1350, -1750}], PointBox[{-1350, -1800}], 
+   PointBox[{-1400, -500}], PointBox[{-1400, -550}], PointBox[{-1400, -600}], 
+   PointBox[{-1400, -650}], PointBox[{-1400, -700}], PointBox[{-1400, -750}], 
+   PointBox[{-1400, -800}], PointBox[{-1400, -850}], PointBox[{-1400, -900}], 
+   PointBox[{-1400, -950}], PointBox[{-1400, -1000}], 
+   PointBox[{-1400, -1050}], PointBox[{-1400, -1100}], 
+   PointBox[{-1400, -1150}], PointBox[{-1400, -1200}], 
+   PointBox[{-1400, -1250}], PointBox[{-1400, -1300}], 
+   PointBox[{-1400, -1350}], PointBox[{-1400, -1400}], 
+   PointBox[{-1400, -1450}], PointBox[{-1400, -1500}], 
+   PointBox[{-1400, -1550}], PointBox[{-1400, -1600}], 
+   PointBox[{-1400, -1650}], PointBox[{-1400, -1700}], 
+   PointBox[{-1400, -1750}], PointBox[{-1400, -1800}], 
+   PointBox[{-1450, -500}], PointBox[{-1450, -550}], PointBox[{-1450, -600}], 
+   PointBox[{-1450, -650}], PointBox[{-1450, -700}], PointBox[{-1450, -750}], 
+   PointBox[{-1450, -800}], PointBox[{-1450, -850}], PointBox[{-1450, -900}], 
+   PointBox[{-1450, -950}], PointBox[{-1450, -1000}], 
+   PointBox[{-1450, -1050}], PointBox[{-1450, -1100}], 
+   PointBox[{-1450, -1150}], PointBox[{-1450, -1200}], 
+   PointBox[{-1450, -1250}], PointBox[{-1450, -1300}], 
+   PointBox[{-1450, -1350}], PointBox[{-1450, -1400}], 
+   PointBox[{-1450, -1450}], PointBox[{-1450, -1500}], 
+   PointBox[{-1450, -1550}], PointBox[{-1450, -1600}], 
+   PointBox[{-1450, -1650}], PointBox[{-1450, -1700}], 
+   PointBox[{-1450, -1750}], PointBox[{-1450, -1800}], 
+   PointBox[{-1500, -500}], PointBox[{-1500, -550}], PointBox[{-1500, -600}], 
+   PointBox[{-1500, -650}], PointBox[{-1500, -700}], PointBox[{-1500, -750}], 
+   PointBox[{-1500, -800}], PointBox[{-1500, -850}], PointBox[{-1500, -900}], 
+   PointBox[{-1500, -950}], PointBox[{-1500, -1000}], 
+   PointBox[{-1500, -1050}], PointBox[{-1500, -1100}], 
+   PointBox[{-1500, -1150}], PointBox[{-1500, -1200}], 
+   PointBox[{-1500, -1250}], PointBox[{-1500, -1300}], 
+   PointBox[{-1500, -1350}], PointBox[{-1500, -1400}], 
+   PointBox[{-1500, -1450}], PointBox[{-1500, -1500}], 
+   PointBox[{-1500, -1550}], PointBox[{-1500, -1600}], 
+   PointBox[{-1500, -1650}], PointBox[{-1500, -1700}], 
+   PointBox[{-1500, -1750}], PointBox[{-1500, -1800}], 
+   PointBox[{-1550, -500}], PointBox[{-1550, -550}], PointBox[{-1550, -600}], 
+   PointBox[{-1550, -650}], PointBox[{-1550, -700}], PointBox[{-1550, -750}], 
+   PointBox[{-1550, -800}], PointBox[{-1550, -850}], PointBox[{-1550, -900}], 
+   PointBox[{-1550, -950}], PointBox[{-1550, -1000}], 
+   PointBox[{-1550, -1050}], PointBox[{-1550, -1100}], 
+   PointBox[{-1550, -1150}], PointBox[{-1550, -1200}], 
+   PointBox[{-1550, -1250}], PointBox[{-1550, -1300}], 
+   PointBox[{-1550, -1350}], PointBox[{-1550, -1400}], 
+   PointBox[{-1550, -1450}], PointBox[{-1550, -1500}], 
+   PointBox[{-1550, -1550}], PointBox[{-1550, -1600}], 
+   PointBox[{-1550, -1650}], PointBox[{-1550, -1700}], 
+   PointBox[{-1550, -1750}], PointBox[{-1550, -1800}], 
+   PointBox[{-1600, -500}], PointBox[{-1600, -550}], PointBox[{-1600, -600}], 
+   PointBox[{-1600, -650}], PointBox[{-1600, -700}], PointBox[{-1600, -750}], 
+   PointBox[{-1600, -800}], PointBox[{-1600, -850}], PointBox[{-1600, -900}], 
+   PointBox[{-1600, -950}], PointBox[{-1600, -1000}], 
+   PointBox[{-1600, -1050}], PointBox[{-1600, -1100}], 
+   PointBox[{-1600, -1150}], PointBox[{-1600, -1200}], 
+   PointBox[{-1600, -1250}], PointBox[{-1600, -1300}], 
+   PointBox[{-1600, -1350}], PointBox[{-1600, -1400}], 
+   PointBox[{-1600, -1450}], PointBox[{-1600, -1500}], 
+   PointBox[{-1600, -1550}], PointBox[{-1600, -1600}], 
+   PointBox[{-1600, -1650}], PointBox[{-1600, -1700}], 
+   PointBox[{-1600, -1750}], PointBox[{-1600, -1800}], 
+   PointBox[{-1650, -500}], PointBox[{-1650, -550}], PointBox[{-1650, -600}], 
+   PointBox[{-1650, -650}], PointBox[{-1650, -700}], PointBox[{-1650, -750}], 
+   PointBox[{-1650, -800}], PointBox[{-1650, -850}], PointBox[{-1650, -900}], 
+   PointBox[{-1650, -950}], PointBox[{-1650, -1000}], 
+   PointBox[{-1650, -1050}], PointBox[{-1650, -1100}], 
+   PointBox[{-1650, -1150}], PointBox[{-1650, -1200}], 
+   PointBox[{-1650, -1250}], PointBox[{-1650, -1300}], 
+   PointBox[{-1650, -1350}], PointBox[{-1650, -1400}], 
+   PointBox[{-1650, -1450}], PointBox[{-1650, -1500}], 
+   PointBox[{-1650, -1550}], PointBox[{-1650, -1600}], 
+   PointBox[{-1650, -1650}], PointBox[{-1650, -1700}], 
+   PointBox[{-1650, -1750}], PointBox[{-1650, -1800}], 
+   PointBox[{-1700, -500}], PointBox[{-1700, -550}], PointBox[{-1700, -600}], 
+   PointBox[{-1700, -650}], PointBox[{-1700, -700}], PointBox[{-1700, -750}], 
+   PointBox[{-1700, -800}], PointBox[{-1700, -850}], PointBox[{-1700, -900}], 
+   PointBox[{-1700, -950}], PointBox[{-1700, -1000}], 
+   PointBox[{-1700, -1050}], PointBox[{-1700, -1100}], 
+   PointBox[{-1700, -1150}], PointBox[{-1700, -1200}], 
+   PointBox[{-1700, -1250}], PointBox[{-1700, -1300}], 
+   PointBox[{-1700, -1350}], PointBox[{-1700, -1400}], 
+   PointBox[{-1700, -1450}], PointBox[{-1700, -1500}], 
+   PointBox[{-1700, -1550}], PointBox[{-1700, -1600}], 
+   PointBox[{-1700, -1650}], PointBox[{-1700, -1700}], 
+   PointBox[{-1700, -1750}], PointBox[{-1700, -1800}], 
+   PointBox[{-1750, -500}], PointBox[{-1750, -550}], PointBox[{-1750, -600}], 
+   PointBox[{-1750, -650}], PointBox[{-1750, -700}], PointBox[{-1750, -750}], 
+   PointBox[{-1750, -800}], PointBox[{-1750, -850}], PointBox[{-1750, -900}], 
+   PointBox[{-1750, -950}], PointBox[{-1750, -1000}], 
+   PointBox[{-1750, -1050}], PointBox[{-1750, -1100}], 
+   PointBox[{-1750, -1150}], PointBox[{-1750, -1200}], 
+   PointBox[{-1750, -1250}], PointBox[{-1750, -1300}], 
+   PointBox[{-1750, -1350}], PointBox[{-1750, -1400}], 
+   PointBox[{-1750, -1450}], PointBox[{-1750, -1500}], 
+   PointBox[{-1750, -1550}], PointBox[{-1750, -1600}], 
+   PointBox[{-1750, -1650}], PointBox[{-1750, -1700}], 
+   PointBox[{-1750, -1750}], PointBox[{-1750, -1800}], 
+   PointBox[{-1800, -500}], PointBox[{-1800, -550}], PointBox[{-1800, -600}], 
+   PointBox[{-1800, -650}], PointBox[{-1800, -700}], PointBox[{-1800, -750}], 
+   PointBox[{-1800, -800}], PointBox[{-1800, -850}], PointBox[{-1800, -900}], 
+   PointBox[{-1800, -950}], PointBox[{-1800, -1000}], 
+   PointBox[{-1800, -1050}], PointBox[{-1800, -1100}], 
+   PointBox[{-1800, -1150}], PointBox[{-1800, -1200}], 
+   PointBox[{-1800, -1250}], PointBox[{-1800, -1300}], 
+   PointBox[{-1800, -1350}], PointBox[{-1800, -1400}], 
+   PointBox[{-1800, -1450}], PointBox[{-1800, -1500}], 
+   PointBox[{-1800, -1550}], PointBox[{-1800, -1600}], 
+   PointBox[{-1800, -1650}], PointBox[{-1800, -1700}], 
+   PointBox[{-1800, -1750}], PointBox[{-1800, -1800}], PointBox[{500, -500}], 
+   PointBox[{500, -550}], PointBox[{500, -600}], PointBox[{500, -650}], 
+   PointBox[{500, -700}], PointBox[{500, -750}], PointBox[{500, -800}], 
+   PointBox[{500, -850}], PointBox[{500, -900}], PointBox[{500, -950}], 
+   PointBox[{500, -1000}], PointBox[{500, -1050}], PointBox[{500, -1100}], 
+   PointBox[{500, -1150}], PointBox[{500, -1200}], PointBox[{500, -1250}], 
+   PointBox[{500, -1300}], PointBox[{500, -1350}], PointBox[{500, -1400}], 
+   PointBox[{500, -1450}], PointBox[{500, -1500}], PointBox[{500, -1550}], 
+   PointBox[{500, -1600}], PointBox[{500, -1650}], PointBox[{500, -1700}], 
+   PointBox[{500, -1750}], PointBox[{500, -1800}], PointBox[{550, -500}], 
+   PointBox[{550, -550}], PointBox[{550, -600}], PointBox[{550, -650}], 
+   PointBox[{550, -700}], PointBox[{550, -750}], PointBox[{550, -800}], 
+   PointBox[{550, -850}], PointBox[{550, -900}], PointBox[{550, -950}], 
+   PointBox[{550, -1000}], PointBox[{550, -1050}], PointBox[{550, -1100}], 
+   PointBox[{550, -1150}], PointBox[{550, -1200}], PointBox[{550, -1250}], 
+   PointBox[{550, -1300}], PointBox[{550, -1350}], PointBox[{550, -1400}], 
+   PointBox[{550, -1450}], PointBox[{550, -1500}], PointBox[{550, -1550}], 
+   PointBox[{550, -1600}], PointBox[{550, -1650}], PointBox[{550, -1700}], 
+   PointBox[{550, -1750}], PointBox[{550, -1800}], PointBox[{600, -500}], 
+   PointBox[{600, -550}], PointBox[{600, -600}], PointBox[{600, -650}], 
+   PointBox[{600, -700}], PointBox[{600, -750}], PointBox[{600, -800}], 
+   PointBox[{600, -850}], PointBox[{600, -900}], PointBox[{600, -950}], 
+   PointBox[{600, -1000}], PointBox[{600, -1050}], PointBox[{600, -1100}], 
+   PointBox[{600, -1150}], PointBox[{600, -1200}], PointBox[{600, -1250}], 
+   PointBox[{600, -1300}], PointBox[{600, -1350}], PointBox[{600, -1400}], 
+   PointBox[{600, -1450}], PointBox[{600, -1500}], PointBox[{600, -1550}], 
+   PointBox[{600, -1600}], PointBox[{600, -1650}], PointBox[{600, -1700}], 
+   PointBox[{600, -1750}], PointBox[{600, -1800}], PointBox[{650, -500}], 
+   PointBox[{650, -550}], PointBox[{650, -600}], PointBox[{650, -650}], 
+   PointBox[{650, -700}], PointBox[{650, -750}], PointBox[{650, -800}], 
+   PointBox[{650, -850}], PointBox[{650, -900}], PointBox[{650, -950}], 
+   PointBox[{650, -1000}], PointBox[{650, -1050}], PointBox[{650, -1100}], 
+   PointBox[{650, -1150}], PointBox[{650, -1200}], PointBox[{650, -1250}], 
+   PointBox[{650, -1300}], PointBox[{650, -1350}], PointBox[{650, -1400}], 
+   PointBox[{650, -1450}], PointBox[{650, -1500}], PointBox[{650, -1550}], 
+   PointBox[{650, -1600}], PointBox[{650, -1650}], PointBox[{650, -1700}], 
+   PointBox[{650, -1750}], PointBox[{650, -1800}], PointBox[{700, -500}], 
+   PointBox[{700, -550}], PointBox[{700, -600}], PointBox[{700, -650}], 
+   PointBox[{700, -700}], PointBox[{700, -750}], PointBox[{700, -800}], 
+   PointBox[{700, -850}], PointBox[{700, -900}], PointBox[{700, -950}], 
+   PointBox[{700, -1000}], PointBox[{700, -1050}], PointBox[{700, -1100}], 
+   PointBox[{700, -1150}], PointBox[{700, -1200}], PointBox[{700, -1250}], 
+   PointBox[{700, -1300}], PointBox[{700, -1350}], PointBox[{700, -1400}], 
+   PointBox[{700, -1450}], PointBox[{700, -1500}], PointBox[{700, -1550}], 
+   PointBox[{700, -1600}], PointBox[{700, -1650}], PointBox[{700, -1700}], 
+   PointBox[{700, -1750}], PointBox[{700, -1800}], PointBox[{750, -500}], 
+   PointBox[{750, -550}], PointBox[{750, -600}], PointBox[{750, -650}], 
+   PointBox[{750, -700}], PointBox[{750, -750}], PointBox[{750, -800}], 
+   PointBox[{750, -850}], PointBox[{750, -900}], PointBox[{750, -950}], 
+   PointBox[{750, -1000}], PointBox[{750, -1050}], PointBox[{750, -1100}], 
+   PointBox[{750, -1150}], PointBox[{750, -1200}], PointBox[{750, -1250}], 
+   PointBox[{750, -1300}], PointBox[{750, -1350}], PointBox[{750, -1400}], 
+   PointBox[{750, -1450}], PointBox[{750, -1500}], PointBox[{750, -1550}], 
+   PointBox[{750, -1600}], PointBox[{750, -1650}], PointBox[{750, -1700}], 
+   PointBox[{750, -1750}], PointBox[{750, -1800}], PointBox[{800, -500}], 
+   PointBox[{800, -550}], PointBox[{800, -600}], PointBox[{800, -650}], 
+   PointBox[{800, -700}], PointBox[{800, -750}], PointBox[{800, -800}], 
+   PointBox[{800, -850}], PointBox[{800, -900}], PointBox[{800, -950}], 
+   PointBox[{800, -1000}], PointBox[{800, -1050}], PointBox[{800, -1100}], 
+   PointBox[{800, -1150}], PointBox[{800, -1200}], PointBox[{800, -1250}], 
+   PointBox[{800, -1300}], PointBox[{800, -1350}], PointBox[{800, -1400}], 
+   PointBox[{800, -1450}], PointBox[{800, -1500}], PointBox[{800, -1550}], 
+   PointBox[{800, -1600}], PointBox[{800, -1650}], PointBox[{800, -1700}], 
+   PointBox[{800, -1750}], PointBox[{800, -1800}], PointBox[{850, -500}], 
+   PointBox[{850, -550}], PointBox[{850, -600}], PointBox[{850, -650}], 
+   PointBox[{850, -700}], PointBox[{850, -750}], PointBox[{850, -800}], 
+   PointBox[{850, -850}], PointBox[{850, -900}], PointBox[{850, -950}], 
+   PointBox[{850, -1000}], PointBox[{850, -1050}], PointBox[{850, -1100}], 
+   PointBox[{850, -1150}], PointBox[{850, -1200}], PointBox[{850, -1250}], 
+   PointBox[{850, -1300}], PointBox[{850, -1350}], PointBox[{850, -1400}], 
+   PointBox[{850, -1450}], PointBox[{850, -1500}], PointBox[{850, -1550}], 
+   PointBox[{850, -1600}], PointBox[{850, -1650}], PointBox[{850, -1700}], 
+   PointBox[{850, -1750}], PointBox[{850, -1800}], PointBox[{900, -500}], 
+   PointBox[{900, -550}], PointBox[{900, -600}], PointBox[{900, -650}], 
+   PointBox[{900, -700}], PointBox[{900, -750}], PointBox[{900, -800}], 
+   PointBox[{900, -850}], PointBox[{900, -900}], PointBox[{900, -950}], 
+   PointBox[{900, -1000}], PointBox[{900, -1050}], PointBox[{900, -1100}], 
+   PointBox[{900, -1150}], PointBox[{900, -1200}], PointBox[{900, -1250}], 
+   PointBox[{900, -1300}], PointBox[{900, -1350}], PointBox[{900, -1400}], 
+   PointBox[{900, -1450}], PointBox[{900, -1500}], PointBox[{900, -1550}], 
+   PointBox[{900, -1600}], PointBox[{900, -1650}], PointBox[{900, -1700}], 
+   PointBox[{900, -1750}], PointBox[{900, -1800}], PointBox[{950, -500}], 
+   PointBox[{950, -550}], PointBox[{950, -600}], PointBox[{950, -650}], 
+   PointBox[{950, -700}], PointBox[{950, -750}], PointBox[{950, -800}], 
+   PointBox[{950, -850}], PointBox[{950, -900}], PointBox[{950, -950}], 
+   PointBox[{950, -1000}], PointBox[{950, -1050}], PointBox[{950, -1100}], 
+   PointBox[{950, -1150}], PointBox[{950, -1200}], PointBox[{950, -1250}], 
+   PointBox[{950, -1300}], PointBox[{950, -1350}], PointBox[{950, -1400}], 
+   PointBox[{950, -1450}], PointBox[{950, -1500}], PointBox[{950, -1550}], 
+   PointBox[{950, -1600}], PointBox[{950, -1650}], PointBox[{950, -1700}], 
+   PointBox[{950, -1750}], PointBox[{950, -1800}], PointBox[{1000, -500}], 
+   PointBox[{1000, -550}], PointBox[{1000, -600}], PointBox[{1000, -650}], 
+   PointBox[{1000, -700}], PointBox[{1000, -750}], PointBox[{1000, -800}], 
+   PointBox[{1000, -850}], PointBox[{1000, -900}], PointBox[{1000, -950}], 
+   PointBox[{1000, -1000}], PointBox[{1000, -1050}], PointBox[{1000, -1100}], 
+   PointBox[{1000, -1150}], PointBox[{1000, -1200}], PointBox[{1000, -1250}], 
+   PointBox[{1000, -1300}], PointBox[{1000, -1350}], PointBox[{1000, -1400}], 
+   PointBox[{1000, -1450}], PointBox[{1000, -1500}], PointBox[{1000, -1550}], 
+   PointBox[{1000, -1600}], PointBox[{1000, -1650}], PointBox[{1000, -1700}], 
+   PointBox[{1000, -1750}], PointBox[{1000, -1800}], PointBox[{1050, -500}], 
+   PointBox[{1050, -550}], PointBox[{1050, -600}], PointBox[{1050, -650}], 
+   PointBox[{1050, -700}], PointBox[{1050, -750}], PointBox[{1050, -800}], 
+   PointBox[{1050, -850}], PointBox[{1050, -900}], PointBox[{1050, -950}], 
+   PointBox[{1050, -1000}], PointBox[{1050, -1050}], PointBox[{1050, -1100}], 
+   PointBox[{1050, -1150}], PointBox[{1050, -1200}], PointBox[{1050, -1250}], 
+   PointBox[{1050, -1300}], PointBox[{1050, -1350}], PointBox[{1050, -1400}], 
+   PointBox[{1050, -1450}], PointBox[{1050, -1500}], PointBox[{1050, -1550}], 
+   PointBox[{1050, -1600}], PointBox[{1050, -1650}], PointBox[{1050, -1700}], 
+   PointBox[{1050, -1750}], PointBox[{1050, -1800}], PointBox[{1100, -500}], 
+   PointBox[{1100, -550}], PointBox[{1100, -600}], PointBox[{1100, -650}], 
+   PointBox[{1100, -700}], PointBox[{1100, -750}], PointBox[{1100, -800}], 
+   PointBox[{1100, -850}], PointBox[{1100, -900}], PointBox[{1100, -950}], 
+   PointBox[{1100, -1000}], PointBox[{1100, -1050}], PointBox[{1100, -1100}], 
+   PointBox[{1100, -1150}], PointBox[{1100, -1200}], PointBox[{1100, -1250}], 
+   PointBox[{1100, -1300}], PointBox[{1100, -1350}], PointBox[{1100, -1400}], 
+   PointBox[{1100, -1450}], PointBox[{1100, -1500}], PointBox[{1100, -1550}], 
+   PointBox[{1100, -1600}], PointBox[{1100, -1650}], PointBox[{1100, -1700}], 
+   PointBox[{1100, -1750}], PointBox[{1100, -1800}], PointBox[{1150, -500}], 
+   PointBox[{1150, -550}], PointBox[{1150, -600}], PointBox[{1150, -650}], 
+   PointBox[{1150, -700}], PointBox[{1150, -750}], PointBox[{1150, -800}], 
+   PointBox[{1150, -850}], PointBox[{1150, -900}], PointBox[{1150, -950}], 
+   PointBox[{1150, -1000}], PointBox[{1150, -1050}], PointBox[{1150, -1100}], 
+   PointBox[{1150, -1150}], PointBox[{1150, -1200}], PointBox[{1150, -1250}], 
+   PointBox[{1150, -1300}], PointBox[{1150, -1350}], PointBox[{1150, -1400}], 
+   PointBox[{1150, -1450}], PointBox[{1150, -1500}], PointBox[{1150, -1550}], 
+   PointBox[{1150, -1600}], PointBox[{1150, -1650}], PointBox[{1150, -1700}], 
+   PointBox[{1150, -1750}], PointBox[{1150, -1800}], PointBox[{1200, -500}], 
+   PointBox[{1200, -550}], PointBox[{1200, -600}], PointBox[{1200, -650}], 
+   PointBox[{1200, -700}], PointBox[{1200, -750}], PointBox[{1200, -800}], 
+   PointBox[{1200, -850}], PointBox[{1200, -900}], PointBox[{1200, -950}], 
+   PointBox[{1200, -1000}], PointBox[{1200, -1050}], PointBox[{1200, -1100}], 
+   PointBox[{1200, -1150}], PointBox[{1200, -1200}], PointBox[{1200, -1250}], 
+   PointBox[{1200, -1300}], PointBox[{1200, -1350}], PointBox[{1200, -1400}], 
+   PointBox[{1200, -1450}], PointBox[{1200, -1500}], PointBox[{1200, -1550}], 
+   PointBox[{1200, -1600}], PointBox[{1200, -1650}], PointBox[{1200, -1700}], 
+   PointBox[{1200, -1750}], PointBox[{1200, -1800}], PointBox[{1250, -500}], 
+   PointBox[{1250, -550}], PointBox[{1250, -600}], PointBox[{1250, -650}], 
+   PointBox[{1250, -700}], PointBox[{1250, -750}], PointBox[{1250, -800}], 
+   PointBox[{1250, -850}], PointBox[{1250, -900}], PointBox[{1250, -950}], 
+   PointBox[{1250, -1000}], PointBox[{1250, -1050}], PointBox[{1250, -1100}], 
+   PointBox[{1250, -1150}], PointBox[{1250, -1200}], PointBox[{1250, -1250}], 
+   PointBox[{1250, -1300}], PointBox[{1250, -1350}], PointBox[{1250, -1400}], 
+   PointBox[{1250, -1450}], PointBox[{1250, -1500}], PointBox[{1250, -1550}], 
+   PointBox[{1250, -1600}], PointBox[{1250, -1650}], PointBox[{1250, -1700}], 
+   PointBox[{1250, -1750}], PointBox[{1250, -1800}], PointBox[{1300, -500}], 
+   PointBox[{1300, -550}], PointBox[{1300, -600}], PointBox[{1300, -650}], 
+   PointBox[{1300, -700}], PointBox[{1300, -750}], PointBox[{1300, -800}], 
+   PointBox[{1300, -850}], PointBox[{1300, -900}], PointBox[{1300, -950}], 
+   PointBox[{1300, -1000}], PointBox[{1300, -1050}], PointBox[{1300, -1100}], 
+   PointBox[{1300, -1150}], PointBox[{1300, -1200}], PointBox[{1300, -1250}], 
+   PointBox[{1300, -1300}], PointBox[{1300, -1350}], PointBox[{1300, -1400}], 
+   PointBox[{1300, -1450}], PointBox[{1300, -1500}], PointBox[{1300, -1550}], 
+   PointBox[{1300, -1600}], PointBox[{1300, -1650}], PointBox[{1300, -1700}], 
+   PointBox[{1300, -1750}], PointBox[{1300, -1800}], PointBox[{1350, -500}], 
+   PointBox[{1350, -550}], PointBox[{1350, -600}], PointBox[{1350, -650}], 
+   PointBox[{1350, -700}], PointBox[{1350, -750}], PointBox[{1350, -800}], 
+   PointBox[{1350, -850}], PointBox[{1350, -900}], PointBox[{1350, -950}], 
+   PointBox[{1350, -1000}], PointBox[{1350, -1050}], PointBox[{1350, -1100}], 
+   PointBox[{1350, -1150}], PointBox[{1350, -1200}], PointBox[{1350, -1250}], 
+   PointBox[{1350, -1300}], PointBox[{1350, -1350}], PointBox[{1350, -1400}], 
+   PointBox[{1350, -1450}], PointBox[{1350, -1500}], PointBox[{1350, -1550}], 
+   PointBox[{1350, -1600}], PointBox[{1350, -1650}], PointBox[{1350, -1700}], 
+   PointBox[{1350, -1750}], PointBox[{1350, -1800}], PointBox[{1400, -500}], 
+   PointBox[{1400, -550}], PointBox[{1400, -600}], PointBox[{1400, -650}], 
+   PointBox[{1400, -700}], PointBox[{1400, -750}], PointBox[{1400, -800}], 
+   PointBox[{1400, -850}], PointBox[{1400, -900}], PointBox[{1400, -950}], 
+   PointBox[{1400, -1000}], PointBox[{1400, -1050}], PointBox[{1400, -1100}], 
+   PointBox[{1400, -1150}], PointBox[{1400, -1200}], PointBox[{1400, -1250}], 
+   PointBox[{1400, -1300}], PointBox[{1400, -1350}], PointBox[{1400, -1400}], 
+   PointBox[{1400, -1450}], PointBox[{1400, -1500}], PointBox[{1400, -1550}], 
+   PointBox[{1400, -1600}], PointBox[{1400, -1650}], PointBox[{1400, -1700}], 
+   PointBox[{1400, -1750}], PointBox[{1400, -1800}], PointBox[{1450, -500}], 
+   PointBox[{1450, -550}], PointBox[{1450, -600}], PointBox[{1450, -650}], 
+   PointBox[{1450, -700}], PointBox[{1450, -750}], PointBox[{1450, -800}], 
+   PointBox[{1450, -850}], PointBox[{1450, -900}], PointBox[{1450, -950}], 
+   PointBox[{1450, -1000}], PointBox[{1450, -1050}], PointBox[{1450, -1100}], 
+   PointBox[{1450, -1150}], PointBox[{1450, -1200}], PointBox[{1450, -1250}], 
+   PointBox[{1450, -1300}], PointBox[{1450, -1350}], PointBox[{1450, -1400}], 
+   PointBox[{1450, -1450}], PointBox[{1450, -1500}], PointBox[{1450, -1550}], 
+   PointBox[{1450, -1600}], PointBox[{1450, -1650}], PointBox[{1450, -1700}], 
+   PointBox[{1450, -1750}], PointBox[{1450, -1800}], PointBox[{1500, -500}], 
+   PointBox[{1500, -550}], PointBox[{1500, -600}], PointBox[{1500, -650}], 
+   PointBox[{1500, -700}], PointBox[{1500, -750}], PointBox[{1500, -800}], 
+   PointBox[{1500, -850}], PointBox[{1500, -900}], PointBox[{1500, -950}], 
+   PointBox[{1500, -1000}], PointBox[{1500, -1050}], PointBox[{1500, -1100}], 
+   PointBox[{1500, -1150}], PointBox[{1500, -1200}], PointBox[{1500, -1250}], 
+   PointBox[{1500, -1300}], PointBox[{1500, -1350}], PointBox[{1500, -1400}], 
+   PointBox[{1500, -1450}], PointBox[{1500, -1500}], PointBox[{1500, -1550}], 
+   PointBox[{1500, -1600}], PointBox[{1500, -1650}], PointBox[{1500, -1700}], 
+   PointBox[{1500, -1750}], PointBox[{1500, -1800}], PointBox[{1550, -500}], 
+   PointBox[{1550, -550}], PointBox[{1550, -600}], PointBox[{1550, -650}], 
+   PointBox[{1550, -700}], PointBox[{1550, -750}], PointBox[{1550, -800}], 
+   PointBox[{1550, -850}], PointBox[{1550, -900}], PointBox[{1550, -950}], 
+   PointBox[{1550, -1000}], PointBox[{1550, -1050}], PointBox[{1550, -1100}], 
+   PointBox[{1550, -1150}], PointBox[{1550, -1200}], PointBox[{1550, -1250}], 
+   PointBox[{1550, -1300}], PointBox[{1550, -1350}], PointBox[{1550, -1400}], 
+   PointBox[{1550, -1450}], PointBox[{1550, -1500}], PointBox[{1550, -1550}], 
+   PointBox[{1550, -1600}], PointBox[{1550, -1650}], PointBox[{1550, -1700}], 
+   PointBox[{1550, -1750}], PointBox[{1550, -1800}], PointBox[{1600, -500}], 
+   PointBox[{1600, -550}], PointBox[{1600, -600}], PointBox[{1600, -650}], 
+   PointBox[{1600, -700}], PointBox[{1600, -750}], PointBox[{1600, -800}], 
+   PointBox[{1600, -850}], PointBox[{1600, -900}], PointBox[{1600, -950}], 
+   PointBox[{1600, -1000}], PointBox[{1600, -1050}], PointBox[{1600, -1100}], 
+   PointBox[{1600, -1150}], PointBox[{1600, -1200}], PointBox[{1600, -1250}], 
+   PointBox[{1600, -1300}], PointBox[{1600, -1350}], PointBox[{1600, -1400}], 
+   PointBox[{1600, -1450}], PointBox[{1600, -1500}], PointBox[{1600, -1550}], 
+   PointBox[{1600, -1600}], PointBox[{1600, -1650}], PointBox[{1600, -1700}], 
+   PointBox[{1600, -1750}], PointBox[{1600, -1800}], PointBox[{1650, -500}], 
+   PointBox[{1650, -550}], PointBox[{1650, -600}], PointBox[{1650, -650}], 
+   PointBox[{1650, -700}], PointBox[{1650, -750}], PointBox[{1650, -800}], 
+   PointBox[{1650, -850}], PointBox[{1650, -900}], PointBox[{1650, -950}], 
+   PointBox[{1650, -1000}], PointBox[{1650, -1050}], PointBox[{1650, -1100}], 
+   PointBox[{1650, -1150}], PointBox[{1650, -1200}], PointBox[{1650, -1250}], 
+   PointBox[{1650, -1300}], PointBox[{1650, -1350}], PointBox[{1650, -1400}], 
+   PointBox[{1650, -1450}], PointBox[{1650, -1500}], PointBox[{1650, -1550}], 
+   PointBox[{1650, -1600}], PointBox[{1650, -1650}], PointBox[{1650, -1700}], 
+   PointBox[{1650, -1750}], PointBox[{1650, -1800}], PointBox[{1700, -500}], 
+   PointBox[{1700, -550}], PointBox[{1700, -600}], PointBox[{1700, -650}], 
+   PointBox[{1700, -700}], PointBox[{1700, -750}], PointBox[{1700, -800}], 
+   PointBox[{1700, -850}], PointBox[{1700, -900}], PointBox[{1700, -950}], 
+   PointBox[{1700, -1000}], PointBox[{1700, -1050}], PointBox[{1700, -1100}], 
+   PointBox[{1700, -1150}], PointBox[{1700, -1200}], PointBox[{1700, -1250}], 
+   PointBox[{1700, -1300}], PointBox[{1700, -1350}], PointBox[{1700, -1400}], 
+   PointBox[{1700, -1450}], PointBox[{1700, -1500}], PointBox[{1700, -1550}], 
+   PointBox[{1700, -1600}], PointBox[{1700, -1650}], PointBox[{1700, -1700}], 
+   PointBox[{1700, -1750}], PointBox[{1700, -1800}], PointBox[{1750, -500}], 
+   PointBox[{1750, -550}], PointBox[{1750, -600}], PointBox[{1750, -650}], 
+   PointBox[{1750, -700}], PointBox[{1750, -750}], PointBox[{1750, -800}], 
+   PointBox[{1750, -850}], PointBox[{1750, -900}], PointBox[{1750, -950}], 
+   PointBox[{1750, -1000}], PointBox[{1750, -1050}], PointBox[{1750, -1100}], 
+   PointBox[{1750, -1150}], PointBox[{1750, -1200}], PointBox[{1750, -1250}], 
+   PointBox[{1750, -1300}], PointBox[{1750, -1350}], PointBox[{1750, -1400}], 
+   PointBox[{1750, -1450}], PointBox[{1750, -1500}], PointBox[{1750, -1550}], 
+   PointBox[{1750, -1600}], PointBox[{1750, -1650}], PointBox[{1750, -1700}], 
+   PointBox[{1750, -1750}], PointBox[{1750, -1800}], PointBox[{1800, -500}], 
+   PointBox[{1800, -550}], PointBox[{1800, -600}], PointBox[{1800, -650}], 
+   PointBox[{1800, -700}], PointBox[{1800, -750}], PointBox[{1800, -800}], 
+   PointBox[{1800, -850}], PointBox[{1800, -900}], PointBox[{1800, -950}], 
+   PointBox[{1800, -1000}], PointBox[{1800, -1050}], PointBox[{1800, -1100}], 
+   PointBox[{1800, -1150}], PointBox[{1800, -1200}], PointBox[{1800, -1250}], 
+   PointBox[{1800, -1300}], PointBox[{1800, -1350}], PointBox[{1800, -1400}], 
+   PointBox[{1800, -1450}], PointBox[{1800, -1500}], PointBox[{1800, -1550}], 
+   PointBox[{1800, -1600}], PointBox[{1800, -1650}], PointBox[{1800, -1700}], 
+   PointBox[{1800, -1750}], PointBox[{1800, -1800}]}]], "Output",
+ CellChangeTimes->{
+  3.757820926879695*^9},ExpressionUUID->"453d64ac-4453-4913-a424-\
+514f63cc2324"]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"Integrate", "[", 
+  RowBox[{
+   RowBox[{"Exp", "[", 
+    RowBox[{"-", 
+     SuperscriptBox["x", "2"]}], "]"}], ",", 
+   RowBox[{"{", 
+    RowBox[{"x", ",", 
+     RowBox[{"-", "\[Infinity]"}], ",", "\[Infinity]"}], "}"}], ",", 
+   RowBox[{"Assumptions", "\[Rule]", 
+    RowBox[{"{", 
+     RowBox[{"a", ">", "0"}], "}"}]}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.757884653766184*^9, 3.7578846727613916`*^9}, {
+  3.7578847553808947`*^9, 3.7578848014948187`*^9}, {3.757885924120788*^9, 
+  3.7578859414528837`*^9}},ExpressionUUID->"01128db7-74d6-4a7d-aece-\
+2b2736082c23"],
+
+Cell[BoxData[
+ SqrtBox["\[Pi]"]], "Output",
+ CellChangeTimes->{
+  3.7578846733142176`*^9, {3.757884757642274*^9, 
+   3.757884798217806*^9}},ExpressionUUID->"4adf370c-2970-4d7f-b223-\
+419b53f0121e"]
+}, Open  ]]
+},
+WindowSize->{1718, 1348},
+WindowMargins->{{Automatic, -7}, {Automatic, 0}},
+Magnification:>1.4 Inherited,
+FrontEndVersion->"11.2 for Microsoft Windows (64-bit) (September 10, 2017)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 9482, 209, 1805, "Input",ExpressionUUID->"236a9bae-9533-4eed-ac6c-8884462dddf2"],
+Cell[10043, 231, 2954, 73, 321, "Input",ExpressionUUID->"1484954a-9a4b-4c60-9550-90cf690e6a3c"],
+Cell[CellGroupData[{
+Cell[13022, 308, 1509, 43, 209, "Input",ExpressionUUID->"ac28bace-5631-440d-ac0a-eab9a2472918"],
+Cell[14534, 353, 1515, 45, 75, "Output",ExpressionUUID->"2ae31933-e513-4bcd-939e-10e95803f14b"]
+}, Open  ]],
+Cell[16064, 401, 179, 3, 40, "Input",ExpressionUUID->"989fa621-7731-4bdd-92f2-17ac00352e3f"],
+Cell[16246, 406, 483, 14, 40, "Input",ExpressionUUID->"5865ca32-7cc9-4ce9-834a-539109a772ce"],
+Cell[CellGroupData[{
+Cell[16754, 424, 653, 17, 40, "Input",ExpressionUUID->"3ff52f32-ba38-4661-ba2f-2f4c68256f00"],
+Cell[17410, 443, 14642, 259, 713, "Output",ExpressionUUID->"ec409f64-c367-4f98-97f7-c5e00fb60cd7"]
+}, Open  ]],
+Cell[32067, 705, 2756, 75, 209, "Input",ExpressionUUID->"1d12eb3c-e19d-4d20-aec5-66910304023c"],
+Cell[CellGroupData[{
+Cell[34848, 784, 160, 3, 40, "Input",ExpressionUUID->"df39c09c-2ea1-4336-b036-340cffc9b710"],
+Cell[35011, 789, 1541, 53, 75, "Output",ExpressionUUID->"94390c72-e708-4cfa-8045-fe6a4502bf55"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[36589, 847, 1953, 54, 293, "Input",ExpressionUUID->"951ec2fe-c18e-404b-991a-64307771ec30"],
+Cell[38545, 903, 2806, 53, 780, "Output",ExpressionUUID->"39ab0a72-7520-4603-89a8-65bbff2d3696"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[41388, 961, 154, 3, 40, "Input",ExpressionUUID->"ce64395f-6a2d-492b-8d29-422b02ee28dd"],
+Cell[41545, 966, 74970, 1026, 527, "Output",ExpressionUUID->"453d64ac-4453-4913-a424-514f63cc2324"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[116552, 1997, 593, 15, 44, "Input",ExpressionUUID->"01128db7-74d6-4a7d-aece-2b2736082c23"],
+Cell[117148, 2014, 197, 5, 51, "Output",ExpressionUUID->"4adf370c-2970-4d7f-b223-419b53f0121e"]
+}, Open  ]]
+}
+]
+*)
+
