@@ -155,7 +155,7 @@ float DrivePath::determine_speed_plan(float s, float T, float dt) {
 
 }
 
-void DrivePath::recalculate_path() {
+float DrivePath::recalculate_path() {
 
   const float k = ntheta / 6.28318530f;
 
@@ -243,6 +243,8 @@ void DrivePath::recalculate_path() {
   path = Curve(nodes);
 
   path.calculate_max_speeds(Drive::max_speed, Drive::max_speed);
+
+  return best_time;
 
 };
 

@@ -37,7 +37,7 @@ class DrivePath {
   DrivePath(Car & c);
 
   void step(float dt);
-  void recalculate_path();
+  float recalculate_path();
   float accel_buffer();
 
   static float scale;
