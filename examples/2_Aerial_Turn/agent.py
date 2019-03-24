@@ -30,9 +30,6 @@ class Agent(BaseAgent):
 
         if not self.action:
             self.action = AerialTurn(self.game.my_car)
-            self.action.eps_omega = 0
-            self.action.eps_phi = 0
-            self.action.horizon_time = 0.1
 
         if self.timer == 0.0:
 
@@ -67,6 +64,16 @@ class Agent(BaseAgent):
         self.timer += self.game.time_delta
         if self.timer > 2.0:
             self.timer = 0.0
+
+        error = angle_between(self.game.my_car.rotation, self.action.target)
+
+        self.renderer.begin_rendering("path")
+        red = self.renderer.create_color(255, 230, 30, 30)
+        self.renderer.draw_string_2d(50, 50, 3, 3, f"error: {error:.4f} radians", red)
+        self.renderer.draw_string_2d(50, 100, 3, 3, f"Roll:   {self.controls.roll:+.2f}", red)
+        self.renderer.draw_string_2d(50, 150, 3, 3, f"Pitch: {self.controls.pitch:+.2f}", red)
+        self.renderer.draw_string_2d(50, 200, 3, 3, f"Yaw:  {self.controls.yaw:+.2f}", red)
+        self.renderer.end_rendering()
 
         return self.controls
 

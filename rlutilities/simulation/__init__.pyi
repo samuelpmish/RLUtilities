@@ -21,16 +21,16 @@ __all__  = [
 ]
 class Ball():
     @overload
-    def __init__(self, arg0: Ball) -> None: 
+    def __init__(self) -> None: 
         pass
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self, arg0: Ball) -> None: ...
     def hitbox(self) -> sphere: ...
     @overload
-    def step(self, arg0: float, arg1: Car) -> None: 
+    def step(self, arg0: float) -> None: 
         pass
     @overload
-    def step(self, arg0: float) -> None: ...
+    def step(self, arg0: float, arg1: Car) -> None: ...
     def to_json(self) -> str: ...
     @property
     def angular_velocity(self) -> vec<3>:
@@ -63,10 +63,10 @@ class Ball():
     pass
 class Car():
     @overload
-    def __init__(self) -> None: 
+    def __init__(self, arg0: Car) -> None: 
         pass
     @overload
-    def __init__(self, arg0: Car) -> None: ...
+    def __init__(self) -> None: ...
     def extrapolate(self, arg0: float) -> None: ...
     def forward(self) -> vec<3>: ...
     def hitbox(self) -> obb: ...
@@ -231,10 +231,10 @@ class ControlPoint():
     pass
 class Curve():
     @overload
-    def __init__(self, arg0: List[ControlPoint]) -> None: 
+    def __init__(self, arg0: List[vec<3>]) -> None: 
         pass
     @overload
-    def __init__(self, arg0: List[vec<3>]) -> None: ...
+    def __init__(self, arg0: List[ControlPoint]) -> None: ...
     def calculate_distances(self) -> None: ...
     def calculate_max_speeds(self, arg0: float, arg1: float) -> float: ...
     def calculate_tangents(self) -> None: ...
@@ -260,11 +260,11 @@ class Curve():
 class Field():
     @staticmethod
     @overload
-    def collide(arg0: obb) -> ray: 
+    def collide(arg0: sphere) -> ray: 
         pass
     @staticmethod
     @overload
-    def collide(arg0: sphere) -> ray: ...
+    def collide(arg0: obb) -> ray: ...
     @staticmethod
     def raycast_any(arg0: ray) -> ray: ...
     @staticmethod
@@ -546,10 +546,10 @@ class ray():
     pass
 class sphere():
     @overload
-    def __init__(self) -> None: 
+    def __init__(self, arg0: vec<3>, arg1: float) -> None: 
         pass
     @overload
-    def __init__(self, arg0: vec<3>, arg1: float) -> None: ...
+    def __init__(self) -> None: ...
     @property
     def center(self) -> vec<3>:
         """

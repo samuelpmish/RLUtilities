@@ -193,8 +193,7 @@ void AerialTurn::step(float dt) {
     Z0 = Z(phi);
     dphi_dt = dot(Z0, omega);
 
-
-    horizon_time = fmaxf(0.03f, 5.0f * dt);
+    horizon_time = fmaxf(0.03f, 4.0f * dt);
 
     // Apply a few Newton iterations to find
     // local angular accelerations that try not to overshoot
@@ -222,9 +221,9 @@ void AerialTurn::step(float dt) {
 
     vec3 rpy = find_controls_for(alpha); 
 
-    rpy[0] *= clip(0.5f * ((fabs(phi[0]) / eps_phi) + (fabs(omega[0]) / eps_omega)), 0.0f, 1.0f);
-    rpy[1] *= clip(0.5f * ((fabs(phi[1]) / eps_phi) + (fabs(omega[1]) / eps_omega)), 0.0f, 1.0f);
-    rpy[2] *= clip(0.5f * ((fabs(phi[2]) / eps_phi) + (fabs(omega[2]) / eps_omega)), 0.0f, 1.0f);
+    //rpy[0] *= clip(0.5f * ((fabs(phi[0]) / eps_phi) + (fabs(omega[0]) / eps_omega)), 0.0f, 1.0f);
+    //rpy[1] *= clip(0.5f * ((fabs(phi[1]) / eps_phi) + (fabs(omega[1]) / eps_omega)), 0.0f, 1.0f);
+    //rpy[2] *= clip(0.5f * ((fabs(phi[2]) / eps_phi) + (fabs(omega[2]) / eps_omega)), 0.0f, 1.0f);
 
     controls.roll  = rpy[0];
     controls.pitch = rpy[1];
