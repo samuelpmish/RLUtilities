@@ -5,11 +5,11 @@
 
 #include "linear_algebra/math.h"
 
+#include <string>
+
 #ifdef GENERATE_PYTHON_BINDINGS
 #include <pybind11/pybind11.h>
 #endif
-
-#define DELTA_T 0.01666
 
 class Car {
 
@@ -32,6 +32,7 @@ class Car {
 
   float jump_timer;
   float dodge_timer;
+  float boost_timer;
   bool enable_jump_acceleration;
 
   vec2 dodge_dir;
@@ -45,7 +46,7 @@ class Car {
   int team;
   int id;
 
-  Input last;
+  Input controls;
 
   mat3 I, invI;
 
@@ -55,8 +56,12 @@ class Car {
 
   Car();
 
-  void step(Input in = Input(), float dt = DELTA_T);
+  void step(Input in = Input(), float dt = 0.008333f);
   void extrapolate(float);
+
+  std::string to_json();
+
+  void update(Car);
 
   vec3 forward() const;
   vec3 left() const;

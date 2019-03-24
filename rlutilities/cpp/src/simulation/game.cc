@@ -2,6 +2,8 @@
 #include "simulation/ball.h"
 #include "simulation/field.h"
 
+#include "misc/json.h"
+
 #include <fstream>
 #include <iostream>
 
@@ -61,6 +63,35 @@ void Game::set_mode(std::string gamemode) {
  
 }
 
+//void Game::log(std::string filename) {
+//
+//  if (filename != log_filename) {
+//
+//    if (logfile) logfile.close();
+//
+//    logfile.open(filename);
+//
+//    log_filename = filename;
+//
+//  }
+//
+//  nlohmann::json j;
+//
+//  j["t"] = time;
+//  j["td"] = time_delta;
+//  j["f"] = frame;
+//  j["fd"] = frame_delta;
+//
+//  for (int i = 0; i < num_cars; i++) {
+//    j[std::string("car_") + std::to_string(i)] = cars[i].to_json();    
+//  }
+//
+//  j["ball"] = ball.to_json();
+//
+//  logfile << j << std::endl;
+//
+//}
+
 #ifdef GENERATE_PYTHON_BINDINGS
 #include <pybind11/stl.h>
 #include <pybind11/pybind11.h>
@@ -115,6 +146,7 @@ void Game::read_game_information(pybind11::object gametick,
 
       pybind11::object gametick_physics = game_car.attr("physics");
       pybind11::object rigidbody_physics = players[i].attr("state");
+      pybind11::object inputs = players[i].attr("input");
 
       cars[i].x = vector3_to_vec3(gametick_physics.attr("location"));
       cars[i].v = vector3_to_vec3(gametick_physics.attr("velocity"));
@@ -132,6 +164,15 @@ void Game::read_game_information(pybind11::object gametick,
 
       cars[i].time = time;
 
+      cars[i].controls.throttle = inputs.attr("throttle").cast<float>();
+      cars[i].controls.steer = inputs.attr("steer").cast<float>();
+      cars[i].controls.pitch = inputs.attr("pitch").cast<float>();
+      cars[i].controls.yaw = inputs.attr("yaw").cast<float>();
+      cars[i].controls.roll = inputs.attr("roll").cast<float>();
+      cars[i].controls.jump = inputs.attr("jump").cast<bool>();
+      cars[i].controls.boost = inputs.attr("boost").cast<bool>();
+      cars[i].controls.handbrake = inputs.attr("handbrake").cast<bool>();
+
     }
 
     pybind11::object physics = gametick.attr("game_ball").attr("physics");
@@ -141,6 +182,30 @@ void Game::read_game_information(pybind11::object gametick,
     ball.w = vector3_to_vec3(physics.attr("angular_velocity"));
 
     ball.time = time;
+
+    int num_boost_pads = fieldinfo.attr("num_boosts").cast<int>();
+    pybind11::list boost_pads = fieldinfo.attr("boost_pads");
+
+    int num_game_boosts = gametick.attr("num_boost").cast<int>();
+    pybind11::list game_boosts = gametick.attr("game_boosts");
+
+    if (num_boost_pads != num_game_boosts) {
+      std::cout << "boost pad info mismatch" << std::endl;
+    } else {
+
+      if (num_boost_pads > pads.size()) pads.resize(num_boost_pads);
+  
+      for (int i = 0; i < num_boost_pads; i++) {
+        pybind11::object boost_pad = boost_pads[i];
+        pybind11::object game_boost = game_boosts[i];
+  
+        pads[i].location = vector3_to_vec3(boost_pads[i].attr("location"));
+        pads[i].is_full_boost = boost_pad.attr("is_full_boost").cast<bool>();
+        pads[i].is_active = game_boost.attr("is_active").cast<bool>();
+        pads[i].timer = game_boost.attr("timer").cast<float>();
+      }
+
+    }
 
   }
 
@@ -164,10 +229,12 @@ void init_game(pybind11::module & m) {
 		.def_readwrite("ball", &Game::ball)
 		.def_readwrite("my_car", &Game::my_car)
 		.def_readwrite("cars", &Game::cars)
+		.def_readonly("pads", &Game::pads)
     .def_readonly_static("map", &Game::map)
     .def_readonly_static("gravity", &Game::gravity)
     .def_readonly_static("frametime", &Game::frametime)
     .def_static("set_mode", &Game::set_mode)
     .def("read_game_information", &Game::read_game_information);
+//    .def("log", &Game::log);
 }
 #endif

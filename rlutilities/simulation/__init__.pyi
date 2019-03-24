@@ -27,10 +27,11 @@ class Ball():
     def __init__(self) -> None: ...
     def hitbox(self) -> sphere: ...
     @overload
-    def step(self, arg0: float) -> None: 
+    def step(self, arg0: float, arg1: Car) -> None: 
         pass
     @overload
-    def step(self, arg0: float, arg1: Car) -> None: ...
+    def step(self, arg0: float) -> None: ...
+    def to_json(self) -> str: ...
     @property
     def angular_velocity(self) -> vec<3>:
         """
@@ -71,6 +72,7 @@ class Car():
     def hitbox(self) -> obb: ...
     def left(self) -> vec<3>: ...
     def step(self, arg0: Input, arg1: float) -> None: ...
+    def to_json(self) -> str: ...
     def up(self) -> vec<3>: ...
     @property
     def angular_velocity(self) -> vec<3>:
@@ -85,6 +87,13 @@ class Car():
 :type: int"""
     @boost.setter
     def boost(self, arg0: int) -> None:
+        pass
+    @property
+    def controls(self) -> Input:
+        """
+:type: Input"""
+    @controls.setter
+    def controls(self, arg0: Input) -> None:
         pass
     @property
     def dodge_rotation(self) -> mat<2,2>:
@@ -127,13 +136,6 @@ class Car():
 :type: bool"""
     @jumped.setter
     def jumped(self, arg0: bool) -> None:
-        pass
-    @property
-    def last_input(self) -> Input:
-        """
-:type: Input"""
-    @last_input.setter
-    def last_input(self, arg0: Input) -> None:
         pass
     @property
     def location(self) -> vec<3>:
@@ -201,10 +203,10 @@ class Car():
     pass
 class ControlPoint():
     @overload
-    def __init__(self) -> None: 
+    def __init__(self, arg0: vec<3>, arg1: vec<3>, arg2: vec<3>) -> None: 
         pass
     @overload
-    def __init__(self, arg0: vec<3>, arg1: vec<3>, arg2: vec<3>) -> None: ...
+    def __init__(self) -> None: ...
     @property
     def n(self) -> vec<3>:
         """
@@ -344,6 +346,10 @@ class Game():
     def overtime(self, arg0: bool) -> None:
         pass
     @property
+    def pads(self) -> List[Pad]:
+        """
+:type: List[Pad]"""
+    @property
     def round_active(self) -> bool:
         """
 :type: bool"""
@@ -465,13 +471,6 @@ class Input():
 class Pad():
     def __init__(self) -> None: ...
     @property
-    def index(self) -> int:
-        """
-:type: int"""
-    @index.setter
-    def index(self, arg0: int) -> None:
-        pass
-    @property
     def is_active(self) -> bool:
         """
 :type: bool"""
@@ -547,10 +546,10 @@ class ray():
     pass
 class sphere():
     @overload
-    def __init__(self, arg0: vec<3>, arg1: float) -> None: 
+    def __init__(self) -> None: 
         pass
     @overload
-    def __init__(self) -> None: ...
+    def __init__(self, arg0: vec<3>, arg1: float) -> None: ...
     @property
     def center(self) -> vec<3>:
         """
@@ -572,8 +571,8 @@ class tri():
     def __setitem__(self, arg0: int, arg1: vec<3>) -> None: ...
     pass
 @overload
-def intersect(arg0: obb, arg1: sphere) -> bool:
+def intersect(arg0: sphere, arg1: obb) -> bool:
     pass
 @overload
-def intersect(arg0: sphere, arg1: obb) -> bool:
+def intersect(arg0: obb, arg1: sphere) -> bool:
     pass

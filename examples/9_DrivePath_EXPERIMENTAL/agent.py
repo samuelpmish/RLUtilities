@@ -27,12 +27,13 @@ class Agent(BaseAgent):
             self.action = DrivePath(self.game.my_car)
             self.action.target = vec3(0, 0, 0)
             self.action.arrival_tangent = vec3(1, 0, 0)
-            self.action.arrival_speed = 1400
+            self.action.arrival_speed = 1600
             self.action.recalculate_path()
 
         if controller.L1:
-            self.action.arrival_time = self.game.my_car.time + 4.0
-            self.action.recalculate_path()
+            time_estimate = self.action.recalculate_path()
+            self.action.arrival_time = self.game.my_car.time + 1.1 * time_estimate
+
             self.controls = controller.get_output()
 
         else:

@@ -38,7 +38,6 @@ class DrivePath {
 
   void step(float dt);
   float recalculate_path();
-  float accel_buffer();
 
   static float scale;
   static int nx, ntheta, nv;

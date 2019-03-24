@@ -9,6 +9,7 @@ from rlutilities.linear_algebra import *
 from rlutilities.mechanics import Aerial, AerialTurn
 from rlutilities.simulation import Game, Ball, Car
 
+
 class State:
     RESET = 0
     WAIT = 1
@@ -27,16 +28,18 @@ class Agent(BaseAgent):
         self.timeout = 5.0
 
         self.aerial = None
-        self.recovery = None
+        self.turn = None
         self.state = State.RESET
         self.ball_predictions = None
 
         self.target_ball = None
+        self.log = open("../../analysis/aerial/info.ndjson", "w")
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
         self.game.read_game_information(packet,
                                         self.get_rigid_body_tick(),
                                         self.get_field_info())
+
         self.controls = SimpleControllerState()
 
         next_state = self.state
@@ -62,12 +65,12 @@ class Agent(BaseAgent):
 
             # this just initializes the car and ball
             # to different starting points each time
-            c_position = Vector3(b_position.x, random.uniform(-1500, -1000), 25)
+            c_position = Vector3(b_position.x, 0 * random.uniform(-1500, -1000), 25)
 
             #c_position = Vector3(200, -1000, 25)
             car_state = CarState(physics=Physics(
                 location=c_position,
-                velocity=Vector3(0, 1200, 0),
+                velocity=Vector3(0, 800, 0),
                 rotation=Rotator(0, 1.6, 0),
                 angular_velocity=Vector3(0, 0, 0)
             ), boost_amount=100)
@@ -109,36 +112,31 @@ class Agent(BaseAgent):
                     self.aerial.target = prediction.location
                     self.aerial.arrival_time = prediction.time
 
+                    simulation = self.aerial.simulate()
+
                     # # check if we can reach it by an aerial
-                    if self.aerial.is_viable():
+                    if norm(simulation.location - self.aerial.target) < 30:
                         self.aerial.target = prediction.location
                         self.aerial.arrival_time = prediction.time
                         self.target_ball = Ball(prediction)
                         break
 
+
             next_state = State.RUNNING
 
         if self.state == State.RUNNING:
 
-            if self.recovery:
-                self.recovery.step(self.game.time_delta)
-                self.controls = self.recovery.controls
-            else:
-                self.aerial.step(self.game.time_delta)
-                self.controls = self.aerial.controls
+            self.log.write(f"{{\"car\":{self.game.my_car.to_json()},"
+                           f"\"ball\":{self.game.ball.to_json()}}}\n")
 
-                if self.aerial.finished:
-                    self.recovery = AerialTurn(self.game.my_car)
+            self.aerial.step(self.game.time_delta)
+            self.controls = self.aerial.controls
 
             if self.timer > self.timeout:
                 next_state = State.RESET
 
                 self.aerial = None
-                self.recovery = None
-
-        self.game.my_car.last_input.roll = self.controls.roll
-        self.game.my_car.last_input.pitch = self.controls.pitch
-        self.game.my_car.last_input.yaw = self.controls.yaw
+                self.turn = None
 
         self.timer += self.game.time_delta
         self.state = next_state

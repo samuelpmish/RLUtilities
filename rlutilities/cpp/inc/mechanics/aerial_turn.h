@@ -22,13 +22,6 @@ class AerialTurn {
 
   void step(float dt);
 
-  // this is a pretty coarse estimate,
-  // but is much less expensive than running
-  // the full controller simulation.
-  //
-  // prefer this if you only need a quick-and-dirty estimate
-  float time_estimate();
-
 	Car simulate();
 
   static const float scale;

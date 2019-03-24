@@ -5,7 +5,7 @@ import setuptools
 
 setuptools.setup(
     name='RLUtilities',
-    version='1.0.0',
+    version='1.0.1',
     author='Sam Mish',
     author_email='samuelpmish@gmail.com',
     description='tools for controlling Rocket League bots',

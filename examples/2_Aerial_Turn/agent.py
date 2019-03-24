@@ -9,6 +9,7 @@ from rlutilities.linear_algebra import *
 from rlutilities.mechanics import AerialTurn
 from rlutilities.simulation import Game, Ball, Car
 
+
 class Agent(BaseAgent):
 
     def __init__(self, name, team, index):
@@ -17,15 +18,21 @@ class Agent(BaseAgent):
 
         self.timer = 0.0
         self.action = None
+        random.seed(0)
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
+
         self.game.read_game_information(packet,
                                         self.get_rigid_body_tick(),
                                         self.get_field_info())
+
         self.controls = SimpleControllerState()
 
         if not self.action:
             self.action = AerialTurn(self.game.my_car)
+            self.action.eps_omega = 0
+            self.action.eps_phi = 0
+            self.action.horizon_time = 0.1
 
         if self.timer == 0.0:
 
@@ -47,17 +54,15 @@ class Agent(BaseAgent):
 
         # spawn the ball in front of the desired orientation to visually indicate where we're trying to go
         ball_state = BallState(physics=Physics(
-            location=Vector3(500 * f[0], 500 * f[1], 500 * f[2] + 1000)
+            location=Vector3(500 * f[0], 500 * f[1], 500 * f[2] + 1000),
+            velocity=Vector3(0, 0, 0),
+            angular_velocity=Vector3(0, 0, 0)
         ))
 
         self.set_game_state(GameState(ball=ball_state, cars={self.game.id: car_state}))
 
         self.action.step(self.game.time_delta)
         self.controls = self.action.controls
-
-        self.game.my_car.last_input.roll = self.controls.roll
-        self.game.my_car.last_input.pitch = self.controls.pitch
-        self.game.my_car.last_input.yaw = self.controls.yaw
 
         self.timer += self.game.time_delta
         if self.timer > 2.0:

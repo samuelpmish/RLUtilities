@@ -118,90 +118,37 @@ class PythonExample(BaseAgent):
 
         self.game = Game(index, team)
 
-        self.f = None
-        self.action = None
-        self.last_frame = 0
         self.counter = 0
-        self.duration = 2
+        self.log = None
 
     def get_output(self, packet):
 
+        then = time.perf_counter()
         self.game.read_game_information(packet,
                                         self.get_rigid_body_tick(),
                                         self.get_field_info())
+        now = time.perf_counter()
+
+        print(now - then)
 
         controls = controller.get_output()
 
-        phys_tick = self.get_rigid_body_tick()
-
         if controller.L1:
 
-            # if len(self.json.frame_info) == 0:
-            #     self.action = Aerial(self.info.my_car)
-            #     self.action.target = vec3(0, 0, 800)
-            #     self.action.arrival_time = self.info.my_car.time + 3
-            #     self.action.angle_threshold = 0.3
-            #     #self.action.target_orientation = look_at(vec3(1, 0, 0), vec3(0, 0, -1))
-            #     self.action.simulate()
+            if not self.log:
+                self.log = open(f"log_{self.counter}.ndjson", "w")
+                self.counter += 1
 
-            # self.action.step(0.016666)
-            # controls = self.action.controls
+            then = time.perf_counter()
+            self.log.write(f"{{\"car\":{self.game.my_car.to_json()},"
+                           f"\"ball\":{self.game.ball.to_json()}}}\n")
+            now = time.perf_counter()
 
-            if self.counter < self.duration:
-                controls.boost = self.counter % 2
-            else:
-                controls.boost = 0
-
-            self.counter += 1
-
-            if self.counter == 100:
-                self.counter = 0
-                self.duration += 1
-
-            self.game.my_car.last_input.roll = controls.roll
-            self.game.my_car.last_input.pitch = controls.pitch
-            self.game.my_car.last_input.yaw = controls.yaw
-
-            self.json.log(phys_tick, packet, controls)
+            print(now - then)
 
         else:
-            if self.json.frame_info:
-                self.json.write_to_file("../../Utilities/analysis/boost_minimum_feather")
-                self.json.reset()
+            if self.log:
+                self.log.close()
+                self.log = None
 
         return controls
-
-# car ball interaction
-#
-# if self.count == 0:
-# c_position = Vector3(0, 0, 750)
-# c_velocity = Vector3(0, 0, 0)
-# c_rotator = Vector3(random.uniform(-0.5, 0.5), random.uniform(-0.5, 0.5), random.uniform(-0.5, -0.5))
-#
-# car_state = CarState(physics=Physics(
-#     location=c_position,
-#     velocity=c_velocity,
-#     rotation=c_rotator,
-#     angular_velocity=Vector3(0, 0, 0)
-# ))
-#
-# b_position = Vector3(random.uniform(-40, 40), random.uniform(-40, 40), 950)
-# b_velocity = Vector3(0, 0, random.uniform(-1000, -200))
-# b_angular_velocity = Vector3(random.uniform(-5, 5), random.uniform(-5, 5), 0)
-#
-# ball_state = BallState(physics=Physics(
-#     location=b_position,
-#     velocity=b_velocity,
-#     rotation=Rotator(0, 0, 0),
-#     angular_velocity=b_angular_velocity
-# ))
-#
-# self.set_game_state(GameState(
-#     ball=ball_state,
-#     cars={self.index: car_state}
-# ))
-#
-# self.count = 80
-
-
-

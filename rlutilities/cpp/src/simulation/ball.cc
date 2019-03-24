@@ -1,6 +1,8 @@
 #include "simulation/ball.h"
 #include "simulation/field.h"
 
+#include "misc/json.h"
+
 const float Ball::restitution = 0.6f;
 const float Ball::drag = -0.0305f;
 const float Ball::mu = 2.0f;
@@ -151,7 +153,13 @@ void Ball::step(float dt, const Car & c) {
 
 }
 
-
+std::string Ball::to_json() {
+  return nlohmann::json{
+    {"x", {x[0], x[1], x[2]}},
+    {"v", {v[0], v[1], v[2]}},
+    {"w", {w[0], w[1], w[2]}}
+  }.dump();
+}
 
 #ifdef GENERATE_PYTHON_BINDINGS
 #include <pybind11/pybind11.h>
@@ -173,6 +181,7 @@ void init_ball(pybind11::module & m) {
 		.def_readonly_static("radius", &Ball::radius)
 		.def_readonly_static("collision_radius", &Ball::collision_radius)
 		.def("hitbox", &Ball::hitbox)
+		.def("to_json", &Ball::to_json)
 		.def("step", static_cast<void (Ball::*)(float)>(&Ball::step))
 		.def("step", static_cast<void (Ball::*)(float, const Car &)>(&Ball::step));
 }

@@ -4,7 +4,10 @@
 #include "mechanics/dodge.h"
 #include "mechanics/aerial.h"
 
+#include "misc/json.h"
 #include "misc/convert.h"
+
+#include <fstream>
 
 const float Car::m = 180.0f;
 const float Car::v_max = 2300.0f;
@@ -296,7 +299,7 @@ void Car::step(Input in, float dt) {
 	}
 	else {
 		if (in.jump == 1 &&
-			last.jump == 0 &&
+			controls.jump == 0 &&
 			jump_timer < Dodge::timeout &&
 			double_jumped == false) {
 			//std::cout << time << " Air Dodge" << std::endl;
@@ -336,7 +339,7 @@ void Car::step(Input in, float dt) {
 		enable_jump_acceleration = false;
 	}
 
-	last = in;
+	controls = in;
 }
 
 obb Car::hitbox() const {
@@ -347,7 +350,7 @@ obb Car::hitbox() const {
 	return box;
 }
 
-void Car::extrapolate(float dt) { step(last, dt); }
+void Car::extrapolate(float dt) { step(controls, dt); }
 
 Car::Car() {
 	x = vec3{ 0.0f, 0.0f, 0.0f };
@@ -376,7 +379,83 @@ Car::Car() {
 	hitbox_widths = vec3{ 59.00368881f, 42.09970474f, 18.07953644f };
 	hitbox_offset = vec3{ 13.97565993f, 0.0f, 20.75498772f };
 
-	last = Input();
+	controls = Input();
+}
+
+void Car::update(Car next) {
+
+  float dt = next.time - time;
+
+  if (next.on_ground) {
+
+    jump_timer = -1.0f;
+    dodge_timer = -1.0f;
+    enable_jump_acceleration = false;
+
+  } else {
+
+    if (on_ground) {
+
+      if (next.jumped) {
+
+        jump_timer = 0.0f;
+        enable_jump_acceleration = true;
+
+      } else {
+
+        5;
+
+      }
+      
+    } else {
+
+      6;
+
+    }
+
+  }
+
+  if (next.controls.boost) {
+    if (controls.boost) {
+      boost_timer += dt;
+    } else {
+      boost_timer = 0.0f;
+    }
+  } else {
+    boost_timer = -1.0f;
+  }
+
+}
+
+std::string Car::to_json() {
+
+  return nlohmann::json{
+    {"x", {x[0], x[1], x[2]}},
+    {"v", {v[0], v[1], v[2]}},
+    {"w", {w[0], w[1], w[2]}},
+    {"o", {o(0, 0), o(0, 1), o(0, 2),
+           o(1, 0), o(1, 1), o(1, 2), 
+           o(2, 0), o(2, 1), o(2, 2)}},
+    {"supersonic", supersonic},
+    {"jumped", jumped},
+    {"double_jumped", double_jumped},
+    {"on_ground", on_ground},
+    {"boost_left", boost},
+    {"jump_timer", jump_timer},
+    {"dodge_timer", dodge_timer},
+    {"dodge_dir", {dodge_dir[0], dodge_dir[1]}},
+    {"time", time},
+
+    {"steer", controls.steer},
+    {"roll", controls.roll},
+    {"pitch", controls.pitch},
+    {"yaw", controls.yaw},
+    {"throttle", controls.throttle},
+    {"jump", controls.jump},
+    {"boost", controls.boost},
+    {"handbrake", controls.handbrake}
+  }.dump();
+
 }
 
 #ifdef GENERATE_PYTHON_BINDINGS
@@ -385,6 +464,7 @@ void init_car(pybind11::module & m) {
 	pybind11::class_<Car>(m, "Car")
 		.def(pybind11::init<>())
 		.def(pybind11::init<const Car &>())
+		.def("to_json", &Car::to_json)
 		.def("step", &Car::step)
 		.def("hitbox", &Car::hitbox)
 		.def("extrapolate", &Car::extrapolate)
@@ -408,7 +488,7 @@ void init_car(pybind11::module & m) {
 		.def_readwrite("jump_timer", &Car::jump_timer)
 		.def_readwrite("dodge_timer", &Car::dodge_timer)
 		.def_readwrite("boost", &Car::boost)
-		.def_readwrite("last_input", &Car::last);
+		.def_readwrite("controls", &Car::controls);
 
 	pybind11::class_<Input>(m, "Input")
 		.def(pybind11::init<>())

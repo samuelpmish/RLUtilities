@@ -2,6 +2,8 @@
 
 #include <array>
 #include <vector>
+#include <string>
+#include <fstream>
 
 #include "simulation/car.h"
 #include "simulation/ball.h"
@@ -45,6 +47,8 @@ class Game {
 
   std::vector< Pad > pads;
 
+//  void log(std::string);
+
   static void set_mode(std::string);
 
   #ifdef GENERATE_PYTHON_BINDINGS
@@ -54,6 +58,9 @@ class Game {
   #endif
 
  private:
+
+//  std::ofstream logfile;
+//  std::string log_filename;
 
   std::array < float, 16 > delta_history;
 

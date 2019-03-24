@@ -36,7 +36,7 @@ DrivePath::DrivePath(Car & c) : car(c), drive(c), dodge(c), dash(c) {
 
 void DrivePath::step(float dt) {
 
-  float t_react = 0.4f;
+  float t_react = 0.3f;
 
   float speed = dot(car.v, car.forward());
 
@@ -146,10 +146,9 @@ float DrivePath::determine_speed_plan(float s, float T, float dt) {
 
   }
 
-  arrival_accel = a;
   expected_error = error;
 
-  expected_speed = interpolate_quadratic(v0, vf, a, 2 * dt, T);
+  expected_speed = interpolate_quadratic(v0, vf, a, drive.reaction_time, T);
 
   return expected_speed;
 
@@ -172,7 +171,7 @@ float DrivePath::recalculate_path() {
   int theta_max = ntheta-1;
 
   if (isnormal(norm(arrival_tangent))) {
-    tangent_local = dot(arrival_tangent, car.o);
+    tangent_local = dot(arrival_tangent, orientation);
     float angle = atan2(tangent_local[1], tangent_local[0]);
     int theta = int(roundf(k * angle));
     if (theta < 0) theta += ntheta;
@@ -288,10 +287,6 @@ std::array < int, 3 > read_parameters(std::string filename) {
 
 }
 
-float DrivePath::accel_buffer() {
-  return drive.acceleration;  
-};
-
 #ifdef GENERATE_PYTHON_BINDINGS
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
@@ -308,7 +303,6 @@ void init_drivepath(pybind11::module & m) {
     .def_readwrite("expected_error", &DrivePath::expected_error)
     .def_readwrite("expected_speed", &DrivePath::expected_speed)
     .def_readwrite("arrival_accel", &DrivePath::arrival_accel)
-    .def("accel_buffer", &DrivePath::accel_buffer)
     .def("step", &DrivePath::step)
     .def("recalculate_path", &DrivePath::recalculate_path);
 }

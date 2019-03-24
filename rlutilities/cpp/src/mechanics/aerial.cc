@@ -142,7 +142,7 @@ bool Aerial::is_viable() {
 
   // estimate the time required to turn
   turn.target = look_at(f, up);
-  float total_turn_time = turn.time_estimate();
+  float total_turn_time = turn.simulate().time - car.time;
   float phi = angle_between(car.o, turn.target);
 
   // the time when we start boosting (coarse estimate!)

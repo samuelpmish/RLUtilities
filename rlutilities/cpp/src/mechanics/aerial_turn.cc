@@ -194,6 +194,8 @@ void AerialTurn::step(float dt) {
     dphi_dt = dot(Z0, omega);
 
 
+    horizon_time = fmaxf(0.03f, 5.0f * dt);
+
     // Apply a few Newton iterations to find
     // local angular accelerations that try not to overshoot
     // the guideline trajectories defined by AerialTurn::G().
@@ -229,32 +231,6 @@ void AerialTurn::step(float dt) {
     controls.yaw   = rpy[2];
 
   }
-
-}
-
-float AerialTurn::time_estimate() {
-
-  omega = dot(transpose(target), car.w);
-  theta = dot(transpose(target), car.o);
-  omega_local = dot(omega, theta);
-  phi = rotation_to_axis(theta);
-  dphi_dt = dot(Z(phi), omega);
-
-  vec3 alpha_max = vec3{-30.0f, 12.5f, 9.0f};
-  vec3 delta_phi = -phi - G(phi, dphi_dt);
-
-  float t_sq = 0.0f;
-
-  for (int i = 0; i < 3; i++) {
-
-    float t_i = 2.0f * sqrt(fabs(delta_phi[i]) / fabs(alpha_max[i])) - 
-        dphi_dt[i] / alpha_max[i]; 
-
-    t_sq += t_i * t_i;
-
-  }
-
-  return sqrt(t_sq);
 
 }
 
@@ -294,7 +270,6 @@ void init_aerialturn(pybind11::module & m) {
     .def_readwrite("finished", &AerialTurn::finished)
     .def_readwrite("controls", &AerialTurn::controls)
     .def("step", &AerialTurn::step)
-    .def("time_estimate", &AerialTurn::time_estimate)
     .def("simulate", &AerialTurn::simulate);
 }
 #endif

@@ -41,6 +41,7 @@ set(rlutilities_src
 add_library(rlutilities_cpp ${rlutilities_src})
 target_include_directories(rlutilities_cpp PUBLIC inc/)
 target_compile_features(rlutilities_cpp PUBLIC cxx_std_17)
+target_compile_definitions(rlutilities_cpp PUBLIC -DHAVE_SNPRINTF=1)
 
 if (WITH_PYTHON)
 
@@ -50,6 +51,7 @@ if (WITH_PYTHON)
   )
   target_include_directories(rlutilities PUBLIC inc/)
   target_compile_definitions(rlutilities PUBLIC -DGENERATE_PYTHON_BINDINGS)
+  target_compile_definitions(rlutilities PUBLIC -DHAVE_SNPRINTF=1)
   target_compile_features(rlutilities PUBLIC cxx_std_17)
 
 endif()

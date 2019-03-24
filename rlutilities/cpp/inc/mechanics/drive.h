@@ -21,15 +21,12 @@ class Drive {
 
   vec3 target;
   float speed;
+  float reaction_time;
 
   bool finished;
   Input controls;
 
-  float acceleration;
-
   Drive(Car & c);
-
-  std::vector < vec3 > debug;
 
   void step(float dt);
 

@@ -89,7 +89,6 @@ class AerialTurn():
     def __init__(self, arg0: rlutilities.rlutilities.simulation.Car) -> None: ...
     def simulate(self) -> rlutilities.rlutilities.simulation.Car: ...
     def step(self, arg0: float) -> None: ...
-    def time_estimate(self) -> float: ...
     @property
     def controls(self) -> rlutilities.rlutilities.simulation.Input:
         """
@@ -203,13 +202,6 @@ class Drive():
     @staticmethod
     def throttle_accel(arg0: float) -> float: ...
     @property
-    def acceleration(self) -> float:
-        """
-:type: float"""
-    @acceleration.setter
-    def acceleration(self, arg0: float) -> None:
-        pass
-    @property
     def controls(self) -> rlutilities.rlutilities.simulation.Input:
         """
 :type: rlutilities.rlutilities.simulation.Input"""
@@ -217,18 +209,18 @@ class Drive():
     def controls(self, arg0: rlutilities.rlutilities.simulation.Input) -> None:
         pass
     @property
-    def debug(self) -> List[vec<3>]:
-        """
-:type: List[vec<3>]"""
-    @debug.setter
-    def debug(self, arg0: List[vec<3>]) -> None:
-        pass
-    @property
     def finished(self) -> bool:
         """
 :type: bool"""
     @finished.setter
     def finished(self, arg0: bool) -> None:
+        pass
+    @property
+    def reaction_time(self) -> float:
+        """
+:type: float"""
+    @reaction_time.setter
+    def reaction_time(self, arg0: float) -> None:
         pass
     @property
     def speed(self) -> float:
@@ -247,8 +239,7 @@ class Drive():
     pass
 class DrivePath():
     def __init__(self, arg0: rlutilities.rlutilities.simulation.Car) -> None: ...
-    def accel_buffer(self) -> float: ...
-    def recalculate_path(self) -> None: ...
+    def recalculate_path(self) -> float: ...
     def step(self, arg0: float) -> None: ...
     @property
     def arrival_accel(self) -> float:

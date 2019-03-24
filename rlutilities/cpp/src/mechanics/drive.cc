@@ -13,13 +13,13 @@ const float Drive::boost_accel = 991.667f;
 const float Drive::brake_accel = 3500.0f;
 const float Drive::coasting_accel = 525.0f;
 
-float Drive::throttle_accel(float speed) {
+float Drive::throttle_accel(float v) {
   const int n = 3;
   float values[n][2] = { {   0.0f, 1600.0f},
                          {1400.0f,  160.0f},
                          {1410.0f,    0.0f} };
 
-  float input = clip(fabs(speed), 0.0f, 1410.0f);
+  float input = clip(fabs(v), 0.0f, 1410.0f);
 
   for (int i = 0; i < (n - 1); i++) {
     if (values[i][0] <= input && input < values[i + 1][0]) {
@@ -31,7 +31,7 @@ float Drive::throttle_accel(float speed) {
   return -1.0f;
 }
 
-float Drive::max_turning_curvature(float speed) {
+float Drive::max_turning_curvature(float v) {
   const int n = 6;
   float values[n][2] = { {   0.0f, 0.00690f},
                          { 500.0f, 0.00398f},
@@ -40,7 +40,7 @@ float Drive::max_turning_curvature(float speed) {
                          {1750.0f, 0.00110f},
                          {2300.0f, 0.00088f} };
 
-  float input = clip(fabs(speed), 0.0f, 2300.0f);
+  float input = clip(fabs(v), 0.0f, 2300.0f);
 
   for (int i = 0; i < (n - 1); i++) {
     if (values[i][0] <= input && input < values[i + 1][0]) {
@@ -78,16 +78,14 @@ Drive::Drive(Car & c) : car(c) {
   target = { NAN, NAN, NAN };
   speed = 1400.0f;
 
+  reaction_time = 0.04f;
+
   controls = Input();
   finished = false;
-
-  acceleration = 0.0f;
 
 }
 
 void Drive::step(float dt) {
-
-  debug = std::vector < vec3 >();
 
   steer_controller(dt);
 
@@ -115,11 +113,11 @@ void Drive::speed_controller(float dt) {
 
   float vf = dot(car.v, car.forward());
 
-  acceleration += (speed - vf) / dt;
+  float acceleration = (speed - vf) / reaction_time;
 
-  float brake_coast_transition = -(1.25f * brake_accel + 0.00f * coasting_accel);
-  float coasting_throttle_transition = -1.0f * coasting_accel;
-  float throttle_boost_transition = 1.0f * throttle_accel(vf) + 1.25f * boost_accel;
+  float brake_coast_transition = -(0.45f * brake_accel + 0.55f * coasting_accel);
+  float coasting_throttle_transition = -0.5f * coasting_accel;
+  float throttle_boost_transition = 1.0f * throttle_accel(vf) + 0.5f * boost_accel;
 
   // apply brakes when the desired acceleration is negative and large enough
   if (acceleration <= brake_coast_transition) {
@@ -127,8 +125,6 @@ void Drive::speed_controller(float dt) {
     //std::cout << "braking" << std::endl;
     controls.throttle = -1.0f;
     controls.boost = 0;
-
-    acceleration += brake_accel;
 
   // let the car coast when the acceleration is negative and small
   } else if ((brake_coast_transition < acceleration) &&
@@ -138,8 +134,6 @@ void Drive::speed_controller(float dt) {
     controls.throttle = 0.0f;
     controls.boost = 0;
 
-    acceleration += coasting_accel;
-
     // for small positive accelerations, use throttle only
   } else if ((coasting_throttle_transition < acceleration) &&
     (acceleration <= throttle_boost_transition)) {
@@ -148,8 +142,6 @@ void Drive::speed_controller(float dt) {
     controls.throttle = clip(acceleration / throttle_accel(vf), 0.02f, 1.0f);
     controls.boost = 0;
 
-    acceleration -= throttle_accel(vf);
-
     // if the desired acceleration is big enough, use boost
   } else if (throttle_boost_transition < acceleration) {
 
@@ -157,11 +149,7 @@ void Drive::speed_controller(float dt) {
     controls.throttle = 1.0f;
     controls.boost = 1;
 
-    acceleration -= throttle_accel(vf) + boost_accel;
-
   }
-
-  acceleration = clip(acceleration * 0.95f, -2.0f * brake_accel, 2.0f * boost_accel);
 
 }
 
@@ -173,10 +161,9 @@ void init_drive(pybind11::module & m) {
     .def(pybind11::init<Car &>())
     .def_readwrite("target", &Drive::target)
     .def_readwrite("speed", &Drive::speed)
+    .def_readwrite("reaction_time", &Drive::reaction_time)
     .def_readwrite("finished", &Drive::finished)
     .def_readwrite("controls", &Drive::controls)
-    .def_readwrite("debug", &Drive::debug)
-    .def_readwrite("acceleration", &Drive::acceleration)
     .def_readonly_static("max_speed", &Drive::max_speed)
     .def_readonly_static("max_throttle_speed", &Drive::max_throttle_speed)
     .def_readonly_static("boost_accel", &Drive::boost_accel)

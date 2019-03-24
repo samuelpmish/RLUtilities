@@ -177,3 +177,4 @@ car = ConvertQuaternionToOrientationMatrix[Association[#]]& /@ (Association[#][[
 {frame, ball,input, car}
 ]
 
+ImportNDJSON[filename_, depth_] :=   Association[Replace[ImportString[#, "JSON"], List[arg__]:>Association[arg], depth]]& /@ Import[filename, "Lines"];
