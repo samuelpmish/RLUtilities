@@ -228,6 +228,49 @@ inline mat<3, 3> quaternion_to_rotation(vec4 q) {
   return theta;
 }
 
+inline vec < 4 > rotation_to_quaternion(mat3 m) {
+  float trace = tr(m);
+
+  vec4 q;
+
+  if (trace > 0.0f) {
+    float s = sqrt(trace + 1.0f);
+    q[0] = s * 0.5f;
+    s = 0.5f / s;
+    q[1] = (m(2, 1) - m(1, 2)) * s;
+    q[2] = (m(0, 2) - m(2, 0)) * s;
+    q[3] = (m(1, 0) - m(0, 1)) * s;
+  }
+  else {
+    if (m(0, 0) >= m(1, 1) && m(0, 0) >= m(2, 2)) {
+      float s = sqrt(1.0f + m(0, 0) - m(1, 1) - m(2, 2));
+      float invS = 0.5f / s;
+      q[1] = 0.5f * s;
+      q[2] = (m(1, 0) + m(0, 1)) * invS;
+      q[3] = (m(2, 0) + m(0, 2)) * invS;
+      q[0] = (m(2, 1) - m(1, 2)) * invS;
+    }
+    else if (m(1, 1) > m(2, 2)) {
+      float s = sqrt(1.0f + m(1, 1) - m(0, 0) - m(2, 2));
+      float invS = 0.5f / s;
+      q[1] = (m(0, 1) + m(1, 0)) * invS;
+      q[2] = 0.5f * s;
+      q[3] = (m(1, 2) + m(2, 1)) * invS;
+      q[0] = (m(0, 2) - m(2, 0)) * invS;
+    }
+    else {
+      float s = sqrt(1.0f + m(2, 2) - m(0, 0) - m(1, 1));
+      float invS = 0.5f / s;
+      q[1] = (m(0, 2) + m(2, 0)) * invS;
+      q[2] = (m(1, 2) + m(2, 1)) * invS;
+      q[3] = 0.5f * s;
+      q[0] = (m(1, 0) - m(0, 1)) * invS;
+    }
+  }
+
+  return q;
+}
+
 inline mat < 3, 3 > look_at(const vec < 3 > & direction, const vec < 3 > & up = vec3{ 0.0f, 0.0f, 1.0f }) {
   vec3 f = normalize(direction);
   vec3 u = normalize(cross(f, cross(up, f)));
