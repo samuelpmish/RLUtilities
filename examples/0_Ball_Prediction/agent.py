@@ -1,25 +1,23 @@
 import math
 
 from rlbot.agents.base_agent import BaseAgent, SimpleControllerState
+from rlbot.agents.human.controller_input import controller
 from rlbot.utils.structures.game_data_struct import GameTickPacket
 
-from RLUtilities.GameInfo import GameInfo
-from RLUtilities.Simulation import Ball, Field
-from RLUtilities.LinearAlgebra import vec3
-
-from RLUtilities.controller_input import controller
+from rlutilities.simulation import Ball, Field, Game
+from rlutilities.linear_algebra import vec3
 
 class Agent(BaseAgent):
 
     def __init__(self, name, team, index):
-        Field.initialize_soccar()
-        self.info = GameInfo(index, team)
+        Game.set_mode("soccar")
+        self.game = Game(index, team)
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
-        self.info.read_packet(packet)
+        self.game.read_game_information(packet, self.get_rigid_body_tick(), self.get_field_info())
 
         # make a copy of the ball's info that we can change
-        b = Ball(self.info.ball)
+        b = Ball(self.game.ball)
 
         ball_predictions = []
         for i in range(360):
@@ -28,7 +26,7 @@ class Agent(BaseAgent):
             b.step(1.0 / 120.0)
 
             # and add a copy of new ball position to the list of predictions
-            ball_predictions.append(vec3(b.pos))
+            ball_predictions.append(vec3(b.location))
 
         self.renderer.begin_rendering()
         red = self.renderer.create_color(255, 255, 30, 30)
