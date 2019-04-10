@@ -16,6 +16,17 @@ mesh hoops_net({}, {});
 mesh hoops_rim({}, {});
 
 mesh dropshot({}, {});
+
+mesh throwback_goal({}, {});
+mesh throwback_ramps_lower_1({}, {});
+mesh throwback_ramps_lower_2({}, {});
+mesh throwback_ramps_lower_3({}, {});
+mesh throwback_ramps_upper_1({}, {});
+mesh throwback_ramps_upper_2({}, {});
+mesh throwback_ramps_upper_3({}, {});
+mesh throwback_wallcorner_0({}, {});
+mesh throwback_wallcorner_1({}, {});
+mesh throwback_wallcorner_2({}, {});
 #else
 mesh soccar_corner = mesh(
   read_binary<int>(std::string("assets/soccar_corner_ids.bin")),
@@ -67,6 +78,57 @@ mesh hoops_rim = mesh(
 mesh dropshot = mesh(
   read_binary<int>(std::string("assets/dropshot_ids.bin")),
   read_binary<float>(std::string("assets/dropshot_vertices.bin"))
+);
+
+
+mesh throwback_goal = mesh(
+  read_binary<int>(std::string("assets/throwback/LF_GoalCollision_03_Adjust_ids.bin")),
+  read_binary<float>(std::string("assets/throwback/LF_GoalCollision_03_Adjust_vertices.bin"))
+);
+
+mesh throwback_ramps_lower_1 = mesh(
+  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_BackLower_ids.bin")),
+  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_BackLower_vertices.bin"))
+);
+
+mesh throwback_ramps_lower_2 = mesh(
+  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_SideLower_ids.bin")),
+  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_SideLower_vertices.bin"))
+);
+
+mesh throwback_ramps_lower_3 = mesh(
+    read_binary<int>(std::string("assets/throwback/Field_TB_Collision_CornerLower_ids.bin")),
+    read_binary<float>(std::string("assets/throwback/Field_TB_Collision_CornerLower_vertices.bin"))
+);
+
+mesh throwback_ramps_upper_1 = mesh(
+  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_BackUpper_ids.bin")),
+  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_BackUpper_vertices.bin"))
+);
+
+mesh throwback_ramps_upper_2 = mesh(
+  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_SideUpper_ids.bin")),
+  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_SideUpper_vertices.bin"))
+);
+
+mesh throwback_ramps_upper_3 = mesh(
+  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_CornerLower_ids.bin")),
+  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_CornerUpper_vertices.bin"))
+);
+
+mesh throwback_wallcorner_0 = mesh(
+  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_CornerWall00_ids.bin")),
+  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_CornerWall00_vertices.bin"))
+);
+
+mesh throwback_wallcorner_1 = mesh(
+  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_CornerWall01_ids.bin")),
+  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_CornerWall01_vertices.bin"))
+);
+
+mesh throwback_wallcorner_2 = mesh(
+  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_CornerWall02_ids.bin")),
+  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_CornerWall02_vertices.bin"))
 );
 #endif
 
@@ -144,6 +206,56 @@ void Field::read_mesh_files(std::string directory) {
     read_binary<float>(directory + std::string("assets/dropshot_vertices.bin"))
   );
 
+
+  throwback_goal = mesh(
+    read_binary<int>(directory + std::string("assets/throwback/LF_GoalCollision_03_Adjust_ids.bin")),
+    read_binary<float>(directory + std::string("assets/throwback/LF_GoalCollision_03_Adjust_vertices.bin"))
+  );
+
+  throwback_ramps_lower_1 = mesh(
+    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_BackLower_ids.bin")),
+    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_BackLower_vertices.bin"))
+  );
+
+  throwback_ramps_lower_2 = mesh(
+    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_SideLower_ids.bin")),
+    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_SideLower_vertices.bin"))
+  );
+
+  throwback_ramps_lower_3 = mesh(
+    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_CornerLower_ids.bin")),
+    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_CornerLower_vertices.bin"))
+  );
+
+  throwback_ramps_upper_1 = mesh(
+    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_BackUpper_ids.bin")),
+    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_BackUpper_vertices.bin"))
+  );
+
+  throwback_ramps_upper_2 = mesh(
+    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_SideUpper_ids.bin")),
+    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_SideUpper_vertices.bin"))
+  );
+
+  throwback_ramps_upper_3 = mesh(
+    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_CornerUpper_ids.bin")),
+    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_CornerUpper_vertices.bin"))
+  );
+
+  throwback_wallcorner_0 = mesh(
+    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_CornerWall00_ids.bin")),
+    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_CornerWall00_vertices.bin"))
+  );
+
+  throwback_wallcorner_1 = mesh(
+    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_CornerWall01_ids.bin")),
+    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_CornerWall01_vertices.bin"))
+  );
+
+  throwback_wallcorner_2 = mesh(
+    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_CornerWall02_ids.bin")),
+    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_CornerWall02_vertices.bin"))
+  );
 }
 
 void Field::write_mesh_files() {
@@ -345,6 +457,78 @@ void Field::initialize_dropshot() {
 
   mode = std::string("dropshot");
 
+}
+
+void Field::initialize_throwback() {
+
+  float scale = 100;
+
+  mat3 S = {
+    {scale, 0.0f, 0.0f},
+    {0.0f, scale, 0.0f},
+    {0.0f, 0.0f, scale},
+  };
+
+  mesh throwback = {
+    throwback_goal.transform(S),
+    throwback_goal.transform(S).transform(flip_y),
+
+    throwback_ramps_lower_1.transform(S),
+    throwback_ramps_lower_1.transform(S).transform(flip_y),
+    throwback_ramps_lower_2.transform(S),
+    throwback_ramps_lower_2.transform(S).transform(flip_x),
+
+    throwback_ramps_lower_3.transform(S),
+    throwback_ramps_lower_3.transform(S).transform(flip_x),
+    throwback_ramps_lower_3.transform(S).transform(flip_y),
+    throwback_ramps_lower_3.transform(S).transform(flip_y).transform(flip_x),
+
+    throwback_ramps_upper_1.transform(S),
+    throwback_ramps_upper_1.transform(S).transform(flip_y),
+    throwback_ramps_upper_2.transform(S),
+    throwback_ramps_upper_2.transform(S).transform(flip_x),
+
+    throwback_ramps_upper_3.transform(S),
+    throwback_ramps_upper_3.transform(S).transform(flip_x),
+    throwback_ramps_upper_3.transform(S).transform(flip_y),
+    throwback_ramps_upper_3.transform(S).transform(flip_y).transform(flip_x),
+
+    throwback_wallcorner_0.transform(S),
+    throwback_wallcorner_0.transform(S).transform(flip_x),
+    throwback_wallcorner_0.transform(S).transform(flip_y),
+    throwback_wallcorner_0.transform(S).transform(flip_y).transform(flip_x),
+
+    throwback_wallcorner_1.transform(S),
+    throwback_wallcorner_1.transform(S).transform(flip_x),
+    throwback_wallcorner_1.transform(S).transform(flip_y),
+    throwback_wallcorner_1.transform(S).transform(flip_y).transform(flip_x),
+
+    throwback_wallcorner_2.transform(S),
+    throwback_wallcorner_2.transform(S).transform(flip_x),
+    throwback_wallcorner_2.transform(S).transform(flip_y),
+    throwback_wallcorner_2.transform(S).transform(flip_y).transform(flip_x),
+  };
+
+  triangles = throwback.to_triangles();
+  collision_mesh = bvh<tri>(triangles);
+
+  walls = std::vector<wall>(6);
+
+  // floor
+  walls[0] = wall{ vec3{0.0f, 0.0f, 0.0f}, vec3{0.0f, 0.0f, 1.0f}, true };
+
+  // ceiling
+  walls[1] = wall{ vec3{0.0f, 0.0f, 2048.0f}, vec3{0.0f, 0.0f, -1.0f}, true };
+
+  // X-facing walls
+  walls[2] = wall{ vec3{-4096.0f, 0.0f, 1024.0f}, vec3{ 1.0f, 0.0f, 0.0f}, true };
+  walls[3] = wall{ vec3{ 4096.0f, 0.0f, 1024.0f}, vec3{-1.0f, 0.0f, 0.0f}, true };
+
+  // Y-facing walls
+  walls[4] = wall{ vec3{0.0f, -6910.0f, 1024.0f}, vec3{0.0f,  1.0f, 0.0f}, false };
+  walls[5] = wall{ vec3{0.0f,  6910.0f, 1024.0f}, vec3{0.0f, -1.0f, 0.0f}, false };
+
+  mode = std::string("throwback");
 }
 
 ray Field::raycast_any(const ray & r) {
