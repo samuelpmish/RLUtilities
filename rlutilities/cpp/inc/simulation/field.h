@@ -27,6 +27,7 @@ class Field {
   static void initialize_soccar();
   static void initialize_hoops();
   static void initialize_dropshot();
+  static void initialize_throwback();
 
   static ray snap(vec3 p);
   static ray collide(const obb & o);
