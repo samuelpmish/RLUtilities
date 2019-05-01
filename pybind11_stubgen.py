@@ -348,19 +348,23 @@ class PropertyStubsGenerator(StubsGenerator):
         result = []
         result.append("@property")
         result.append("def {field_name}(self) -> {rtype}:".format(field_name=self.name,rtype=self.signature.rtype))
-        docstring = self.remove_signatures(self.prop.__doc__)
-        docstring += "\n:type: {rtype}".format(rtype=self.signature.rtype)
+        result.append(self.indent("pass"))
+        result.append("")
+        #result.append("{field_name}: {rtype}".format(field_name=self.name,rtype=self.signature.rtype))
 
-        result.append(self.indent('"""{}"""'.format(docstring)))
+        #docstring = self.remove_signatures(self.prop.__doc__)
+        #docstring += "\n:type: {rtype}".format(rtype=self.signature.rtype)
 
-        if self.signature.setter_args != "None":
-            result.append("@{field_name}.setter".format(field_name=self.name))
-            result.append("def {field_name}({args}) -> None:".format(field_name=self.name, args=self.signature.setter_args))
-            docstring = self.remove_signatures(self.prop.__doc__)
-            if docstring:
-                result.append(self.indent('"""{}"""'.format(docstring)))
-            else:
-                result.append(self.indent("pass"))
+        #result.append(self.indent('"""{}"""'.format(docstring)))
+
+        # if self.signature.setter_args != "None":
+        #     result.append("@{field_name}.setter".format(field_name=self.name))
+        #     result.append("def {field_name}({args}) -> None:".format(field_name=self.name, args=self.signature.setter_args))
+        #     docstring = self.remove_signatures(self.prop.__doc__)
+        #     if docstring:
+        #         result.append(self.indent('"""{}"""'.format(docstring)))
+        #     else:
+        #         result.append(self.indent("pass"))
 
         return result
 
@@ -405,7 +409,9 @@ class ClassStubsGenerator(StubsGenerator):
             elif name == "__doc__":
                 self.doc_string = member
             elif name not in self.attributes_blacklist:
-                logger.warn("Unknown member %s type : `%s` "%(name,str(type(member))))
+                #logger.warn("Unknown member %s type : `%s` "%(name,str(type(member))))
+                self.fields.append(AttributeStubsGenerator(name, member))
+                #self.properties.append(PropertyStubsGenerator(name, member, self.klass.__module__))
 
         for x in itertools.chain(self.methods,
                                  self.properties,
@@ -440,10 +446,18 @@ class ClassStubsGenerator(StubsGenerator):
                 base_classes_list=", ".join(base_classes_list)
             ),
         ]
-        for f in self.methods:
-            if f.member.__name__ not in self.methods_blacklist:
-                result.extend(map(self.indent,f.to_lines()))
 
+        for f in self.fields:
+            result.extend(map(self.indent, f.to_lines()))
+
+        result.append("")
+
+        for m in self.methods:
+            if m.member.__name__ not in self.methods_blacklist:
+                result.extend(map(self.indent, m.to_lines()))
+
+        result.append("")
+        
         for p in self.properties:
             result.extend(map(self.indent, p.to_lines()))
 
@@ -593,42 +607,26 @@ class ModuleStubsGenerator(StubsGenerator):
         return self.module.__name__.split(".")[-1]
 
     def write(self):
-        if not os.path.exists(self.short_name + self.stub_suffix):
-            logger.info("mkdir `%s`"%(self.short_name + self.stub_suffix))
-            os.mkdir(self.short_name + self.stub_suffix)
+        if self.submodules:
+            if not os.path.exists(self.short_name + self.stub_suffix):
+                logger.info("mkdir `%s`"%(self.short_name + self.stub_suffix))
+                os.mkdir(self.short_name + self.stub_suffix)
+            with DirectoryWalkerGuard(self.short_name + self.stub_suffix):
+                with open("__init__.pyi", "w") as init_pyi:
+                    init_pyi.write("\n".join(self.to_lines()))
+                for m in self.submodules:
+                    m.write()
+        else:
+            with open(self.short_name + ".pyi", "w") as init_pyi:
+                content = "\n".join(self.to_lines())
+                content = content.replace("vec<2>", "vec2")
+                content = content.replace("vec<3>", "vec3")
+                content = content.replace("vec<4>", "vec4")
+                content = content.replace("mat<2,2>", "mat2")
+                content = content.replace("mat<3,3>", "mat3")
+                content = content.replace("rlutilities.rlutilities", "rlutilities")
+                init_pyi.write(content)
 
-        with DirectoryWalkerGuard(self.short_name + self.stub_suffix):
-            with open("__init__.pyi", "w") as init_pyi:
-                init_pyi.write("\n".join(self.to_lines()))
-            for m in self.submodules:
-                m.write()
-
-            if self.write_setup_py:
-                with open("setup.py","w") as setuppy:
-                    setuppy.write("""from setuptools import setup
-import os
-
-
-def find_stubs(package):
-    stubs = []
-    for root, dirs, files in os.walk(package):
-        for file in files:
-            path = os.path.join(root, file).replace(package + os.sep, '', 1)
-            stubs.append(path)
-    return dict(package=stubs)
-
-
-setup(
-    name='{package_name}-stubs',
-    maintainer="{package_name} Developers",
-    maintainer_email="example@python.org",
-    description="PEP 561 type stubs for {package_name}",
-    version='1.0',
-    packages=['{package_name}-stubs'],
-    # PEP 561 requires these
-    install_requires=['{package_name}'],
-    package_data=find_stubs('{package_name}-stubs'),
-)""".format(package_name=self.short_name))
 
 
 
