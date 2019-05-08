@@ -10,6 +10,8 @@
 #include "simulation/pad.h"
 #include "simulation/goal.h"
 
+#include "misc/rlbot_generated.h"
+
 #ifdef GENERATE_PYTHON_BINDINGS
 #include <pybind11/pybind11.h>
 #endif
@@ -50,6 +52,9 @@ class Game {
 //  void log(std::string);
 
   static void set_mode(std::string);
+
+  void read_flatbuffer_packet(const rlbot::flat::GameTickPacket *gameTickPacket,
+                              const rlbot::flat::FieldInfo *fieldInfo);
 
   #ifdef GENERATE_PYTHON_BINDINGS
   void read_game_information(pybind11::object gametick_packet,

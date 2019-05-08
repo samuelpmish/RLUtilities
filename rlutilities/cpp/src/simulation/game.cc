@@ -3,6 +3,7 @@
 #include "simulation/field.h"
 
 #include "misc/json.h"
+#include "misc/rlbot_generated.h"
 
 #include <fstream>
 #include <iostream>
@@ -100,6 +101,90 @@ void Game::set_mode(std::string gamemode) {
 //  logfile << j << std::endl;
 //
 //}
+
+
+vec3 vector3_to_vec3(const rlbot::flat::Vector3 * flat_vector) 
+{
+  return vec3({
+    flat_vector->x(),
+    flat_vector->y(),
+    flat_vector->z()
+  });
+}
+
+mat3 rotator_to_mat3(const rlbot::flat::Rotator * flat_vector) 
+{
+  return euler_to_rotation(vec3({
+    flat_vector->pitch(),
+    flat_vector->yaw(),
+    flat_vector->roll()
+  }));
+}
+
+void Game::read_flatbuffer_packet(const rlbot::flat::GameTickPacket *gameTickPacket,
+                                  const rlbot::flat::FieldInfo *fieldInfo) {
+
+  float time_old = time;
+
+  time = gameTickPacket->gameInfo()->secondsElapsed();
+  time_delta = time - time_old;
+
+  time_remaining = gameTickPacket->gameInfo()->gameTimeRemaining();
+  overtime = gameTickPacket->gameInfo()->isOvertime();
+  round_active = gameTickPacket->gameInfo()->isRoundActive();
+  kickoff_pause = gameTickPacket->gameInfo()->isKickoffPause();
+  match_ended = gameTickPacket->gameInfo()->isMatchEnded();
+  gravity = gameTickPacket->gameInfo()->worldGravityZ();
+
+  for (int i = 0; i < gameTickPacket->players()->size(); i++) {
+
+    auto car = gameTickPacket->players()->Get(i);
+    
+    cars[i].x = vector3_to_vec3(car->physics()->location());
+    cars[i].v = vector3_to_vec3(car->physics()->velocity());
+    cars[i].w = vector3_to_vec3(car->physics()->angularVelocity());
+    cars[i].o = rotator_to_mat3(car->physics()->rotation());
+    cars[i].o_dodge = rotation(car->physics()->rotation()->yaw());
+
+    // other car data
+    cars[i].boost = car->boost();
+    cars[i].jumped = car->jumped();
+    cars[i].double_jumped = car->doubleJumped();
+    cars[i].on_ground = car->hasWheelContact();
+    cars[i].supersonic = car->isSupersonic();
+    cars[i].team = car->team();
+
+    cars[i].time = time;
+  }
+
+  ball.x = vector3_to_vec3(gameTickPacket->ball()->physics()->location());
+  ball.v = vector3_to_vec3(gameTickPacket->ball()->physics()->velocity());
+  ball.w = vector3_to_vec3(gameTickPacket->ball()->physics()->angularVelocity());
+
+  ball.time = time;
+
+  int num_boost_pads = fieldInfo->boostPads()->size();
+
+  int num_game_boosts = gameTickPacket->boostPadStates()->size();
+
+  if (num_boost_pads != num_game_boosts) {
+    std::cout << "boost pad info mismatch" << std::endl;
+  } else {
+
+    if (num_boost_pads > pads.size()) pads.resize(num_boost_pads);
+
+    for (int i = 0; i < num_boost_pads; i++) {
+      auto boost_pad = fieldInfo->boostPads()->Get(i);
+      auto game_boost = gameTickPacket->boostPadStates()->Get(i);
+
+      pads[i].location = vector3_to_vec3(boost_pad->location());
+      pads[i].is_full_boost = boost_pad->isFullBoost();
+      pads[i].is_active = game_boost->isActive();
+      pads[i].timer = game_boost->timer();
+    }
+  }
+}
+
 
 #ifdef GENERATE_PYTHON_BINDINGS
 #include <pybind11/stl.h>
