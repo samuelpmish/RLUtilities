@@ -123,13 +123,9 @@ class PythonExample(BaseAgent):
 
     def get_output(self, packet):
 
-        then = time.perf_counter()
         self.game.read_game_information(packet,
                                         self.get_rigid_body_tick(),
                                         self.get_field_info())
-        now = time.perf_counter()
-
-        print(now - then)
 
         controls = controller.get_output()
 

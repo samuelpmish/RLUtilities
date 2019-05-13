@@ -90,10 +90,10 @@ class Agent(BaseAgent):
         if self.state == State.INITIALIZE:
 
             self.aerial = Aerial(self.game.my_car)
-            self.aerial.up = normalize(vec3(
-                random.uniform(-1, 1),
-                random.uniform(-1, 1),
-                random.uniform(-1, 1)))
+            # self.aerial.up = normalize(vec3(
+            #     random.uniform(-1, 1),
+            #     random.uniform(-1, 1),
+            #     random.uniform(-1, 1)))
             self.turn = AerialTurn(self.game.my_car)
 
             # predict where the ball will be
@@ -115,7 +115,9 @@ class Agent(BaseAgent):
                     simulation = self.aerial.simulate()
 
                     # # check if we can reach it by an aerial
-                    if norm(simulation.location - self.aerial.target) < 30:
+                    if norm(simulation.location - self.aerial.target) < 100:
+                        prediction.step(0.016666)
+                        prediction.step(0.016666)
                         self.aerial.target = prediction.location
                         self.aerial.arrival_time = prediction.time
                         self.target_ball = Ball(prediction)

@@ -1,5 +1,7 @@
 #include "simulation/mesh.h"
 
+mesh::mesh() {}
+
 mesh::mesh(std::vector < int > ids_, std::vector < float > vertices_) {
 	ids = ids_;
 	vertices = vertices_;

@@ -24,7 +24,6 @@ class Dodge {
   Input controls;
 
   float timer;
-  bool dodged;
 
   Dodge(Car & c);
 

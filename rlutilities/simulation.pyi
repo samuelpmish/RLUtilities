@@ -12,6 +12,7 @@ __all__  = [
 "Game",
 "Goal",
 "Input",
+"Navigator",
 "Pad",
 "obb",
 "ray",
@@ -63,10 +64,10 @@ class Ball():
 class Car():
 
     @overload
-    def __init__(self) -> None: 
+    def __init__(self, arg0: Car) -> None: 
         pass
     @overload
-    def __init__(self, arg0: Car) -> None: ...
+    def __init__(self) -> None: ...
     def extrapolate(self, arg0: float) -> None: ...
     def forward(self) -> vec3: ...
     def hitbox(self) -> obb: ...
@@ -88,7 +89,7 @@ class Car():
         pass
     
     @property
-    def dodge_rotation(self) -> mat2:
+    def dodge_rotation(self) -> mat<2, 2>:
         pass
     
     @property
@@ -124,7 +125,7 @@ class Car():
         pass
     
     @property
-    def rotation(self) -> mat3:
+    def rotation(self) -> mat<3, 3>:
         pass
     
     @property
@@ -172,10 +173,10 @@ class ControlPoint():
 class Curve():
 
     @overload
-    def __init__(self, arg0: List[ControlPoint]) -> None: 
+    def __init__(self, arg0: List[vec3]) -> None: 
         pass
     @overload
-    def __init__(self, arg0: List[vec3]) -> None: ...
+    def __init__(self, arg0: List[ControlPoint]) -> None: ...
     def calculate_distances(self) -> None: ...
     def calculate_max_speeds(self, arg0: float, arg1: float) -> float: ...
     def calculate_tangents(self) -> None: ...
@@ -203,11 +204,11 @@ class Field():
 
     @staticmethod
     @overload
-    def collide(arg0: obb) -> ray: 
+    def collide(arg0: sphere) -> ray: 
         pass
     @staticmethod
     @overload
-    def collide(arg0: sphere) -> ray: ...
+    def collide(arg0: obb) -> ray: ...
     @staticmethod
     def raycast_any(arg0: ray) -> ray: ...
     @staticmethod
@@ -343,6 +344,13 @@ class Input():
         pass
     
     pass
+class Navigator():
+
+    def __init__(self, arg0: Car) -> None: ...
+    def analyze_surroundings(self, arg0: float) -> None: ...
+    def path_to(self, arg0: vec3, arg1: vec3, arg2: float) -> Curve: ...
+
+    pass
 class Pad():
 
     def __init__(self) -> None: ...
@@ -377,17 +385,17 @@ class obb():
         pass
     
     @property
-    def orientation(self) -> mat3:
+    def orientation(self) -> mat<3, 3>:
         pass
     
     pass
 class ray():
 
     @overload
-    def __init__(self) -> None: 
+    def __init__(self, arg0: vec3, arg1: vec3) -> None: 
         pass
     @overload
-    def __init__(self, arg0: vec3, arg1: vec3) -> None: ...
+    def __init__(self) -> None: ...
 
     @property
     def direction(self) -> vec3:
@@ -423,8 +431,8 @@ class tri():
 
     pass
 @overload
-def intersect(arg0: sphere, arg1: obb) -> bool:
+def intersect(arg0: obb, arg1: sphere) -> bool:
     pass
 @overload
-def intersect(arg0: obb, arg1: sphere) -> bool:
+def intersect(arg0: sphere, arg1: obb) -> bool:
     pass

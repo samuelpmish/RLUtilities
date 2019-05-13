@@ -1,13 +1,12 @@
 #include "simulation/ogh.h"
 
-OGH::OGH(vec3 _P0, vec3 _V0, vec3 _N0, vec3 _P1, vec3 _V1, vec3 _N1) {
+OGH::OGH(vec3 _P0, vec3 _V0, vec3 _P1, vec3 _V1) {
 
   P0 = _P0;
   V0 = normalize(_V0);
-  N0 = normalize(_N0);
+
   P1 = _P1;
   V1 = normalize(_V1);
-  N1 = normalize(_N1);
 
   vec3 dP = P1 - P0;
   float V0dotV1 = dot(V0, V1);
@@ -18,7 +17,7 @@ OGH::OGH(vec3 _P0, vec3 _V0, vec3 _N0, vec3 _P1, vec3 _V1, vec3 _N1) {
 
 }
 
-vec3 OGH::evaluate_at(float t) {
+vec3 OGH::evaluate(float t) {
   
   return ((2.0f * t + 1.0f) * (t - 1.0f) * (t - 1.0f)) * P0 +
          ((t - 1.0f) * (t - 1.0f) * t) * a0 * V0 +
@@ -27,7 +26,7 @@ vec3 OGH::evaluate_at(float t) {
 
 }
 
-vec3 OGH::tangent_at(float t) {
+vec3 OGH::tangent(float t) {
 
   return (6.0f * t * t - 6.0f * t) * P0 + 
          (1.0f - 4.0f * t + 3.0f * t * t) * a0 * V0 +
@@ -36,17 +35,11 @@ vec3 OGH::tangent_at(float t) {
 
 }
 
-// this is actually the normal component of curvature 
-float OGH::curvature_at(float t) {
+vec3 OGH::acceleration(float t) {
 
-  vec3 dg = tangent_at(t);
-
-  vec3 d2g = (12.0f * t - 6.0f) * P0 + 
-             ( 6.0f * t - 4.0f) * a0 * V0 - 
-             (12.0f * t - 6.0f) * P1 + 
-             ( 6.0f * t - 2.0f) * a1 * V1;
-
-  return dot(cross(dg, d2g), normalize((1.0f - t) * N0 + t * N1)) / 
-                 (norm(dg) * norm(dg) * norm(dg));
+  return (12.0f * t - 6.0f) * P0 + 
+         ( 6.0f * t - 4.0f) * a0 * V0 - 
+         (12.0f * t - 6.0f) * P1 + 
+         ( 6.0f * t - 2.0f) * a1 * V1;
 
 }

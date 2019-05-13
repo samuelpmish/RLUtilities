@@ -19,8 +19,6 @@
 // fuck visual C++
 const float twopi = 6.28318530f;
 
-const int ndivisions = 32;
-
 struct transition {
   int16_t x, y, theta, v;
   float t;
@@ -94,7 +92,7 @@ void sssp_plane() {
               ControlPoint{p, t2, z}
             });
 
-            float mean_curvature = mean(segment.curvatures);
+            //float mean_curvature = mean(segment.curvatures);
             float dev_curvature = standard_deviation(segment.curvatures);
 
             if (dev_curvature > 0.00075f) continue;
@@ -214,7 +212,8 @@ void sssp_plane() {
 
         for (const transition & other : neighbors[s.v][s.theta]) {
 
-          transition target{s.x + other.x, s.y + other.y, other.theta, other.v, s.t + other.t}; 
+          transition target{int16_t(s.x + other.x), int16_t(s.y + other.y), 
+            other.theta, other.v, s.t + other.t}; 
 
           if ((abs(target.x) <= gx) && (abs(target.y) <= gx)) {
 

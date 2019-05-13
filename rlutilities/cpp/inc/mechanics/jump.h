@@ -5,6 +5,8 @@
 
 #include "linear_algebra/math.h"
 
+#include <string>
+
 class Jump {
 
  public:
@@ -20,6 +22,8 @@ class Jump {
   void step(float dt);
 
   Car simulate();
+
+  std::string to_json();
 
   static const float speed;
   static const float acceleration;

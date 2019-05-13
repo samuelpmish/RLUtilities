@@ -10,7 +10,7 @@ __all__  = [
 "Boostdash",
 "Dodge",
 "Drive",
-"DrivePath",
+"FollowPath",
 "Jump",
 "Wavedash"
 ]
@@ -54,7 +54,7 @@ class Aerial():
         pass
     
     @property
-    def target_orientation(self) -> Optional[mat3]:
+    def target_orientation(self) -> Optional[mat<3, 3>]:
         pass
     
     @property
@@ -77,6 +77,10 @@ class AerialTurn():
     def step(self, arg0: float) -> None: ...
 
     @property
+    def alpha(self) -> vec3:
+        pass
+    
+    @property
     def controls(self) -> rlutilities.simulation.Input:
         pass
     
@@ -97,7 +101,7 @@ class AerialTurn():
         pass
     
     @property
-    def target(self) -> mat3:
+    def target(self) -> mat<3, 3>:
         pass
     
     pass
@@ -150,11 +154,15 @@ class Dodge():
         pass
     
     @property
-    def preorientation(self) -> Optional[mat3]:
+    def preorientation(self) -> Optional[mat<3, 3>]:
         pass
     
     @property
     def target(self) -> Optional[vec3]:
+        pass
+    
+    @property
+    def timer(self) -> float:
         pass
     
     pass
@@ -195,22 +203,13 @@ class Drive():
         pass
     
     pass
-class DrivePath():
+class FollowPath():
 
     def __init__(self, arg0: rlutilities.simulation.Car) -> None: ...
-    def recalculate_path(self) -> float: ...
     def step(self, arg0: float) -> None: ...
 
     @property
-    def arrival_accel(self) -> float:
-        pass
-    
-    @property
     def arrival_speed(self) -> float:
-        pass
-    
-    @property
-    def arrival_tangent(self) -> vec3:
         pass
     
     @property
@@ -235,10 +234,6 @@ class DrivePath():
     
     @property
     def path(self) -> rlutilities.simulation.Curve:
-        pass
-    
-    @property
-    def target(self) -> vec3:
         pass
     
     pass

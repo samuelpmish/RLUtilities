@@ -13,7 +13,11 @@ c.on_ground = False
 
 turn = AerialTurn(c)
 turn.target = look_at(vec3(1, 0, 0), vec3(0, 0, 1))
-turn.horizon_time = 0.05
+
+turn.step(0.0166)
+print(turn.controls.roll)
+print(turn.controls.pitch)
+print(turn.controls.yaw)
 
 simulation = turn.simulate()
 print(simulation.time)

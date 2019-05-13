@@ -7,6 +7,7 @@
 
 class mesh {
  public:
+  mesh();
   mesh(std::initializer_list < mesh >);
   mesh(std::vector < int >, std::vector < float >);
 
@@ -17,5 +18,4 @@ class mesh {
 
   std::vector < int > ids;
   std::vector < float > vertices;
-
 };

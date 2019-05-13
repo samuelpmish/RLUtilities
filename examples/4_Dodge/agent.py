@@ -9,6 +9,7 @@ from rlutilities.linear_algebra import *
 from rlutilities.mechanics import Dodge
 from rlutilities.simulation import Game, Ball, Car
 
+
 class State:
     RESET = 0
     WAIT = 1
@@ -16,7 +17,7 @@ class State:
     RUNNING = 3
 
 
-class Agent(BaseAgent):
+class MyAgent(BaseAgent):
 
     def __init__(self, name, team, index):
         self.game = Game(index, team)
@@ -83,6 +84,7 @@ class Agent(BaseAgent):
 
             self.action.step(self.game.time_delta)
             self.controls = self.action.controls
+            print(self.controls.jump)
 
             if self.timer > self.timeout:
                 next_state = State.RESET

@@ -30,6 +30,8 @@ class Agent(BaseAgent):
 
         if not self.action:
             self.action = AerialTurn(self.game.my_car)
+            self.action.eps_phi = 0.01
+            self.action.eps_omega = 0.02
 
         if self.timer == 0.0:
 
@@ -60,6 +62,8 @@ class Agent(BaseAgent):
 
         self.action.step(self.game.time_delta)
         self.controls = self.action.controls
+
+        print(self.action.alpha)
 
         self.timer += self.game.time_delta
         if self.timer > 2.0:

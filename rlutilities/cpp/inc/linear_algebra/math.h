@@ -198,6 +198,14 @@ inline mat<3, 3> euler_to_rotation(const vec<3>& pyr) {
   return theta;
 }
 
+inline vec<3> rotation_to_euler(const mat<3, 3>& theta) {
+  return vec<3>{
+    atan2(theta(2, 0), norm(vec2{theta(0, 0), theta(1, 0)})),
+    atan2(theta(1, 0), theta(0, 0)),
+    atan2(-theta(2, 1), theta(2, 2))
+  };
+}
+
 // to use this with the quaternions directly from Rocket League,
 // you have to do the following:
 //
@@ -334,12 +342,13 @@ inline float standard_deviation(const std::vector < float > values) {
 
 inline float mean(const std::vector < float > values) {
 
+  size_t n = values.size();
   float E_x = 0.0f;
 
   for (size_t i = 0; i < values.size(); i++) {
     E_x += values[i];
   }
 
-  return E_x;
+  return E_x / n;
 
 }

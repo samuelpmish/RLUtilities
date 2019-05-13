@@ -210,6 +210,7 @@ void AerialTurn::step(float dt) {
       for (int j = 0; j < 3; j++) {
         vec3 df_j = (f0 - f(alpha + eps * e[j], horizon_time)) / eps;
         J(0, j) = df_j[0]; J(1, j) = df_j[1]; J(2, j) = df_j[2];
+        J(j,j) += 0.00001f;
       }
 
       vec3 delta_alpha = dot(inv(J), f0);
@@ -256,19 +257,3 @@ Car AerialTurn::simulate() {
 
   return car_copy;
 }
-
-#ifdef GENERATE_PYTHON_BINDINGS
-#include <pybind11/pybind11.h>
-void init_aerialturn(pybind11::module & m) {
-  pybind11::class_<AerialTurn>(m, "AerialTurn")
-    .def(pybind11::init<Car &>())
-    .def_readwrite("target", &AerialTurn::target)
-    .def_readwrite("eps_phi", &AerialTurn::eps_phi)
-    .def_readwrite("eps_omega", &AerialTurn::eps_omega)
-    .def_readwrite("horizon_time", &AerialTurn::horizon_time)
-    .def_readwrite("finished", &AerialTurn::finished)
-    .def_readwrite("controls", &AerialTurn::controls)
-    .def("step", &AerialTurn::step)
-    .def("simulate", &AerialTurn::simulate);
-}
-#endif

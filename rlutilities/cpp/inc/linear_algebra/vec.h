@@ -21,6 +21,7 @@ class vec {
     int i = 0;
     for (float arg : args) {
       data[i++] = arg;
+      if (i > n) break;
     }
   }
 

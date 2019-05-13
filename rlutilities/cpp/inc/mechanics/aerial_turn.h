@@ -18,6 +18,8 @@ class AerialTurn {
   bool finished;
   Input controls;
 
+  vec3 alpha;
+
   AerialTurn(Car & c);
 
   void step(float dt);
@@ -34,7 +36,6 @@ class AerialTurn {
   vec3 dphi_dt;
   vec3 omega;
   vec3 omega_local;
-  vec3 alpha;
   mat3 Z0;
   mat3 theta;
 

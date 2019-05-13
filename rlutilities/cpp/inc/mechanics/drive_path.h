@@ -3,7 +3,6 @@
 #include "simulation/car.h"
 #include "simulation/input.h"
 #include "simulation/curve.h"
-#include "simulation/unroller.h"
 
 #include "mechanics/drive.h"
 #include "mechanics/dodge.h"
@@ -15,37 +14,25 @@
 #include <array>
 #include <vector>
 
-class DrivePath {
+class FollowPath {
 
  public:
   Car & car;
 
-  vec3 target;
   float arrival_time;
   float arrival_speed;
-  vec3 arrival_tangent;
 
   Curve path;
 
   bool finished;
   Input controls;
 
-  float arrival_accel;
   float expected_error;
   float expected_speed;
 
-  DrivePath(Car & c);
+  FollowPath(Car & c);
 
   void step(float dt);
-  float recalculate_path();
-
-  static float scale;
-  static int nx, ntheta, nv;
-
-  static uint32_t to_id(int, int, int, int);
-  static std::array < int16_t, 4 > from_id(uint32_t);
-
-  static void read_files(std::string directory);
 
  private:
 
@@ -64,9 +51,5 @@ class DrivePath {
   // in the appropriate amount of time, while also 
   // satisfying the arrival speed constraint
   float determine_speed_plan(float s, float T, float dt);
-
-  static std::array < int, 3 > strides;
-  static std::vector < float > time_LUT;
-  static std::vector < uint32_t > path_LUT;
 
 };

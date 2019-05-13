@@ -1,6 +1,7 @@
 #include "mechanics/drive_path.h"
 
 #include "misc/io.h"
+#include "misc/timer.h"
 
 #include <math.h>
 #include <string>
@@ -18,10 +19,38 @@ std::array < int, 3 > DrivePath::strides;
 std::vector < float > DrivePath::time_LUT;
 std::vector < uint32_t > DrivePath::path_LUT;
 
-void DrivePath::read_files(std::string directory) {
+Graph DrivePath::navigation_graph;
+std::vector < vec3 > DrivePath::navigation_nodes;
+std::vector < vec3 > DrivePath::navigation_tangents;
+std::vector < vec3 > DrivePath::navigation_normals;
+
+void DrivePath::init_statics(std::string directory) {
   strides = read_parameters(directory + std::string("assets/parameters.txt"));
   time_LUT = read_binary < float >(directory + std::string("assets/times_planar.bin"));
   path_LUT = read_binary < uint32_t >(directory + std::string("assets/paths_planar.bin"));
+
+  auto edges = read_binary< Graph::edge >(directory + std::string("assets/tuples.bin"));
+  navigation_graph = Graph(edges);
+
+  navigation_nodes = read_binary < vec3 >(directory + std::string("assets/navigation_nodes.bin"));
+  navigation_normals = read_binary < vec3 >(directory + std::string("assets/navigation_normals.bin"));
+
+  navigation_tangents = std::vector < vec3 >(navigation_normals.size() * ntheta);
+
+  const float k = ntheta / 6.28318530f;
+  std::vector < float > c(ntheta);
+  std::vector < float > s(ntheta);
+  for (int i = 0; i < ntheta; i++) {
+    c[i] = cos(i / k);
+    s[i] = sin(i / k);
+  }
+
+  for (int i = 0; i < navigation_normals.size(); i++) {
+    mat3 basis = R3_basis(navigation_normals[i]);
+    for (int j = 0; j < ntheta; j++) {
+      navigation_tangents[i * ntheta + j] = dot(basis, vec3{c[j], s[j], 0.0f});
+    }
+  };
 }
 
 DrivePath::DrivePath(Car & c) : car(c), drive(c), dodge(c), dash(c) {
@@ -32,6 +61,8 @@ DrivePath::DrivePath(Car & c) : car(c), drive(c), dodge(c), dash(c) {
   arrival_time = NAN;
   arrival_speed = NAN;
   arrival_tangent = vec3{NAN, NAN, NAN};
+
+  source_id = -1; 
 }
 
 void DrivePath::step(float dt) {
@@ -151,6 +182,137 @@ float DrivePath::determine_speed_plan(float s, float T, float dt) {
   expected_speed = interpolate_quadratic(v0, vf, a, drive.reaction_time, T);
 
   return expected_speed;
+
+}
+
+void DrivePath::sssp(float r, float z_max) {
+
+  timer stopwatch;
+
+  vec3 p = car.x;
+  size_t nnodes = navigation_nodes.size();
+
+  std::vector < bool > mask(nnodes * ntheta, false);
+
+  stopwatch.start();
+  int which_node = -1;
+  float minimum = 1000000.0f;
+  for (int i = 0; i < nnodes; i++) {
+    float distance = norm(p - navigation_nodes[i]);
+    if (distance < r && navigation_nodes[i][2] < z_max) {
+      for (int j = 0; j < ntheta; j++) {
+        mask[i * ntheta + j] = true;
+      }
+    }
+
+    if (distance < minimum) {
+      which_node = i;
+      minimum = distance;
+    }
+  }
+
+  vec3 f = car.forward();
+  int which_direction = -1;
+  float maximum_alignment = -2.0f;
+  for (int j = 0; j < ntheta; j++) {
+    float alignment = dot(f, navigation_tangents[which_node * ntheta + j]);
+    if (alignment > maximum_alignment) {
+      which_direction = j;
+      maximum_alignment = alignment;
+    }
+  }
+
+  std::cout << which_direction << std::endl;
+
+  source_id = which_node * ntheta + which_direction;
+  stopwatch.stop();
+  std::cout << "locating and creating mask: " << stopwatch.elapsed() << std::endl;
+
+  stopwatch.start();
+  //navigation_paths = navigation_graph.bellman_ford_sssp(source_id, mask);
+  stopwatch.stop();
+  std::cout << "sssp: " << stopwatch.elapsed() << std::endl;
+
+}
+
+bool DrivePath::plan_path(vec3 destination, vec3 tangent) {
+
+  int which_node = -1;
+  float minimum = 1000000.0f;
+  for (int i = 0; i < navigation_nodes.size(); i++) {
+    float distance = norm(destination - navigation_nodes[i]);
+    if (distance < minimum) {
+      which_node = i;
+      minimum = distance;
+    }
+  }
+
+  int which_direction = -1;
+  float maximum_alignment = -2.0f;
+  for (int j = 0; j < ntheta; j++) {
+    float alignment = dot(tangent, navigation_tangents[which_node * ntheta + j]);
+    if (alignment > maximum_alignment) {
+      which_direction = j;
+      maximum_alignment = alignment;
+    }
+  }
+
+  int id = which_node * ntheta + which_direction;
+
+  vec3 p = navigation_nodes[id / ntheta]; 
+  vec3 t = navigation_tangents[id]; 
+  vec3 n = navigation_normals[id / ntheta]; 
+
+  std::vector < ControlPoint > ctrl_pts = {ControlPoint{p, t, n}};
+
+  for (int i = 0; i < 32; i++) {
+
+    // find the navigation node and tangent that brings me here
+    id = navigation_paths[id];
+
+    // if it exists, add another control point to the path
+    if (id != -1) {
+
+      p = navigation_nodes[id / ntheta]; 
+      t = navigation_tangents[id]; 
+      n = navigation_normals[id / ntheta]; 
+  
+      ctrl_pts.push_back(ControlPoint{p, t, n});
+
+      // if we reach the navigation node for the car, 
+      // handle that case differently, and exit the loop
+      if (id == source_id) break;
+
+    // otherwise, the path is unreachable
+    } else {
+
+      return false;
+
+    }
+
+  }
+
+  std::reverse(ctrl_pts.begin(), ctrl_pts.end());
+
+  // modify the control points slightly to better fit 
+  // the actual positions of the car and its destination
+  vec3 dx1 = car.x - ctrl_pts.front().p;
+  vec3 dx2 = destination - ctrl_pts.back().p;
+
+  for (int i = 0; i < ctrl_pts.size(); i++) {
+    vec3 dp = lerp(dx1, dx2, float(i) / float(ctrl_pts.size() - 1));
+    ctrl_pts[i].p += dp - dot(dp, ctrl_pts[i].n) * ctrl_pts[i].n;
+  }
+
+  vec3 f = car.forward();
+  ctrl_pts.front().t = normalize(f - dot(f, ctrl_pts.front().n) * ctrl_pts.front().n);
+  ctrl_pts.back().t = normalize(tangent - dot(tangent, ctrl_pts.back().n) * ctrl_pts.back().n);
+
+  path = Curve(ctrl_pts);
+
+  path.calculate_max_speeds(Drive::max_speed, Drive::max_speed);
+
+  return true;
 
 }
 
@@ -304,6 +466,8 @@ void init_drivepath(pybind11::module & m) {
     .def_readwrite("expected_speed", &DrivePath::expected_speed)
     .def_readwrite("arrival_accel", &DrivePath::arrival_accel)
     .def("step", &DrivePath::step)
+    .def("sssp", &DrivePath::sssp)
+    .def("plan_path", &DrivePath::plan_path)
     .def("recalculate_path", &DrivePath::recalculate_path);
 }
 #endif

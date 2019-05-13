@@ -33,7 +33,7 @@
 #endif
 #if defined(__GNUG__) || defined(__clang__)
 #  pragma GCC diagnostic push
-#  pragma GCC diagnostic ignored "-Wunknown-warning-option"
+//#  pragma GCC diagnostic ignored "-Wunknown-warning-option"
 #  pragma GCC diagnostic ignored "-Wunused-but-set-parameter"
 #  pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 #  pragma GCC diagnostic ignored "-Wmissing-field-initializers"

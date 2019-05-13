@@ -3,133 +3,121 @@
 
 #include "misc/io.h"
 
-#ifdef GENERATE_PYTHON_BINDINGS
-mesh soccar_corner({}, {});
-mesh soccar_goal({}, {});
-mesh soccar_ramps_1({}, {});
-mesh soccar_ramps_2({}, {});
+#if 0
+// soccar meshes
+init_asset(soccar_corner_ids, int);
+init_asset(soccar_corner_vertices, float);
+mesh soccar_corner(soccar_corner_ids, soccar_corner_vertices);
 
-mesh hoops_corner({}, {});
-mesh hoops_ramps_1({}, {});
-mesh hoops_ramps_2({}, {});
-mesh hoops_net({}, {});
-mesh hoops_rim({}, {});
+init_asset(soccar_goal_ids, int);
+init_asset(soccar_goal_vertices, float);
+mesh soccar_goal(soccar_goal_ids, soccar_goal_vertices);
 
-mesh dropshot({}, {});
+init_asset(soccar_ramps_1_ids, int);
+init_asset(soccar_ramps_1_vertices, float);
+mesh soccar_ramps_1(soccar_ramps_1_ids, soccar_ramps_1_vertices);
 
-mesh throwback_goal({}, {});
-mesh throwback_ramps_lower_1({}, {});
-mesh throwback_ramps_lower_2({}, {});
-mesh throwback_ramps_lower_3({}, {});
-mesh throwback_ramps_upper_1({}, {});
-mesh throwback_ramps_upper_2({}, {});
-mesh throwback_ramps_upper_3({}, {});
-mesh throwback_wallcorner_0({}, {});
-mesh throwback_wallcorner_1({}, {});
-mesh throwback_wallcorner_2({}, {});
-#else
-mesh soccar_corner = mesh(
-  read_binary<int>(std::string("assets/soccar_corner_ids.bin")),
-  read_binary<float>(std::string("assets/soccar_corner_vertices.bin"))
-);
+init_asset(soccar_ramps_2_ids, int);
+init_asset(soccar_ramps_2_vertices, float);
+mesh soccar_ramps_2(soccar_ramps_2_ids, soccar_ramps_2_vertices);
 
-mesh soccar_goal = mesh(
-  read_binary<int>(std::string("assets/soccar_goal_ids.bin")),
-  read_binary<float>(std::string("assets/soccar_goal_vertices.bin"))
-);
+// hoops meshes
+init_asset(hoops_corner_ids, int);
+init_asset(hoops_corner_vertices, float);
+mesh hoops_corner(hoops_corner_ids, hoops_corner_vertices);
 
-mesh soccar_ramps_1 = mesh(
-  read_binary<int>(std::string("assets/soccar_ramps_1_ids.bin")),
-  read_binary<float>(std::string("assets/soccar_ramps_1_vertices.bin"))
-);
+init_asset(hoops_ramps_1_ids, int);
+init_asset(hoops_ramps_1_vertices, float);
+mesh hoops_ramps_1(hoops_ramps_1_ids, hoops_ramps_1_vertices);
 
-mesh soccar_ramps_2 = mesh(
-  read_binary<int>(std::string("assets/soccar_ramps_2_ids.bin")),
-  read_binary<float>(std::string("assets/soccar_ramps_2_vertices.bin"))
-);
+init_asset(hoops_ramps_2_ids, int);
+init_asset(hoops_ramps_2_vertices, float);
+mesh hoops_ramps_2(hoops_ramps_2_ids, hoops_ramps_2_vertices);
 
+init_asset(hoops_net_ids, int);
+init_asset(hoops_net_vertices, float);
+mesh hoops_net(hoops_net_ids, hoops_net_vertices);
 
-mesh hoops_corner = mesh(
-  read_binary<int>(std::string("assets/hoops_corner_ids.bin")),
-  read_binary<float>(std::string("assets/hoops_corner_vertices.bin"))
-);
+init_asset(hoops_rim_ids, int);
+init_asset(hoops_rim_vertices, float);
+mesh hoops_rim(hoops_rim_ids, hoops_rim_vertices);
 
-mesh hoops_ramps_1 = mesh(
-  read_binary<int>(std::string("assets/hoops_ramps_1_ids.bin")),
-  read_binary<float>(std::string("assets/hoops_ramps_1_vertices.bin"))
-);
+// dropshot mesh
+init_asset(dropshot_ids, int);
+init_asset(dropshot_vertices, float);
+mesh dropshot(dropshot_ids, dropshot_vertices);
 
-mesh hoops_ramps_2 = mesh(
-  read_binary<int>(std::string("assets/hoops_ramps_2_ids.bin")),
-  read_binary<float>(std::string("assets/hoops_ramps_2_vertices.bin"))
-);
+// throwback meshes
+init_asset(throwback_goal_ids, int);
+init_asset(throwback_goal_vertices, float);
+mesh throwback_goal(throwback_goal_ids, throwback_goal_vertices);
 
-mesh hoops_net = mesh(
-  read_binary<int>(std::string("assets/hoops_net_ids.bin")),
-  read_binary<float>(std::string("assets/hoops_net_vertices.bin"))
-);
+init_asset(throwback_side_ramps_lower_ids, int);
+init_asset(throwback_side_ramps_lower_vertices, float);
+mesh throwback_side_ramps_lower(throwback_side_ramps_lower_ids, throwback_side_ramps_lower_vertices);
 
-mesh hoops_rim = mesh(
-  read_binary<int>(std::string("assets/hoops_rim_ids.bin")),
-  read_binary<float>(std::string("assets/hoops_rim_vertices.bin"))
-);
+init_asset(throwback_side_ramps_upper_ids, int);
+init_asset(throwback_side_ramps_upper_vertices, float);
+mesh throwback_side_ramps_upper(throwback_side_ramps_upper_ids, throwback_side_ramps_upper_vertices);
 
+init_asset(throwback_back_ramps_lower_ids, int);
+init_asset(throwback_back_ramps_lower_vertices, float);
+mesh throwback_back_ramps_lower(throwback_back_ramps_lower_ids, throwback_back_ramps_lower_vertices);
 
-mesh dropshot = mesh(
-  read_binary<int>(std::string("assets/dropshot_ids.bin")),
-  read_binary<float>(std::string("assets/dropshot_vertices.bin"))
-);
+init_asset(throwback_back_ramps_upper_ids, int);
+init_asset(throwback_back_ramps_upper_vertices, float);
+mesh throwback_back_ramps_upper(throwback_back_ramps_upper_ids, throwback_back_ramps_upper_vertices);
 
+init_asset(throwback_corner_ramps_lower_ids, int);
+init_asset(throwback_corner_ramps_lower_vertices, float);
+mesh throwback_corner_ramps_lower(throwback_corner_ramps_lower_ids, throwback_corner_ramps_lower_vertices);
 
-mesh throwback_goal = mesh(
-  read_binary<int>(std::string("assets/throwback/LF_GoalCollision_03_Adjust_ids.bin")),
-  read_binary<float>(std::string("assets/throwback/LF_GoalCollision_03_Adjust_vertices.bin"))
-);
+init_asset(throwback_corner_ramps_upper_ids, int);
+init_asset(throwback_corner_ramps_upper_vertices, float);
+mesh throwback_corner_ramps_upper(throwback_corner_ramps_upper_ids, throwback_corner_ramps_upper_vertices);
 
-mesh throwback_ramps_lower_1 = mesh(
-  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_BackLower_ids.bin")),
-  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_BackLower_vertices.bin"))
-);
+init_asset(throwback_corner_wall_0_ids, int);
+init_asset(throwback_corner_wall_0_vertices, float);
+mesh throwback_corner_wall_0(throwback_corner_wall_0_ids, throwback_corner_wall_0_vertices);
 
-mesh throwback_ramps_lower_2 = mesh(
-  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_SideLower_ids.bin")),
-  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_SideLower_vertices.bin"))
-);
+init_asset(throwback_corner_wall_1_ids, int);
+init_asset(throwback_corner_wall_1_vertices, float);
+mesh throwback_corner_wall_1(throwback_corner_wall_1_ids, throwback_corner_wall_1_vertices);
 
-mesh throwback_ramps_lower_3 = mesh(
-    read_binary<int>(std::string("assets/throwback/Field_TB_Collision_CornerLower_ids.bin")),
-    read_binary<float>(std::string("assets/throwback/Field_TB_Collision_CornerLower_vertices.bin"))
-);
+init_asset(throwback_corner_wall_2_ids, int);
+init_asset(throwback_corner_wall_2_vertices, float);
+mesh throwback_corner_wall_2(throwback_corner_wall_2_ids, throwback_corner_wall_2_vertices);
 
-mesh throwback_ramps_upper_1 = mesh(
-  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_BackUpper_ids.bin")),
-  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_BackUpper_vertices.bin"))
-);
+#else 
 
-mesh throwback_ramps_upper_2 = mesh(
-  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_SideUpper_ids.bin")),
-  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_SideUpper_vertices.bin"))
-);
+// soccar meshes
+mesh soccar_corner;
+mesh soccar_goal;
+mesh soccar_ramps_0;
+mesh soccar_ramps_1;
 
-mesh throwback_ramps_upper_3 = mesh(
-  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_CornerLower_ids.bin")),
-  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_CornerUpper_vertices.bin"))
-);
+// hoops meshes
+mesh hoops_corner;
+mesh hoops_ramps_0;
+mesh hoops_ramps_1;
+mesh hoops_net;
+mesh hoops_rim;
 
-mesh throwback_wallcorner_0 = mesh(
-  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_CornerWall00_ids.bin")),
-  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_CornerWall00_vertices.bin"))
-);
+// dropshot mesh
+mesh dropshot;
 
-mesh throwback_wallcorner_1 = mesh(
-  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_CornerWall01_ids.bin")),
-  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_CornerWall01_vertices.bin"))
-);
+// throwback meshes
+mesh throwback_goal;
+mesh throwback_side_ramps_lower;
+mesh throwback_side_ramps_upper;
+mesh throwback_back_ramps_lower;
+mesh throwback_back_ramps_upper;
+mesh throwback_corner_ramps_lower;
+mesh throwback_corner_ramps_upper;
+mesh throwback_corner_wall_0;
+mesh throwback_corner_wall_1;
+mesh throwback_corner_wall_2;
 
-mesh throwback_wallcorner_2 = mesh(
-  read_binary<int>(std::string("assets/throwback/Field_TB_Collision_CornerWall02_ids.bin")),
-  read_binary<float>(std::string("assets/throwback/Field_TB_Collision_CornerWall02_vertices.bin"))
-);
 #endif
 
 mat3 flip_x = {
@@ -152,139 +140,6 @@ float Field::r;
 float Field::R;
 std::string Field::mode = std::string("Uninitialized");
 
-void Field::read_mesh_files(std::string directory) {
-  
-  soccar_corner = mesh(
-    read_binary<int>(directory + std::string("assets/soccar_corner_ids.bin")),
-    read_binary<float>(directory + std::string("assets/soccar_corner_vertices.bin"))
-  );
-
-  soccar_goal = mesh(
-    read_binary<int>(directory + std::string("assets/soccar_goal_ids.bin")),
-    read_binary<float>(directory + std::string("assets/soccar_goal_vertices.bin"))
-  );
-  
-  soccar_ramps_1 = mesh(
-    read_binary<int>(directory + std::string("assets/soccar_ramps_1_ids.bin")),
-    read_binary<float>(directory + std::string("assets/soccar_ramps_1_vertices.bin"))
-  );
-  
-  soccar_ramps_2 = mesh(
-    read_binary<int>(directory + std::string("assets/soccar_ramps_2_ids.bin")),
-    read_binary<float>(directory + std::string("assets/soccar_ramps_2_vertices.bin"))
-  );
-  
-  
-  hoops_corner = mesh(
-    read_binary<int>(directory + std::string("assets/hoops_corner_ids.bin")),
-    read_binary<float>(directory + std::string("assets/hoops_corner_vertices.bin"))
-  );
-  
-  hoops_ramps_1 = mesh(
-    read_binary<int>(directory + std::string("assets/hoops_ramps_1_ids.bin")),
-    read_binary<float>(directory + std::string("assets/hoops_ramps_1_vertices.bin"))
-  );
-  
-  hoops_ramps_2 = mesh(
-    read_binary<int>(directory + std::string("assets/hoops_ramps_2_ids.bin")),
-    read_binary<float>(directory + std::string("assets/hoops_ramps_2_vertices.bin"))
-  );
-  
-  hoops_net = mesh(
-    read_binary<int>(directory + std::string("assets/hoops_net_ids.bin")),
-    read_binary<float>(directory + std::string("assets/hoops_net_vertices.bin"))
-  );
-  
-  hoops_rim = mesh(
-    read_binary<int>(directory + std::string("assets/hoops_rim_ids.bin")),
-    read_binary<float>(directory + std::string("assets/hoops_rim_vertices.bin"))
-  );
-  
-  
-  dropshot = mesh(
-    read_binary<int>(directory + std::string("assets/dropshot_ids.bin")),
-    read_binary<float>(directory + std::string("assets/dropshot_vertices.bin"))
-  );
-
-
-  throwback_goal = mesh(
-    read_binary<int>(directory + std::string("assets/throwback/LF_GoalCollision_03_Adjust_ids.bin")),
-    read_binary<float>(directory + std::string("assets/throwback/LF_GoalCollision_03_Adjust_vertices.bin"))
-  );
-
-  throwback_ramps_lower_1 = mesh(
-    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_BackLower_ids.bin")),
-    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_BackLower_vertices.bin"))
-  );
-
-  throwback_ramps_lower_2 = mesh(
-    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_SideLower_ids.bin")),
-    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_SideLower_vertices.bin"))
-  );
-
-  throwback_ramps_lower_3 = mesh(
-    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_CornerLower_ids.bin")),
-    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_CornerLower_vertices.bin"))
-  );
-
-  throwback_ramps_upper_1 = mesh(
-    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_BackUpper_ids.bin")),
-    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_BackUpper_vertices.bin"))
-  );
-
-  throwback_ramps_upper_2 = mesh(
-    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_SideUpper_ids.bin")),
-    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_SideUpper_vertices.bin"))
-  );
-
-  throwback_ramps_upper_3 = mesh(
-    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_CornerUpper_ids.bin")),
-    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_CornerUpper_vertices.bin"))
-  );
-
-  throwback_wallcorner_0 = mesh(
-    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_CornerWall00_ids.bin")),
-    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_CornerWall00_vertices.bin"))
-  );
-
-  throwback_wallcorner_1 = mesh(
-    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_CornerWall01_ids.bin")),
-    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_CornerWall01_vertices.bin"))
-  );
-
-  throwback_wallcorner_2 = mesh(
-    read_binary<int>(directory + std::string("assets/throwback/Field_TB_Collision_CornerWall02_ids.bin")),
-    read_binary<float>(directory + std::string("assets/throwback/Field_TB_Collision_CornerWall02_vertices.bin"))
-  );
-}
-
-void Field::write_mesh_files() {
-
-  write_binary(soccar_corner.ids, "soccar_corner_ids.bin");
-  write_binary(soccar_corner.vertices, "soccar_corner_vertices.bin");
-  write_binary(soccar_goal.ids, "soccar_goal_ids.bin");
-  write_binary(soccar_goal.vertices, "soccar_goal_vertices.bin");
-  write_binary(soccar_ramps_1.ids, "soccar_ramps_1_ids.bin");
-  write_binary(soccar_ramps_1.vertices, "soccar_ramps_1_vertices.bin");
-  write_binary(soccar_ramps_2.ids, "soccar_ramps_2_ids.bin");
-  write_binary(soccar_ramps_2.vertices, "soccar_ramps_2_vertices.bin");
-
-  write_binary(hoops_corner.ids, "hoops_corner_ids.bin");
-  write_binary(hoops_corner.vertices, "hoops_corner_vertices.bin");
-  write_binary(hoops_ramps_1.ids, "hoops_ramps_1_ids.bin");
-  write_binary(hoops_ramps_1.vertices, "hoops_ramps_1_vertices.bin");
-  write_binary(hoops_ramps_2.ids, "hoops_ramps_2_ids.bin");
-  write_binary(hoops_ramps_2.vertices, "hoops_ramps_2_vertices.bin");
-  write_binary(hoops_net.ids, "hoops_net_ids.bin");
-  write_binary(hoops_net.vertices, "hoops_net_vertices.bin");
-  write_binary(hoops_rim.ids, "hoops_rim_ids.bin");
-  write_binary(hoops_rim.vertices, "hoops_rim_vertices.bin");
-
-  write_binary(dropshot.ids, "dropshot_ids.bin");
-  write_binary(dropshot.vertices, "dropshot_vertices.bin");
-
-}
-
 void Field::initialize_soccar() {
   mesh soccar = {
     soccar_corner,
@@ -293,10 +148,10 @@ void Field::initialize_soccar() {
     soccar_corner.transform(dot(flip_x, flip_y)),
     soccar_goal.translate(vec3{0.0f, -5120.0f, 0.0f}),
     soccar_goal.translate(vec3{0.0f, -5120.0f, 0.0f}).transform(flip_y),
+    soccar_ramps_0,
+    soccar_ramps_0.transform(flip_x),
     soccar_ramps_1,
-    soccar_ramps_1.transform(flip_x),
-    soccar_ramps_2,
-    soccar_ramps_2.transform(flip_x)
+    soccar_ramps_1.transform(flip_x)
   };
   triangles = soccar.to_triangles();
   collision_mesh = bvh<tri>(triangles);
@@ -361,10 +216,10 @@ void Field::initialize_hoops() {
     transformed_hoops_net.transform(flip_y),
     transformed_hoops_rim,
     transformed_hoops_rim.transform(flip_y),
+    hoops_ramps_0,
+    hoops_ramps_0.transform(flip_x),
     hoops_ramps_1,
-    hoops_ramps_1.transform(flip_x),
-    hoops_ramps_2,
-    hoops_ramps_2.transform(flip_y)
+    hoops_ramps_1.transform(flip_y)
   };
 
   triangles = hoops.to_triangles();
@@ -473,40 +328,39 @@ void Field::initialize_throwback() {
     throwback_goal.transform(S),
     throwback_goal.transform(S).transform(flip_y),
 
-    throwback_ramps_lower_1.transform(S),
-    throwback_ramps_lower_1.transform(S).transform(flip_y),
-    throwback_ramps_lower_2.transform(S),
-    throwback_ramps_lower_2.transform(S).transform(flip_x),
+    throwback_side_ramps_lower.transform(S),
+    throwback_side_ramps_lower.transform(S).transform(flip_x),
+    throwback_side_ramps_upper.transform(S),
+    throwback_side_ramps_upper.transform(S).transform(flip_x),
 
-    throwback_ramps_lower_3.transform(S),
-    throwback_ramps_lower_3.transform(S).transform(flip_x),
-    throwback_ramps_lower_3.transform(S).transform(flip_y),
-    throwback_ramps_lower_3.transform(S).transform(flip_y).transform(flip_x),
+    throwback_back_ramps_lower.transform(S),
+    throwback_back_ramps_lower.transform(S).transform(flip_y),
+    throwback_back_ramps_upper.transform(S),
+    throwback_back_ramps_upper.transform(S).transform(flip_y),
 
-    throwback_ramps_upper_1.transform(S),
-    throwback_ramps_upper_1.transform(S).transform(flip_y),
-    throwback_ramps_upper_2.transform(S),
-    throwback_ramps_upper_2.transform(S).transform(flip_x),
+    throwback_corner_ramps_lower.transform(S),
+    throwback_corner_ramps_lower.transform(S).transform(flip_x),
+    throwback_corner_ramps_lower.transform(S).transform(flip_y),
+    throwback_corner_ramps_lower.transform(S).transform(flip_y).transform(flip_x),
+    throwback_corner_ramps_upper.transform(S),
+    throwback_corner_ramps_upper.transform(S).transform(flip_x),
+    throwback_corner_ramps_upper.transform(S).transform(flip_y),
+    throwback_corner_ramps_upper.transform(S).transform(flip_y).transform(flip_x),
 
-    throwback_ramps_upper_3.transform(S),
-    throwback_ramps_upper_3.transform(S).transform(flip_x),
-    throwback_ramps_upper_3.transform(S).transform(flip_y),
-    throwback_ramps_upper_3.transform(S).transform(flip_y).transform(flip_x),
+    throwback_corner_wall_0.transform(S),
+    throwback_corner_wall_0.transform(S).transform(flip_x),
+    throwback_corner_wall_0.transform(S).transform(flip_y),
+    throwback_corner_wall_0.transform(S).transform(flip_y).transform(flip_x),
 
-    throwback_wallcorner_0.transform(S),
-    throwback_wallcorner_0.transform(S).transform(flip_x),
-    throwback_wallcorner_0.transform(S).transform(flip_y),
-    throwback_wallcorner_0.transform(S).transform(flip_y).transform(flip_x),
+    throwback_corner_wall_1.transform(S),
+    throwback_corner_wall_1.transform(S).transform(flip_x),
+    throwback_corner_wall_1.transform(S).transform(flip_y),
+    throwback_corner_wall_1.transform(S).transform(flip_y).transform(flip_x),
 
-    throwback_wallcorner_1.transform(S),
-    throwback_wallcorner_1.transform(S).transform(flip_x),
-    throwback_wallcorner_1.transform(S).transform(flip_y),
-    throwback_wallcorner_1.transform(S).transform(flip_y).transform(flip_x),
-
-    throwback_wallcorner_2.transform(S),
-    throwback_wallcorner_2.transform(S).transform(flip_x),
-    throwback_wallcorner_2.transform(S).transform(flip_y),
-    throwback_wallcorner_2.transform(S).transform(flip_y).transform(flip_x),
+    throwback_corner_wall_2.transform(S),
+    throwback_corner_wall_2.transform(S).transform(flip_x),
+    throwback_corner_wall_2.transform(S).transform(flip_y),
+    throwback_corner_wall_2.transform(S).transform(flip_y).transform(flip_x),
   };
 
   triangles = throwback.to_triangles();
@@ -742,19 +596,3 @@ ray Field::collide(const sphere & s) {
 
   return contact_point;
 }
-
-#ifdef GENERATE_PYTHON_BINDINGS
-#include <pybind11/stl.h>
-#include <pybind11/pybind11.h>
-void init_field(pybind11::module & m) {
-  pybind11::class_<Field>(m, "Field")
-    .def_readonly_static("mode", &Field::mode)
-    .def_readonly_static("walls", &Field::walls)
-    .def_readonly_static("triangles", &Field::triangles)
-    .def_static("snap", &Field::snap)
-    .def_static("collide", static_cast<ray(*)(const obb &)>(&Field::collide))
-    .def_static("collide", static_cast<ray(*)(const sphere &)>(&Field::collide))
-    .def_static("raycast_any", &Field::raycast_any);
-}
-#endif
-

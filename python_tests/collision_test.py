@@ -1,7 +1,7 @@
 from rlutilities.linear_algebra import vec3, mat3
-from rlutilities.simulation import gametype, Car, Ball, intersect
+from rlutilities.simulation import Game, Car, Ball, intersect
 
-gametype("dropshot")
+Game.set_mode("dropshot")
 
 c = Car()
 

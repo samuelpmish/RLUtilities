@@ -1,3 +1,4 @@
+#include "simulation/ogh.h"
 #include "simulation/curve.h"
 
 #include "mechanics/drive.h"
@@ -16,7 +17,7 @@ void Curve::write_to_file(std::string prefix) {
 }
 
 Curve::Curve() {
-  length = 0.0f;
+  length = -1.0f;
   points = std::vector < vec3 >();
   tangents = std::vector < vec3 >();
   distances = std::vector < float >();
@@ -31,7 +32,7 @@ Curve::Curve(const std::vector<vec3> &_points) {
 Curve::Curve(std::vector< ControlPoint > info) {
 
   // the maximum smoothing correction (radians)
-  const float phi_max = 0.15f;
+  // const float phi_max = 0.15f;
 
   int ndiv = 16;
   size_t num_segments = info.size() - 1;
@@ -70,26 +71,6 @@ Curve::Curve(std::vector< ControlPoint > info) {
 
   for (int i = 0; i < num_segments; i++) {
 
-#if 0
-    vec3 c1 = info[i].p;
-    vec3 c4 = info[i+1].p;
-
-    vec3 t1 = info[i].t;
-    vec3 t2 = info[i+1].t;
-
-    vec3 n1 = info[i].n;
-    vec3 n2 = info[i+1].n;
-  
-    vec3 n_avg = normalize(n1 + n2);
-    vec3 t1_avg = normalize(t1 - dot(t1, n_avg) * n_avg);
-    vec3 t2_avg = normalize(t2 - dot(t2, n_avg) * n_avg);
-  
-    float phi = acos(clip(dot(t1_avg, t2_avg), -1.0f, 1.0f));
-    float t_scale = ((1.0f / 3.0f) + (phi * phi) / 18.0f) * norm(c4 - c1);
-  
-    vec3 c2 = c1 + t_scale * t1;
-    vec3 c3 = c4 - t_scale * t2;
-#else
     vec3 P0 = info[i].p;
     vec3 P1 = info[i+1].p;
 
@@ -99,13 +80,7 @@ Curve::Curve(std::vector< ControlPoint > info) {
     vec3 N0 = info[i].n;
     vec3 N1 = info[i+1].n;
 
-    vec3 dP = P1 - P0;
-    float V0dotV1 = dot(V0, V1);
-    float denom = 4.0f - V0dotV1 * V0dotV1;
-  
-    float a0 = (6.0f * dot(dP, V0) - 3.0f * dot(dP, V1) * V0dotV1) / denom;
-    float a1 = (6.0f * dot(dP, V1) - 3.0f * dot(dP, V0) * V0dotV1) / denom;
-#endif
+    OGH piece(P0, V0, P1, V1); 
 
     int is_last = (i == num_segments - 1);
 
@@ -113,42 +88,14 @@ Curve::Curve(std::vector< ControlPoint > info) {
 
       float t = float(j) / float(ndiv); 
 
-      vec3 g = ((2.0f * t + 1.0f) * (t - 1.0f) * (t - 1.0f)) * P0 +
-               ((t - 1.0f) * (t - 1.0f) * t) * a0 * V0 +
-               ((3.0f - 2.0f * t) * t * t) * P1 +
-               ((t - 1.0f) * t * t) * a1 * V1;
+      vec3 g = piece.evaluate(t);
+      vec3 dg = piece.tangent(t);
+      vec3 d2g = piece.acceleration(t);
 
-      vec3 dg = (6.0f * t * t - 6.0f * t) * P0 + 
-                (1.0f - 4.0f * t + 3.0f * t * t) * a0 * V0 +
-                (6.0f * t - 6.0f * t * t) * P1 + 
-                (3.0f * t * t - 2.0f * t) * a1 * V1;
-
-      vec3 d2g = (12.0f * t - 6.0f) * P0 + 
-                 ( 6.0f * t - 4.0f) * a0 * V0 - 
-                 (12.0f * t - 6.0f) * P1 + 
-                 ( 6.0f * t - 2.0f) * a1 * V1;
-
+      // In rocket league, the only curvature that we care about 
+      // is the component along the surface normal
       float kappa = dot(cross(dg, d2g), normalize((1.0f - t) * N0 + t * N1)) / 
                              (norm(dg) * norm(dg) * norm(dg));
-#if 0
-      vec3 g = c1 * (v * v * v) +
-               c2 * (v * v * u * 3.0f) + 
-               c3 * (v * u * u * 3.0f) +
-               c4 * (u * u * u);
-
-      vec3 dg = c1 * (-3.0f * v * v) +
-                c2 * ( 3.0f * v * v - 6.0f * u * v) +
-                c3 * (-3.0f * u * u + 6.0f * u * v) +
-                c4 * ( 3.0f * u * u);
-
-      vec3 d2g = c1 * (6.0f * v) +
-                 c2 * (6.0f * u - 12.0f * v) + 
-                 c3 * (6.0f * v - 12.0f * u) +
-                 c4 * (6.0f * u);
-
-      float kappa = dot(cross(dg, d2g), normalize(v * n1 + u * n2)) / 
-                            (norm(dg) * norm(dg) * norm(dg));
-#endif
     
       points.push_back(g);
       tangents.push_back(normalize(dg));
@@ -337,32 +284,3 @@ float maximize_speed_without_throttle(float accel, float v0, float sf) {
   }
   return v;
 }
-
-#ifdef GENERATE_PYTHON_BINDINGS
-#include <pybind11/stl.h>
-#include <pybind11/pybind11.h>
-void init_curve(pybind11::module & m) {
-	pybind11::class_<ControlPoint>(m, "ControlPoint")
-		.def(pybind11::init())
-		.def(pybind11::init< vec<3>, vec<3>, vec<3> >())
-		.def_readwrite("p", &ControlPoint::p)
-		.def_readwrite("t", &ControlPoint::t)
-		.def_readwrite("n", &ControlPoint::n);
-
-  pybind11::class_<Curve>(m, "Curve")
-    .def(pybind11::init< std::vector < vec<3> > >())
-    .def(pybind11::init< std::vector < ControlPoint > >())
-    .def("point_at", &Curve::point_at)
-    .def("tangent_at", &Curve::tangent_at)
-    .def("curvature_at", &Curve::curvature_at)
-    .def("max_speed_at", &Curve::max_speed_at)
-    .def("find_nearest", &Curve::find_nearest)
-    .def("pop_front", &Curve::pop_front)
-    .def("calculate_distances", &Curve::calculate_distances)
-    .def("calculate_tangents", &Curve::calculate_tangents)
-    .def("calculate_max_speeds", &Curve::calculate_max_speeds)
-    .def("write_to_file", &Curve::write_to_file)
-    .def_readwrite("points", &Curve::points)
-    .def_readonly("length", &Curve::length);
-}
-#endif

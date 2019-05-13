@@ -26,7 +26,7 @@ Dodge::Dodge(Car & c) : car(c), turn(c) {
 
 void Dodge::step(float dt) {
 
-	float timeout = 1.0f;
+	float timeout = 0.9f;
 
 	controls.jump = 0;
 	controls.roll = 0.0f;
@@ -43,7 +43,8 @@ void Dodge::step(float dt) {
 	if (duration && !delay) dodge_time = duration.value() + 2.0f * dt;
 	if (duration &&  delay) dodge_time = delay.value();
 
-	if ((timer < dodge_time) && ((timer + dt) >= dodge_time)) {
+  //if ((timer < dodge_time) && ((timer + dt) >= dodge_time)) {
+	if (timer >= dodge_time && !car.double_jumped && !car.on_ground) {
 
 		vec2 direction_local;
 
@@ -88,7 +89,11 @@ void Dodge::step(float dt) {
 
 	}
 
-	if ((timer < dodge_time - dt) && preorientation) {
+  if (car.double_jumped) {
+    controls.jump = 0;
+  }
+
+	if ((timer < dodge_time) && preorientation) {
 
 		turn.target = preorientation.value();
 		turn.step(dt);
@@ -132,28 +137,35 @@ Car Dodge::simulate() {
 
 }
 
-#ifdef GENERATE_PYTHON_BINDINGS
-#include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
-void init_dodge(pybind11::module & m) {
-	pybind11::class_<Dodge>(m, "Dodge")
-		.def(pybind11::init<Car &>())
-		.def_readwrite("target", &Dodge::target)
-		.def_readwrite("direction", &Dodge::direction)
-		.def_readwrite("preorientation", &Dodge::preorientation)
-		.def_readwrite("duration", &Dodge::duration)
-		.def_readwrite("delay", &Dodge::delay)
-		.def_readonly("finished", &Dodge::finished)
-		.def_readonly("controls", &Dodge::controls)
-		.def_readonly_static("timeout", &Dodge::timeout)
-		.def_readonly_static("input_threshold", &Dodge::input_threshold)
-		.def_readonly_static("z_damping", &Dodge::z_damping)
-		.def_readonly_static("z_damping_start", &Dodge::z_damping_start)
-		.def_readonly_static("z_damping_end", &Dodge::z_damping_end)
-		.def_readonly_static("torque_time", &Dodge::torque_time)
-		.def_readonly_static("side_torque", &Dodge::side_torque)
-		.def_readonly_static("forward_torque", &Dodge::forward_torque)
-		.def("step", &Dodge::step)
-		.def("simulate", &Dodge::simulate);
+#if 0
+std::string Dodge::to_json() {
+
+  return nlohmann::json{
+    {"x", {x[0], x[1], x[2]}},
+    {"v", {v[0], v[1], v[2]}},
+    {"w", {w[0], w[1], w[2]}},
+    {"o", {o(0, 0), o(0, 1), o(0, 2),
+           o(1, 0), o(1, 1), o(1, 2), 
+           o(2, 0), o(2, 1), o(2, 2)}},
+    {"supersonic", supersonic},
+    {"jumped", jumped},
+    {"double_jumped", double_jumped},
+    {"on_ground", on_ground},
+    {"boost_left", boost},
+    {"jump_timer", jump_timer},
+    {"dodge_timer", dodge_timer},
+    {"dodge_dir", {dodge_dir[0], dodge_dir[1]}},
+    {"time", time},
+
+    {"steer", controls.steer},
+    {"roll", controls.roll},
+    {"pitch", controls.pitch},
+    {"yaw", controls.yaw},
+    {"throttle", controls.throttle},
+    {"jump", controls.jump},
+    {"boost", controls.boost},
+    {"handbrake", controls.handbrake}
+  }.dump();
+
 }
 #endif

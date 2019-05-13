@@ -20,12 +20,13 @@ int main() {
   c.w = vec3{0.0f, 0.0f, 0.0f};
   c.o = eye < 3 >();
 
+  Car copy = Car(c);
+  auto aerial = Aerial(copy);
+  aerial.target = vec3{2000.0f, 300.0f, 1000.0f};
+  aerial.arrival_time = 3.0f;
+
   stopwatch.start();
   for (int i = 0; i < n; i++) {
-    Car copy = Car(c);
-    auto aerial = Aerial(copy);
-    aerial.target = vec3{2000.0f, 300.0f, 1000.0f};
-    aerial.arrival_time = 3.0f;
     Car end = aerial.simulate();
     prevent_optimizing_out += end.x[0];
   }

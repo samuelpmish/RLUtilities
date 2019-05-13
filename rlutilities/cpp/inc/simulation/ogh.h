@@ -14,14 +14,14 @@ class OGH {
   float a0, a1;
 
   // endpoint positions, tangents, and normals
-  vec3 P0, P1, V0, V1, N0, N1;
+  vec3 P0, P1, V0, V1;
 
-  OGH(vec3 _P0, vec3 _V0, vec3 _N0, vec3 _P1, vec3 _V1, vec3 _N1);
+  OGH(vec3 _P0, vec3 _V0, vec3 _P1, vec3 _V1);
 
-  vec3 evaluate_at(float t);
+  vec3 evaluate(float t);
 
-  vec3 tangent_at(float t);
+  vec3 tangent(float t);
 
-  float curvature_at(float t);
+  vec3 acceleration(float t);
 
 };

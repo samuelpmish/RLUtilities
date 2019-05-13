@@ -4,7 +4,7 @@
 #ifndef FLATBUFFERS_GENERATED_RLBOT_RLBOT_FLAT_H_
 #define FLATBUFFERS_GENERATED_RLBOT_RLBOT_FLAT_H_
 
-#include "misc/flatbuffers/flatbuffers.h"
+#include "flatbuffers/flatbuffers.h"
 
 namespace rlbot {
 namespace flat {
