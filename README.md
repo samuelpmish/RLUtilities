@@ -17,7 +17,7 @@ Get a copy of the repo
 git clone https://github.com/samuelpmish/RLUtilities
 ```
 
-Run build.sh to build the C++ tools and their python bindings
+Run build.sh to build the C++ tools and/or python bindings
 
 ## Adding to a project
 
