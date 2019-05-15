@@ -1,3 +1,0 @@
-[submodule "rlutilities/cpp/pybind11"]
-	path = rlutilities/cpp/pybind11
-	url = https://github.com/pybind/pybind11.git

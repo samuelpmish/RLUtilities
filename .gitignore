@@ -8,6 +8,7 @@ CMakeFiles/*
 *.a
 *.vcxproj
 *.filters
+*.ndjson
 
 build*/
 
