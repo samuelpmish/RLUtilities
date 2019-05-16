@@ -379,8 +379,8 @@ void Field::initialize_throwback() {
   walls[3] = wall{ vec3{ 4096.0f, 0.0f, 1024.0f}, vec3{-1.0f, 0.0f, 0.0f}, true };
 
   // Y-facing walls
-  walls[4] = wall{ vec3{0.0f, -6910.0f, 1024.0f}, vec3{0.0f,  1.0f, 0.0f}, false };
-  walls[5] = wall{ vec3{0.0f,  6910.0f, 1024.0f}, vec3{0.0f, -1.0f, 0.0f}, false };
+  walls[4] = wall{ vec3{0.0f, -6910.0f, 1024.0f}, vec3{0.0f,  1.0f, 0.0f}, true };
+  walls[5] = wall{ vec3{0.0f,  6910.0f, 1024.0f}, vec3{0.0f, -1.0f, 0.0f}, true };
 
   mode = std::string("throwback");
 }
