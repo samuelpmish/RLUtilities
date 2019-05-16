@@ -36,4 +36,4 @@ include it in an existing CMake project.
 
 ### Python
 
-If you just want to use RLUtilites for your python bot, download one of the releases and unzip it.
+If you just want to use RLUtilites for your python bot, download one of the [releases](https://github.com/samuelpmish/RLUtilities/releases/latest).
