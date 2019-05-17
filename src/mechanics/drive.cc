@@ -15,9 +15,9 @@ const float Drive::coasting_accel = 525.0f;
 
 float Drive::throttle_accel(float v) {
   const int n = 3;
-  float values[n][2] = { {   0.0f, 1600.0f},
-                         {1400.0f,  160.0f},
-                         {1410.0f,    0.0f} };
+  float values[n][2] = {{   0.0f, 1600.0f},
+                        {1400.0f,  160.0f},
+                        {1410.0f,    0.0f}};
 
   float input = clip(fabs(v), 0.0f, 1410.0f);
 
@@ -33,12 +33,12 @@ float Drive::throttle_accel(float v) {
 
 float Drive::max_turning_curvature(float v) {
   const int n = 6;
-  float values[n][2] = { {   0.0f, 0.00690f},
-                         { 500.0f, 0.00398f},
-                         {1000.0f, 0.00235f},
-                         {1500.0f, 0.00138f},
-                         {1750.0f, 0.00110f},
-                         {2300.0f, 0.00088f} };
+  float values[n][2] = {{   0.0f, 0.00690f},
+                        { 500.0f, 0.00398f},
+                        {1000.0f, 0.00235f},
+                        {1500.0f, 0.00138f},
+                        {1750.0f, 0.00110f},
+                        {2300.0f, 0.00088f}};
 
   float input = clip(fabs(v), 0.0f, 2300.0f);
 
@@ -54,12 +54,12 @@ float Drive::max_turning_curvature(float v) {
 
 float Drive::max_turning_speed(float curvature) {
   const int n = 6;
-  float values[n][2] = { {0.00088f, 2300.0f},
-              {0.00110f, 1750.0f},
-              {0.00138f, 1500.0f},
-              {0.00235f, 1000.0f},
-              {0.00398f,  500.0f},
-              {0.00690f,    0.0f} };
+  float values[n][2] = {{0.00088f, 2300.0f},
+                        {0.00110f, 1750.0f},
+                        {0.00138f, 1500.0f},
+                        {0.00235f, 1000.0f},
+                        {0.00398f,  500.0f},
+                        {0.00690f,    0.0f}};
 
   float input = clip(fabs(curvature), values[0][0], values[n - 1][0]);
 
@@ -113,39 +113,45 @@ void Drive::speed_controller(float dt) {
 
   float vf = dot(car.v, car.forward());
 
+  // the average acceleration we would like to produce
   float acceleration = (speed - vf) / reaction_time;
 
+  // values used to determine when it is appropriate to select
+  // either braking, coasting, throttle, or boost
   float brake_coast_transition = -(0.45f * brake_accel + 0.55f * coasting_accel);
   float coasting_throttle_transition = -0.5f * coasting_accel;
   float throttle_boost_transition = 1.0f * throttle_accel(vf) + 0.5f * boost_accel;
 
+  // if the car is on a ramp or wall, we don't want to allow the
+  // car to coast-- it will slide down the wall. So, redefine the
+  // transition accelerations to prevent coasting from occuring.
+  if (car.up()[2] < 0.7f) {
+    brake_coast_transition = coasting_throttle_transition = -0.5f * brake_accel;
+  }
+
   // apply brakes when the desired acceleration is negative and large enough
   if (acceleration <= brake_coast_transition) {
 
-    //std::cout << "braking" << std::endl;
     controls.throttle = -1.0f;
     controls.boost = 0;
 
   // let the car coast when the acceleration is negative and small
   } else if ((brake_coast_transition < acceleration) &&
-    (acceleration <= coasting_throttle_transition)) {
+    (acceleration < coasting_throttle_transition)) {
 
-    //std::cout << "coasting" << std::endl;
     controls.throttle = 0.0f;
     controls.boost = 0;
 
-    // for small positive accelerations, use throttle only
-  } else if ((coasting_throttle_transition < acceleration) &&
+  // for small positive accelerations, use throttle only
+  } else if ((coasting_throttle_transition <= acceleration) &&
     (acceleration <= throttle_boost_transition)) {
 
-    //std::cout << "throttling" << std::endl;
     controls.throttle = clip(acceleration / throttle_accel(vf), 0.02f, 1.0f);
     controls.boost = 0;
 
-    // if the desired acceleration is big enough, use boost
+  // if the desired acceleration is big enough, use boost
   } else if (throttle_boost_transition < acceleration) {
 
-    //std::cout << "boosting" << std::endl;
     controls.throttle = 1.0f;
     controls.boost = 1;
 

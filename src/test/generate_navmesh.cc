@@ -112,7 +112,8 @@ void generate_edges(std::string infile_prefix, std::string outfile_name) {
           float mean_curvature = abs(mean(segment.curvatures));
           float dev_curvature = standard_deviation(segment.curvatures);
 
-          if (mean_curvature < 0.003f && dev_curvature < 0.0015f) {
+          //if (mean_curvature < 0.003f && dev_curvature < 0.0015f) {
+          if (mean_curvature < 0.002f && dev_curvature < 0.0005f) {
             
             total++;            
 

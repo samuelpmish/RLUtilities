@@ -48,16 +48,14 @@ if (TARGET_LANGUAGE STREQUAL "cpp" OR TARGET_LANGUAGE STREQUAL "both")
   add_library(rlutilities_cpp SHARED 
     ${rlu_sources}
 
-    # rlbot interface
-    ${PROJECT_SOURCE_DIR}/src/rlbot/bot.cc
-    ${PROJECT_SOURCE_DIR}/src/rlbot/examplebot.cc
+    #${PROJECT_SOURCE_DIR}/src/rlbot/bot.cc
     ${PROJECT_SOURCE_DIR}/src/rlbot/interface.cc
-    ${PROJECT_SOURCE_DIR}/src/rlbot/namedrenderer.cc
     ${PROJECT_SOURCE_DIR}/src/rlbot/renderer.cc
     ${PROJECT_SOURCE_DIR}/src/rlbot/statesetting.cc
   )
   target_include_directories(rlutilities_cpp PUBLIC inc)
   target_compile_features(rlutilities_cpp PUBLIC cxx_std_17)
+  target_link_libraries(rlutilities_cpp PUBLIC Xinput)
 
   # ensures a consistent name when used with gcc, clang, msvc
   set_target_properties(rlutilities_cpp PROPERTIES PREFIX "") 

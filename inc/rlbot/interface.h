@@ -35,5 +35,5 @@ class Interface {
                            int botIndex, bool teamOnly);
   static int SetGameState(void* data, int size);
   static int SetGameState(Game g);
-  static int StartMatch();
+  static int StartMatch(int num_players = 1);
 };

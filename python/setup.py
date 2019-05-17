@@ -15,7 +15,7 @@ setuptools.setup(
     packages=['rlutilities'],
     package_data={
         'rlutilities': [
-            '**.*pyd',
+            '*.pyd',
             '__init__.py',
             '*.pyi',
         ]

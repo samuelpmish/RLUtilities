@@ -9,6 +9,8 @@
 #include "rlbot/rlbot_generated.h"
 #endif
 
+#include <thread>
+#include <chrono>
 #include <fstream>
 #include <iostream>
 
@@ -112,7 +114,15 @@ mat3 rotator_to_mat3(const rlbot::flat::Rotator *flat_vector) {
 }
 
 int Game::SetState() {
-  return Interface::SetGameState(*this);  
+  // This is an ugly hack, but at least it works
+  auto one_frame = std::chrono::milliseconds(1);
+  int error_code = Interface::SetGameState(*this);
+  std::this_thread::sleep_for(one_frame);
+  Interface::SetGameState(*this);  
+  std::this_thread::sleep_for(one_frame);
+  Interface::SetGameState(*this);  
+  std::this_thread::sleep_for(one_frame);
+  return error_code;
 }
 
 UpdateStatus Game::GetState() {

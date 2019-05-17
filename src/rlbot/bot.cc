@@ -12,7 +12,7 @@ Bot::Bot(int _index, int _team, std::string _name) {
 }
 
 Input Bot::GetOutput(Game g) { 
-  return Input{0}; 
+  return Input(); 
 }
 
 void Bot::SendQuickChat(rlbot::flat::QuickChatSelection message,

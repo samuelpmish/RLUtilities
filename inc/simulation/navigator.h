@@ -38,7 +38,7 @@ class Navigator {
  private:
 
   Curve lut_path_to(vec3, vec3, float);
-  Curve navmesh_path_to(vec3, vec3);
+  Curve navmesh_path_to(vec3, vec3, float);
 
   static float scale;
   static int nx, ntheta, nv;

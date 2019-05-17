@@ -160,7 +160,7 @@ int Interface::SetGameState(Game desired) {
   return _setGameState(builder.GetBufferPointer(), builder.GetSize());
 }
 
-int Interface::StartMatch() {
+int Interface::StartMatch(int num_players) {
 
   while (!Interface::IsInitialized()) {
     Sleep(100);
@@ -237,18 +237,20 @@ int Interface::StartMatch() {
   MatchSettings settings;
   memset(&settings, 0, sizeof(MatchSettings));
 
-  PlayerConfiguration& player1 = settings.PlayerConfiguration[0];
-  player1.Bot = true;
-  player1.RLBotControlled = true;
+  settings.NumPlayers = num_players;
+  for (int i = 0; i < num_players; i++) {
+    PlayerConfiguration& player = settings.PlayerConfiguration[i];
+    player.Bot = true;
+    player.RLBotControlled = true;
+  }
 
-  settings.NumPlayers = 1;
   settings.GameMode = GameMode::Soccer;
   settings.GameMap = GameMap::Mannfield;
   settings.SkipReplays = true;
   settings.InstantStart = true;
 
   MutatorSettings& mutators = settings.MutatorSettings;
-  mutators.MatchLength = MatchLength::Five_Minutes;
+  mutators.MatchLength = MatchLength::Unlimited;
   mutators.MaxScore = MaxScore::Unlimited;
   mutators.OvertimeOptions = OvertimeOption::Unlimited;
   mutators.SeriesLengthOptions = SeriesLengthOption::Unlimited;
@@ -258,7 +260,7 @@ int Interface::StartMatch() {
   mutators.BallWeightOptions = BallWeightOption::Default;
   mutators.BallSizeOptions = BallSizeOption::Default;
   mutators.BallBouncinessOptions = BallBouncinessOption::Default;
-  mutators.BoostOptions = BoostOption::Normal_Boost;
+  mutators.BoostOptions = BoostOption::Unlimited_Boost;
   mutators.RumbleOptions = RumbleOption::None;
   mutators.BoostStrengthOptions = BoostStrengthOption::One;
   mutators.GravityOptions = GravityOption::Default;

@@ -54,7 +54,7 @@ class Aerial():
         pass
     
     @property
-    def target_orientation(self) -> Optional[mat<3, 3>]:
+    def target_orientation(self) -> Optional[mat3]:
         pass
     
     @property
@@ -101,7 +101,7 @@ class AerialTurn():
         pass
     
     @property
-    def target(self) -> mat<3, 3>:
+    def target(self) -> mat3:
         pass
     
     pass
@@ -154,7 +154,7 @@ class Dodge():
         pass
     
     @property
-    def preorientation(self) -> Optional[mat<3, 3>]:
+    def preorientation(self) -> Optional[mat3]:
         pass
     
     @property

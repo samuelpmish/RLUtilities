@@ -1,8 +1,9 @@
 (* ::Package:: *)
 
 (* ::Input::Initialization:: *)
-BeginPackage["RLBotMisc`"];
+BeginPackage["RLBot`"];
 
+R3Basis::usage = "Construct a basis from a normal";
 EulerAngleRotation::usage = "convert from {pitch, yaw, roll} to 3x3 orientation matrix";
 RotationToEuler::usage = "convert from a 3x3 orientation matrix to {pitch, yaw, roll}";
 AxisAngleRotation::usage = "create a rotation matrix, given an axis of rotation (with angle equal to axis magnitude)";
@@ -29,6 +30,17 @@ f = Normalize[dir];
 u = Normalize[Cross[f,Cross[z, f]]];
 l = Normalize[Cross[u, f]];
 Transpose[{f, l, u}]
+]
+
+R3Basis[n_] := Module[{sign, a, b},
+sign = If[n[[3]] >= 0, 1.0, -1.0];
+a = -1.0/(sign + n[[3]]);
+b = n[[1]] * n[[2]] * a;
+({
+ {1+a sign n[[1]]^2, b, n[[1]]},
+ {b sign, a n[[2]]^2 + sign, n[[2]]},
+ {-sign n[[1]], -n[[2]], n[[3]]}
+})
 ]
 
 EulerAngleRotation=Compile[{{pyr, _Real, 1}}, Module[{
@@ -185,6 +197,9 @@ car = ConvertQuaternionToOrientationMatrix[Association[#]]& /@ (Association[#][[
 ]
 
 ImportNDJSON[filename_, depth_] :=   Association[Replace[ImportString[#, "JSON"], List[arg__]:>Association[arg], depth]]& /@ Import[filename, "Lines"];
+
+
+
 
 
 

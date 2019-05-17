@@ -66,6 +66,7 @@ void Navigator::init_statics(
 
 Navigator::Navigator(Car & c) : car(c) {
 
+  
   which_node = -1;
   which_direction = -1;
 
@@ -118,22 +119,23 @@ void Navigator::analyze_surroundings(float time_budget) {
 
 }
 
-Curve Navigator::path_to(vec3 destination, vec3 tangent, float speed) {
+Curve Navigator::path_to(vec3 destination, vec3 tangent, float offset) {
   if (fmaxf(car.x[2], destination[2]) < 50.0f) {
-    return lut_path_to(destination, tangent, speed);
+    return lut_path_to(destination, tangent, offset);
   } else {
-    return navmesh_path_to(destination, tangent);
+    return navmesh_path_to(destination, tangent, offset);
   }
 }
 
-Curve Navigator::navmesh_path_to(vec3 destination, vec3 tangent) {
+Curve Navigator::navmesh_path_to(vec3 destination, vec3 tangent, float offset) {
 
   std::cout << "locating destination.." << std::endl;
+  vec3 unit_tangent = normalize(tangent);
 
   int destination_node = -1;
   float minimum = 1000000.0f;
   for (int i = 0; i < navigation_nodes.size(); i++) {
-    float distance = norm(destination - navigation_nodes[i]);
+    float distance = norm(destination - offset * unit_tangent - navigation_nodes[i]);
     if (distance < minimum) {
       destination_node = i;
       minimum = distance;
@@ -147,7 +149,7 @@ Curve Navigator::navmesh_path_to(vec3 destination, vec3 tangent) {
   int destination_direction = -1;
   float maximum_alignment = -2.0f;
   for (int j = 0; j < ntheta; j++) {
-    float alignment = dot(tangent, navigation_tangents[which_node * ntheta + j]);
+    float alignment = dot(unit_tangent, navigation_tangents[destination_node * ntheta + j]);
     if (alignment > maximum_alignment) {
       destination_direction = j;
       maximum_alignment = alignment;
@@ -206,23 +208,27 @@ Curve Navigator::navmesh_path_to(vec3 destination, vec3 tangent) {
   ctrl_pts.front().t = normalize(f - dot(f, ctrl_pts.front().n) * ctrl_pts.front().n);
   ctrl_pts.back().t = normalize(tangent - dot(tangent, ctrl_pts.back().n) * ctrl_pts.back().n);
 
+  ctrl_pts.push_back(ControlPoint{destination, unit_tangent, navigation_normals[dest_id / ntheta]});
+
   return Curve(ctrl_pts);
 
 }
 
-Curve Navigator::lut_path_to(vec3 destination, vec3 tangent, float speed) {
+Curve Navigator::lut_path_to(vec3 destination, vec3 tangent, float offset) {
 
   const float k = ntheta / 6.28318530f;
+  const vec3 n = vec3{0.0f, 0.0f, 1.0f};
 
-  mat3 orientation = look_at(xy(car.forward()), vec3{0.0f, 0.0f, 1.0f});
+  vec3 unit_tangent = normalize(tangent);
+  mat3 orientation = look_at(xy(car.forward()), n);
 
-  vec3 destination_local = dot(destination - car.x, orientation);
+  vec3 destination_local = dot(destination - offset * unit_tangent - car.x, orientation);
   vec3 tangent_local;
 
   int x = clip(int(roundf(destination_local[0] / scale)), -nx, nx);
   int y = clip(int(roundf(destination_local[1] / scale)), -nx, nx);
 
-  tangent_local = dot(tangent, orientation);
+  tangent_local = dot(unit_tangent, orientation);
   float angle = atan2(tangent_local[1], tangent_local[0]);
   int theta = int(roundf(k * angle));
   if (theta < 0) theta += ntheta;
@@ -230,6 +236,12 @@ Curve Navigator::lut_path_to(vec3 destination, vec3 tangent, float speed) {
   int v = -1;
   int v_min = 0;
   int v_max = nv-1;
+
+  // TODO 
+  // TODO 
+  float speed = 1400.0f;
+  // TODO 
+  // TODO 
 
   if (isnormal(speed)) {
     v_min = clip(int(floor(speed / 100.0f)), 0, nv-1);
@@ -252,7 +264,6 @@ Curve Navigator::lut_path_to(vec3 destination, vec3 tangent, float speed) {
 
     vec3 p = dot(orientation, vec3{x * scale, y * scale, 0.0f}) + car.x;
     vec3 t = dot(orientation, directions[theta]);
-    vec3 n = vec3{0.0f, 0.0f, 1.0f};
 
     if (i == 0) {
       p = destination;
@@ -266,9 +277,11 @@ Curve Navigator::lut_path_to(vec3 destination, vec3 tangent, float speed) {
     if (x == 0 && y == 0 && theta == 0) break;
 
   }
-  ctrl_pts.push_back(ControlPoint{car.x, car.forward(), vec3{0.0f, 0.0f, 1.0f}});
+  ctrl_pts.push_back(ControlPoint{car.x, car.forward(), n});
 
   std::reverse(ctrl_pts.begin(), ctrl_pts.end());
+
+  ctrl_pts.push_back(ControlPoint{destination, unit_tangent, n});
 
   return Curve(ctrl_pts);
 
