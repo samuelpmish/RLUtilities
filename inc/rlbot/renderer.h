@@ -1,38 +1,30 @@
 #pragma once
 
 #include "linear_algebra/vec.h"
+#include "simulation/geometry.h"
 
 #include "flatbuffers/flatbuffers.h"
+
+#include "rlbot/color.h"
 #include "rlbot/rlbot_generated.h"
 
+#include <vector>
 #include <stdint.h>
 
-#include <set>
-#include <vector>
-
-struct Color {
-  uint8_t r;
-  uint8_t g;
-  uint8_t b;
-  uint8_t a;
-};
-
 class Renderer {
+ public:
+  Renderer(int);
+  void Start();
+  void DrawLine3D(Color color, vec3 start, vec3 end);
+  void DrawOBB(Color color, obb box);
+  void DrawSphere(Color color, sphere s);
+  void DrawPolyLine3D(Color color, std::vector<vec3> vertices);
+  void DrawString2D(Color, std::string, vec2 topleft, int scaleX, int scaleY);
+  void DrawString3D(Color, std::string, vec3 topleft, int scaleX, int scaleY);
+  void Finish();
+
  private:
   int index;
   flatbuffers::FlatBufferBuilder builder;
-  std::vector<flatbuffers::Offset<rlbot::flat::RenderMessage>> renderMessages;
-
-  void FinishIfLargeEnough(); 
-
- public:
-  Renderer();
-  void DrawLine3D(Color color, vec3 start, vec3 end);
-  void DrawPolyLine3D(Color color, std::vector<vec3> vertices);
-  void DrawString2D(std::string text, Color c, vec2 topleft, int scaleX,
-                    int scaleY);
-  void DrawString3D(std::string text, Color c, vec3 topleft, int scaleX,
-                    int scaleY);
-  void Clear();
-  void Finish();
+  std::vector<flatbuffers::Offset<rlbot::flat::RenderMessage>> messages;
 };

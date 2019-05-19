@@ -38,9 +38,13 @@ int main(int argc, char** argv) {
   std::cout << "error code: " << code << std::endl;
 
   Game g(botIndex, botTeam);
+  g.set_mode("soccar");
 
   Color red{255, 0, 0, 255};
+  Color green{0, 255, 0, 255};
   Color blue{0, 0, 255, 255};
+  Color white{255, 255, 255, 255};
+  Renderer r(0);
 
   while (true) {
 
@@ -55,13 +59,20 @@ int main(int argc, char** argv) {
         Sleep(100);
         break;
       case UpdateStatus::NewData:
-
-        Renderer r;
-        for (int i = 0; i < 300; i++) {
-          r.DrawLine3D(Color{min(i, 255), 0, 0, 255}, vec3{-2000.0f, i * 10.0f, 300.0f}, vec3{2000.0f, i * 10.0f, 300.0f});
+        r.Start();
+        r.DrawSphere(Color::red(), sphere{g.ball.x, 100.0f});
+        r.DrawOBB(blue, g.cars[0].hitbox());
+        r.DrawString2D(green, std::string("2D text"), vec2{100, 100}, 4, 4);
+        r.DrawString3D(green, std::string("3D text"), g.ball.x + vec3{0, 0, 200}, 4, 4);
+        std::vector < vec3 > polyline;
+        Ball b(g.ball);
+        for (int i = 0; i < 240; i++) {
+          b.step(0.008333);
+          b.step(0.008333);
+          polyline.push_back(b.x);
         }
+        r.DrawPolyLine3D(white, polyline);
         r.Finish();
-
         int status = Interface::SetBotInput(GamePad::GetOutput(), botIndex);
         break;
     }
