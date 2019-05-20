@@ -153,10 +153,10 @@ void Ball::step(float dt, const Car & c) {
 
 }
 
-std::string Ball::to_json() {
-  return nlohmann::json{
-    {"x", {x[0], x[1], x[2]}},
-    {"v", {v[0], v[1], v[2]}},
-    {"w", {w[0], w[1], w[2]}}
-  }.dump();
+nlohmann::json Ball::to_json() {
+  nlohmann::json obj;
+  obj["x"] = {x[0], x[1], x[2]};
+  obj["v"] = {v[0], v[1], v[2]};
+  obj["w"] = {w[0], w[1], w[2]};
+  return obj;
 }

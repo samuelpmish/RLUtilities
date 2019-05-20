@@ -1,5 +1,7 @@
 #pragma once
 
+#include "misc/json.h"
+
 #include "simulation/input.h"
 #include "simulation/geometry.h"
 
@@ -59,7 +61,7 @@ class Car {
   void step(Input in = Input(), float dt = 0.008333f);
   void extrapolate(float);
 
-  std::string to_json();
+  nlohmann::json to_json();
 
   void update(Car);
 

@@ -38,6 +38,8 @@ class Aerial {
 
   Car simulate();
 
+
+
   static const float max_speed;
   static const float boost_accel;
   static const float throttle_accel;

@@ -4,7 +4,6 @@
 #include "mechanics/dodge.h"
 #include "mechanics/aerial.h"
 
-#include "misc/json.h"
 #include "misc/convert.h"
 
 #include <fstream>
@@ -427,34 +426,26 @@ void Car::update(Car next) {
 
 }
 
-std::string Car::to_json() {
+nlohmann::json Car::to_json() {
 
-  return nlohmann::json{
-    {"x", {x[0], x[1], x[2]}},
-    {"v", {v[0], v[1], v[2]}},
-    {"w", {w[0], w[1], w[2]}},
-    {"o", {o(0, 0), o(0, 1), o(0, 2),
-           o(1, 0), o(1, 1), o(1, 2), 
-           o(2, 0), o(2, 1), o(2, 2)}},
-    {"supersonic", supersonic},
-    {"jumped", jumped},
-    {"double_jumped", double_jumped},
-    {"on_ground", on_ground},
-    {"boost_left", boost},
-    {"jump_timer", jump_timer},
-    {"dodge_timer", dodge_timer},
-    {"dodge_dir", {dodge_dir[0], dodge_dir[1]}},
-    {"time", time},
+  nlohmann::json obj;
+  obj["x"] = {x[0], x[1], x[2]};
+  obj["v"] = {v[0], v[1], v[2]};
+  obj["w"] = {w[0], w[1], w[2]};
+  obj["o"] = {{o(0, 0), o(0, 1), o(0, 2)},
+              {o(1, 0), o(1, 1), o(1, 2)}, 
+              {o(2, 0), o(2, 1), o(2, 2)}};
 
-    {"steer", controls.steer},
-    {"roll", controls.roll},
-    {"pitch", controls.pitch},
-    {"yaw", controls.yaw},
-    {"throttle", controls.throttle},
-    {"jump", controls.jump},
-    {"boost", controls.boost},
-    {"handbrake", controls.handbrake}
-  }.dump();
+  obj["supersonic"] = supersonic;
+  obj["jumped"] = jumped;
+  obj["double_jumped"] = double_jumped;
+  obj["on_ground"] = on_ground;
+  obj["boost_left"] = boost;
+  obj["jump_timer"] = jump_timer;
+  obj["dodge_timer"] = dodge_timer;
+  obj["dodge_dir"] = {dodge_dir[0], dodge_dir[1]};
+  obj["time"] = time;
+  return obj; 
 
 }
 

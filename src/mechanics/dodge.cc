@@ -137,35 +137,26 @@ Car Dodge::simulate() {
 
 }
 
-#if 0
-std::string Dodge::to_json() {
+nlohmann::json Dodge::to_json() {
 
-  return nlohmann::json{
-    {"x", {x[0], x[1], x[2]}},
-    {"v", {v[0], v[1], v[2]}},
-    {"w", {w[0], w[1], w[2]}},
-    {"o", {o(0, 0), o(0, 1), o(0, 2),
-           o(1, 0), o(1, 1), o(1, 2), 
-           o(2, 0), o(2, 1), o(2, 2)}},
-    {"supersonic", supersonic},
-    {"jumped", jumped},
-    {"double_jumped", double_jumped},
-    {"on_ground", on_ground},
-    {"boost_left", boost},
-    {"jump_timer", jump_timer},
-    {"dodge_timer", dodge_timer},
-    {"dodge_dir", {dodge_dir[0], dodge_dir[1]}},
-    {"time", time},
+  vec3 _target = target.value_or(vec3{NAN, NAN, NAN});
+  vec2 _direction = direction.value_or(vec2{NAN, NAN});
+  mat3 _preorientation = preorientation.value_or(mat3(NAN));
+  float _duration = duration.value_or(NAN);
+  float _delay = delay.value_or(NAN);
 
-    {"steer", controls.steer},
-    {"roll", controls.roll},
-    {"pitch", controls.pitch},
-    {"yaw", controls.yaw},
-    {"throttle", controls.throttle},
-    {"jump", controls.jump},
-    {"boost", controls.boost},
-    {"handbrake", controls.handbrake}
-  }.dump();
+  nlohmann::json obj;
+  obj["type"] = "Dodge";
+  obj["target"] = {_target[0], _target[1], _target[2]};
+  obj["direction"] = {_direction[0], _direction[1]};
+  obj["preorientation"] = {
+    {_preorientation(0, 0), _preorientation(0, 1), _preorientation(0, 2)},
+    {_preorientation(1, 0), _preorientation(1, 1), _preorientation(1, 2)},
+    {_preorientation(2, 0), _preorientation(2, 1), _preorientation(2, 2)}
+  };
+  obj["duration"] = _duration;
+  obj["timer"] = timer;
+  obj["finished"] = finished;
+  return obj;
 
 }
-#endif

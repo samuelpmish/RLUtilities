@@ -5,7 +5,7 @@
 
 #include "linear_algebra/math.h"
 
-#include <string>
+#include "misc/json.h"
 
 class Ball {
  public:
@@ -43,6 +43,6 @@ class Ball {
   sphere hitbox();
   void step(float dt);
   void step(float dt, const Car & c);
-  std::string to_json();
+  nlohmann::json to_json();
 
 };

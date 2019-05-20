@@ -1,5 +1,7 @@
 #pragma once
 
+#include "misc/json.h"
+
 #include "simulation/car.h"
 #include "simulation/input.h"
 
@@ -30,6 +32,8 @@ class Dodge {
   void step(float dt);
 
   Car simulate();
+
+  nlohmann::json to_json();
 
   static const float timeout;
   static const float input_threshold;
