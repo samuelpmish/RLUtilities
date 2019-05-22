@@ -46,7 +46,7 @@ class Agent(BaseAgent):
                 velocity=Vector3(0, 0, 0),
                 rotation=Rotator(0, 0, 0),
                 angular_velocity=Vector3(0, 0, 0)
-            ), jumped=False, double_jumped=False)
+            ))
 
             theta = random.uniform(0, 6.28)
             pos = Vector3(sin(theta) * 1000.0, cos(theta) * 1000.0, 100.0)

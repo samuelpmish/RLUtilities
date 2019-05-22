@@ -374,6 +374,16 @@ ray Field::snap(vec3 p) {
   };
 }
 
+void error_uninitialized_field() {
+  std::cout << "Attempting to query an uninitialized Field." << std::endl;
+  std::cout << "Please do one of the following before making a geometric "
+               "query with the Field:"
+            << std::endl;
+  std::cout << "Game.set_mode(\"soccar\")" << std::endl;
+  std::cout << "Game.set_mode(\"hoops\")" << std::endl;
+  std::cout << "Game.set_mode(\"dropshot\")" << std::endl;
+}
+
 ray Field::collide(const obb& o) {
   return ray{vec3{0.0f, 0.0f, 0.0f}, vec3{0.0f, 0.0f, 0.0f}};
 }
@@ -386,13 +396,7 @@ ray Field::collide(const aabb& a) {
   auto contact_point = ray{vec3{0.0, 0.0, 0.0}, vec3{0.0f, 0.0f, 0.0f}};
 
   if (mode == std::string("Uninitialized")) {
-    std::cout << "Attempting to query an uninitialized Field." << std::endl;
-    std::cout << "Please do one of the following before making a geometric "
-                 "query with the Field:"
-              << std::endl;
-    std::cout << "Game.set_mode(\"soccar\")" << std::endl;
-    std::cout << "Game.set_mode(\"hoops\")" << std::endl;
-    std::cout << "Game.set_mode(\"dropshot\")" << std::endl;
+    error_uninitialized_field();
   } else {
     float count = 0.0f;
 
@@ -438,7 +442,7 @@ ray Field::collide(const sphere& s) {
   auto contact_point = ray{vec3{0.0, 0.0, 0.0}, vec3{0.0f, 0.0f, 0.0f}};
 
   if (mode == std::string("Uninitialized")) {
-    std::cout << "Attempting to query an uninitialized Field." << std::endl;
+    error_uninitialized_field();
   } else {
     float count = 0.0f;
 

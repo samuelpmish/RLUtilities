@@ -47,7 +47,7 @@ class MyAgent(BaseAgent):
                 velocity=Vector3(0, 0, 0),
                 rotation=Rotator(0, 0, 0),
                 angular_velocity=Vector3(0, 0, 0)
-            ), jumped=False, double_jumped=False)
+            ))
 
             theta = random.uniform(0, 6.28)
             pos = Vector3(sin(theta) * 1000.0, cos(theta) * 1000.0, 100.0)
@@ -84,7 +84,6 @@ class MyAgent(BaseAgent):
 
             self.action.step(self.game.time_delta)
             self.controls = self.action.controls
-            print(self.controls.jump)
 
             if self.timer > self.timeout:
                 next_state = State.RESET

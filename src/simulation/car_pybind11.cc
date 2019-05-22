@@ -6,7 +6,6 @@ void init_car(pybind11::module & m) {
 	pybind11::class_<Car>(m, "Car")
 		.def(pybind11::init<>())
 		.def(pybind11::init<const Car &>())
-		.def("to_json", &Car::to_json)
 		.def("step", &Car::step)
 		.def("hitbox", &Car::hitbox)
 		.def("extrapolate", &Car::extrapolate)

@@ -33,7 +33,6 @@ class Agent(BaseAgent):
         self.ball_predictions = None
 
         self.target_ball = None
-        self.log = open("../../analysis/aerial/info.ndjson", "w")
 
     def get_output(self, packet: GameTickPacket) -> SimpleControllerState:
         self.game.read_game_information(packet,
@@ -127,9 +126,6 @@ class Agent(BaseAgent):
             next_state = State.RUNNING
 
         if self.state == State.RUNNING:
-
-            self.log.write(f"{{\"car\":{self.game.my_car.to_json()},"
-                           f"\"ball\":{self.game.ball.to_json()}}}\n")
 
             self.aerial.step(self.game.time_delta)
             self.controls = self.aerial.controls
