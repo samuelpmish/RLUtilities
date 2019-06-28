@@ -1,12 +1,13 @@
 #define NOMINMAX
 
-#include <windows.h>
+#include <Windows.h>
 #include <iostream>
 #include <string>
 
 #include "misc/resource.h"
 #include "simulation/mesh.h"
 #include "simulation/navigator.h"
+#include "mechanics/orientation.h"
 
 // soccar meshes
 extern mesh soccar_corner;
@@ -142,6 +143,9 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
           load_resource<int>(hinstDLL, LUT_PARAMETERS),
           load_resource<float>(hinstDLL, LUT_TIMES),
           load_resource<uint32_t>(hinstDLL, LUT_PATHS));
+
+      OrientationController::set_model(
+          Model(load_resource<float>(hinstDLL, ORIENTATION_MODEL)));
       // clang-format on
       break;
     }

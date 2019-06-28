@@ -57,3 +57,5 @@
 #define LUT_PATHS 45
 #define LUT_TIMES 46
 #define LUT_PARAMETERS 47
+
+#define ORIENTATION_MODEL 48

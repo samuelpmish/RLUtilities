@@ -33,6 +33,7 @@ set(rlu_sources
   ${PROJECT_SOURCE_DIR}/src/mechanics/boostdash.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/aerial_turn.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/follow_path.cc
+  ${PROJECT_SOURCE_DIR}/src/mechanics/orientation.cc
 
   # misc
   ${PROJECT_SOURCE_DIR}/src/misc/dll.cc
@@ -127,6 +128,7 @@ if (TARGET_LANGUAGE STREQUAL "python" OR TARGET_LANGUAGE STREQUAL "both")
     ${PROJECT_SOURCE_DIR}/src/mechanics/boostdash_pybind11.cc
     ${PROJECT_SOURCE_DIR}/src/mechanics/aerial_turn_pybind11.cc
     ${PROJECT_SOURCE_DIR}/src/mechanics/follow_path_pybind11.cc
+    ${PROJECT_SOURCE_DIR}/src/mechanics/orientation_pybind11.cc
 
     ${PROJECT_SOURCE_DIR}/src/linear_algebra/math_pybind11.cc
 

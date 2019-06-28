@@ -20,6 +20,7 @@ void init_wavedash(pybind11::module & m);
 void init_boostdash(pybind11::module & m);
 void init_aerialturn(pybind11::module & m);
 void init_followpath(pybind11::module & m);
+void init_orientation_controller(pybind11::module & m);
 
 void init_linalg(pybind11::module & m);
 
@@ -45,6 +46,7 @@ PYBIND11_MODULE(rlutilities, m) {
 	init_boostdash(mechanics);
 	init_aerialturn(mechanics);
 	init_followpath(mechanics);
+	init_orientation_controller(mechanics);
 
   pybind11::module linear_algebra = m.def_submodule("linear_algebra");
 	init_linalg(linear_algebra);
