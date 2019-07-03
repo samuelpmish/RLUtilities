@@ -12,6 +12,7 @@ __all__  = [
 "Drive",
 "FollowPath",
 "Jump",
+"OrientationController",
 "Wavedash"
 ]
 class Aerial():
@@ -257,6 +258,29 @@ class Jump():
     
     @property
     def finished(self) -> bool:
+        pass
+    
+    pass
+class OrientationController():
+
+    def __init__(self, arg0: rlutilities.simulation.Car) -> None: ...
+    def simulate(self) -> rlutilities.simulation.Car: ...
+    def step(self, arg0: float) -> None: ...
+
+    @property
+    def controls(self) -> rlutilities.simulation.Input:
+        pass
+    
+    @property
+    def eps_phi(self) -> float:
+        pass
+    
+    @property
+    def finished(self) -> bool:
+        pass
+    
+    @property
+    def target(self) -> mat3:
         pass
     
     pass

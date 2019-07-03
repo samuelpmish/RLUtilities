@@ -98,6 +98,17 @@ inline mat<m, n> operator*(const float other, const mat<m, n>& A) {
 }
 
 template <int m, int n>
+inline mat<m, n> operator*(const mat<m, n>& A, const mat<m, n>& B) {
+  mat<m, n> C;
+  for (int i = 0; i < m; i++) {
+    for (int j = 0; j < n; j++) {
+      C(i, j) = A(i, j) * B(i, j);
+    }
+  }
+  return C;
+}
+
+template <int m, int n>
 inline mat<m, n> operator/(const mat<m, n>& A, const float denominator) {
   mat<m, n> B;
   for (int i = 0; i < m; i++) {

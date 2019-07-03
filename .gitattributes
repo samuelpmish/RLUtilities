@@ -1,0 +1,4 @@
+*.cc -text diff=cpp
+*.h -text diff=cpp
+
+*.bin binary
