@@ -19,6 +19,7 @@ inline Input GetOutput() {
   controls.jump = (gamepadState.Gamepad.wButtons & XINPUT_GAMEPAD_A) > 0;
   controls.boost = (gamepadState.Gamepad.wButtons & XINPUT_GAMEPAD_B) > 0;
   controls.handbrake = (gamepadState.Gamepad.wButtons & XINPUT_GAMEPAD_X) > 0;
+  controls.useItem = (gamepadState.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_THUMB) > 0;
 
   if ((gamepadState.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) > 0) {
     controls.roll = gamepadState.Gamepad.sThumbLX / float(INT16_MAX);

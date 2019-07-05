@@ -94,7 +94,7 @@ int Interface::SetBotInput(Input controls, int index) {
 
   auto controllerStateOffset = rlbot::flat::CreateControllerState(
       builder, controls.throttle, controls.steer, controls.pitch, controls.yaw,
-      controls.roll, controls.jump, controls.boost, controls.handbrake);
+      controls.roll, controls.jump, controls.boost, controls.handbrake, controls.useItem);
 
   auto playerInputOffset =
       rlbot::flat::CreatePlayerInput(builder, index, controllerStateOffset);
