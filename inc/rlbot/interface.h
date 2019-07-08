@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "misc/rlu_dll.h"
+
 #include "simulation/game.h"
 #include "simulation/input.h"
 #include "rlbot/rlbot_generated.h"
@@ -21,19 +23,19 @@ struct ByteBuffer {
 
 class Interface {
  public:
-  static void LoadInterface(std::string dll);
-  static bool IsInitialized();
-  static void Free(void* ptr);
+  RLU_DLL static void LoadInterface(std::string dll);
+  RLU_DLL static bool IsInitialized();
+  RLU_DLL static void Free(void* ptr);
 
-  static ByteBuffer UpdateLiveDataPacketFlatbuffer();
-  static ByteBuffer UpdateFieldInfoFlatbuffer();
-  static ByteBuffer GetBallPrediction();
+  RLU_DLL static ByteBuffer UpdateLiveDataPacketFlatbuffer();
+  RLU_DLL static ByteBuffer UpdateFieldInfoFlatbuffer();
+  RLU_DLL static ByteBuffer GetBallPrediction();
 
-  static int SetBotInput(Input inputs, int index);
-  static int RenderGroup(void* data, int size);
-  static int SendQuickChat(rlbot::flat::QuickChatSelection message,
-                           int botIndex, bool teamOnly);
-  static int SetGameState(void* data, int size);
-  static int SetGameState(Game g);
-  static int StartMatch(int num_players = 1);
+  RLU_DLL static int SetBotInput(Input inputs, int index);
+  RLU_DLL static int RenderGroup(void* data, int size);
+  RLU_DLL static int SendQuickChat(rlbot::flat::QuickChatSelection message,
+                                   int botIndex, bool teamOnly);
+  RLU_DLL static int SetGameState(void* data, int size);
+  RLU_DLL static int SetGameState(Game g);
+  RLU_DLL static int StartMatch(int num_players = 1);
 };

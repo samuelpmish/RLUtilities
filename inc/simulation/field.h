@@ -3,10 +3,12 @@
 #include <vector>
 #include <string>
 
+#include "misc/rlu_dll.h"
+
 #include "simulation/bvh.h"
 #include "simulation/geometry.h"
 
-class Field {
+ class Field {
 
   struct wall {
     vec3 p;
@@ -15,28 +17,27 @@ class Field {
   };
 
  public:
-  static bvh<tri> collision_mesh;
-  static bvh<sphere> navigation_mesh;
-  static std::vector<wall> walls;
-  static std::vector<tri> triangles;
-  static std::vector<aabb> obstacles;
+  RLU_DLL static bvh<tri> collision_mesh;
+  RLU_DLL static bvh<sphere> navigation_mesh;
+  RLU_DLL static std::vector<wall> walls;
+  RLU_DLL static std::vector<tri> triangles;
+  RLU_DLL static std::vector<aabb> obstacles;
+  RLU_DLL static std::string mode;
+
+  RLU_DLL static void initialize_soccar();
+  RLU_DLL static void initialize_hoops();
+  RLU_DLL static void initialize_dropshot();
+  RLU_DLL static void initialize_throwback();
+
+  RLU_DLL static ray snap(vec3 p);
+  RLU_DLL static ray collide(const obb & o);
+  RLU_DLL static ray collide(const aabb & a);
+  RLU_DLL static ray collide(const sphere & o);
+
+  RLU_DLL static ray raycast_any(const ray &);
+
+ private:
   static float r;
   static float R;
-  static std::string mode;
-
-  static void initialize_soccar();
-  static void initialize_hoops();
-  static void initialize_dropshot();
-  static void initialize_throwback();
-
-  static ray snap(vec3 p);
-  static ray collide(const obb & o);
-  static ray collide(const aabb & a);
-  static ray collide(const sphere & o);
-
-  static ray raycast_any(const ray &);
-
-  static void read_mesh_files(std::string);
-  static void write_mesh_files();
 
 };

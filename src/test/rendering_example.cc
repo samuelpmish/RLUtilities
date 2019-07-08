@@ -60,16 +60,16 @@ int main(int argc, char** argv) {
         break;
       case UpdateStatus::NewData:
         r.Start();
-        r.DrawSphere(Color::red(), sphere{g.ball.x, 100.0f});
+        r.DrawSphere(Color::red(), sphere{g.ball.position, 100.0f});
         r.DrawOBB(blue, g.cars[0].hitbox());
         r.DrawString2D(green, std::string("2D text"), vec2{100, 100}, 4, 4);
-        r.DrawString3D(green, std::string("3D text"), g.ball.x + vec3{0, 0, 200}, 4, 4);
+        r.DrawString3D(green, std::string("3D text"), g.ball.position + vec3{0, 0, 200}, 4, 4);
         std::vector < vec3 > polyline;
         Ball b(g.ball);
         for (int i = 0; i < 240; i++) {
           b.step(0.008333);
           b.step(0.008333);
-          polyline.push_back(b.x);
+          polyline.push_back(b.position);
         }
         r.DrawPolyLine3D(white, polyline);
         r.Finish();

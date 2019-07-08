@@ -18,9 +18,9 @@ int main() {
 
   Ball b;
 
-  b.x = vec3{0.0f, 0.0f, 100.0f};
-  b.v = vec3{0.0f, 0.0f, 1000.0f};
-  b.w = vec3{0.0f, 0.0f, 0.0f};
+  b.position = vec3{0.0f, 0.0f, 100.0f};
+  b.velocity = vec3{0.0f, 0.0f, 1000.0f};
+  b.angular_velocity = vec3{0.0f, 0.0f, 0.0f};
 
   stopwatch.start();
   for (int i = 0; i < n; i++) {
@@ -28,7 +28,7 @@ int main() {
   }
   stopwatch.stop();
 
-  std::cout << stopwatch.elapsed() << ' ' << b.x << std::endl;
+  std::cout << stopwatch.elapsed() << ' ' << b.position << std::endl;
 
   return 0;
 

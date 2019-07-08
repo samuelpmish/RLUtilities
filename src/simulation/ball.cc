@@ -24,13 +24,13 @@ float Ball::I = 0.4f * Ball::m * Ball::radius * Ball::radius;
 
 Ball::Ball() {
 	time = 0.0f;
-	x = vec3{ 0.0f, 0.0f, 1.1f * collision_radius };
-	v = vec3{ 0.0f, 0.0f, 0.0f };
-	w = vec3{ 0.0f, 0.0f, 0.0f };
+	position = vec3{ 0.0f, 0.0f, 1.1f * collision_radius };
+	velocity = vec3{ 0.0f, 0.0f, 0.0f };
+	angular_velocity = vec3{ 0.0f, 0.0f, 0.0f };
 }
 
 sphere Ball::hitbox() {
-	return sphere{ x, collision_radius };
+	return sphere{ position, collision_radius };
 }
 
 void Ball::step(float dt) {
@@ -43,12 +43,12 @@ void Ball::step(float dt) {
 		vec3 p = contact.start;
 		vec3 n = contact.direction;
 
-		vec3 L = p - x;
+		vec3 L = p - position;
 
 		float m_reduced = 1.0f / ((1.0f / m) + dot(L, L) / I);
 
-		vec3 v_perp = fminf(dot(v, n), 0.0f) * n;
-		vec3 v_para = v - v_perp - cross(L, w);
+		vec3 v_perp = fminf(dot(velocity, n), 0.0f) * n;
+		vec3 v_para = velocity - v_perp - cross(L, angular_velocity);
 
 		float ratio = norm(v_perp) / fmaxf(norm(v_para), 0.0001f);
 
@@ -57,25 +57,25 @@ void Ball::step(float dt) {
 
 		vec3 J = J_perp + J_para;
 
-		w += cross(L, J) / I;
-		v += (J / m) + drag * v * dt;
-		x += v * dt;
+		angular_velocity += cross(L, J) / I;
+		velocity += (J / m) + drag * velocity * dt;
+		position += velocity * dt;
 
-		float penetration = collision_radius - dot(x - p, n);
+		float penetration = collision_radius - dot(position - p, n);
 		if (penetration > 0.0f) {
-			x += 1.001f * penetration * n;
+			position += 1.001f * penetration * n;
 		}
 
 	}
 	else {
 
-		v += (drag * v + gravity) * dt;
-		x += v * dt;
+		velocity += (drag * velocity + gravity) * dt;
+		position += velocity * dt;
 
 	}
 
-	w *= fminf(1.0, w_max / norm(w));
-	v *= fminf(1.0, v_max / norm(w));
+	angular_velocity *= fminf(1.0, w_max / norm(angular_velocity));
+	velocity *= fminf(1.0, v_max / norm(velocity));
 	time += dt;
 }
 
@@ -108,20 +108,25 @@ float scale(float dv) {
 
 void Ball::step(float dt, const Car & c) {
 
-	vec3 p = closest_point_on_obb(x, c.hitbox());
+	vec3 p = closest_point_on_obb(position, c.hitbox());
 
-	if (norm(p - x) < collision_radius) {
+	if (norm(p - position) < collision_radius) {
 
-		vec3 n1 = normalize(p - x);
+    vec3 cx = c.position;
+    vec3 cv = c.velocity;
+    vec3 cw = c.angular_velocity;
+    mat3 co = c.orientation;
 
-		mat3 L_b = antisym(p - x);
-		mat3 L_c = antisym(p - c.x);
+		vec3 n1 = normalize(p - position);
 
-		mat3 invI_c = dot(c.o, dot(c.invI, transpose(c.o)));
+		mat3 L_b = antisym(p - position);
+		mat3 L_c = antisym(p - c.position);
+
+		mat3 invI_c = dot(co, dot(c.invI, transpose(co)));
 
 		mat3 M = inv(((1.0f / m) + (1.0f / c.m)) * eye<3>() - (dot(L_b, L_b) / I) - dot(L_c, dot(invI_c, L_c)));
 
-		vec3 Delta_V = (c.v - dot(L_c, c.w)) - (v - dot(L_b, w));
+		vec3 Delta_V = (cv - dot(L_c, cw)) - (velocity - dot(L_b, angular_velocity));
 
 		// compute the impulse that is consistent with an inelastic collision 
 		vec3 J1 = dot(M, Delta_V);
@@ -137,26 +142,18 @@ void Ball::step(float dt, const Car & c) {
 
 
 		vec3 f = c.forward();
-		vec3 n2 = x - c.x;
+		vec3 n2 = position - cx;
 		n2[2] *= 0.35f;
 		n2 = normalize(n2 - 0.35f * dot(n2, f) * f);
 
-		float dv = fminf(norm(v - c.v), 4600.0f);
+		float dv = fminf(norm(velocity - cv), 4600.0f);
 		vec3 J2 = m * dv * scale(dv) * n2;
 
-		w += dot(L_b, J1) / I;
-		v += (J1 + J2) / m;
+		angular_velocity += dot(L_b, J1) / I;
+		velocity += (J1 + J2) / m;
 
 	}
 
 	step(dt);
 
-}
-
-nlohmann::json Ball::to_json() {
-  nlohmann::json obj;
-  obj["x"] = {x[0], x[1], x[2]};
-  obj["v"] = {v[0], v[1], v[2]};
-  obj["w"] = {w[0], w[1], w[2]};
-  return obj;
 }

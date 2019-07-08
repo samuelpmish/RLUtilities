@@ -18,10 +18,12 @@ QuaternionRotation::usage = "convert a quaternion into a 3x3 rotation matrix";
 
 ImportJSONEpisode::usage = "Import a list of timestamps, ball states, car inputs, and car states (respectively) from a properly formatted episode in json";
 
-ImportPhysicsTickJSONEpisode::usage = "Import a list of timestamps, ball states, car inputs, and car states (respectively) from a properly formatted episode in json";
-
 LookAt::usage = "construct an orientation matrix from a facing direction and a global
 up vector";
+
+steeringCurvature::usage = "the maximum steady state curvature possible by steering";
+
+throttleAcceleration::usage = "car's acceleration due to throttle (not counting boost)";
 
 Begin["`Private`"];
 
@@ -187,19 +189,20 @@ ConvertEulerToOrientationMatrix[Association[#]]& /@  data[[All, 4, 2]]
 }
 ]
 
-ImportPhysicsTickJSONEpisode[filename_] := Module[{data=Import[filename, "JSON"], frame, ball, car, input},
-data = DeleteDuplicatesBy[data, #[[1,2]]&];
-frame = Association[#][["frame"]] & /@ data;
-ball = ConvertQuaternionToOrientationMatrix[Association[#]]& /@ (Association[#][["ball"]] & /@ data);
-input= Association[#]& /@ (Association[#][["input"]] & /@  data);
-car = ConvertQuaternionToOrientationMatrix[Association[#]]& /@ (Association[#][["car"]] & /@ data);
-{frame, ball,input, car}
-]
-
 ImportNDJSON[filename_, depth_] :=   Association[Replace[ImportString[#, "JSON"], List[arg__]:>Association[arg], depth]]& /@ Import[filename, "Lines"];
 
+steeringCurvature[v_]:= Interpolation[({
+ {0, 0.0069},
+ {500, 0.00398},
+ {1000, 0.00235},
+ {1500, 0.001375},
+ {1750, 0.0011},
+ {2300, 0.00088}
+}), InterpolationOrder->1][v]
 
-
-
-
-
+throttleAcceleration[v_] := Interpolation[({
+ {0, 1600},
+ {1400, 160},
+ {1410, 0.0},
+ {3000, 0.0}
+}), InterpolationOrder->1][v]

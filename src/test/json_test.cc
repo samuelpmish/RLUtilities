@@ -1,12 +1,13 @@
-#include "mechanics/dodge.h"
+#include <fstream>
+#include <iostream>
+
+#include "misc/timer.h"
+#include "misc/logging.h"
 
 #include "simulation/car.h"
 #include "simulation/ball.h"
 
-#include "misc/timer.h"
-
-#include <fstream>
-#include <iostream>
+#include "mechanics/dodge.h"
 
 int main() {
 
@@ -16,13 +17,18 @@ int main() {
   Car c;
   Dodge d(c);
 
+  d.preorientation = eye<3>();
+
+  Input i;
+
   std::ofstream outfile("test.ndjson");
 
   stopwatch.start();
   nlohmann::json log;
-  log["ball"] = b.to_json();
-  log["car"] = c.to_json();
-  log["state"] = d.to_json();
+  log["ball"] = to_json(b);
+  log["car"] = to_json(c);
+  log["state"] = to_json(d);
+  log["inputs"] = to_json(i);
   outfile << log << std::endl;
   outfile << log << std::endl;
   outfile << log << std::endl;

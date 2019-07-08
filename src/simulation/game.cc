@@ -170,13 +170,13 @@ void Game::read_flatbuffer_packet(
 
   num_cars = gameTickPacket->players()->size();
 
-  for (int i = 0; i < gameTickPacket->players()->size(); i++) {
+  for (uint32_t i = 0; i < gameTickPacket->players()->size(); i++) {
     auto car = gameTickPacket->players()->Get(i);
 
-    cars[i].x = vector3_to_vec3(car->physics()->location());
-    cars[i].v = vector3_to_vec3(car->physics()->velocity());
-    cars[i].w = vector3_to_vec3(car->physics()->angularVelocity());
-    cars[i].o = rotator_to_mat3(car->physics()->rotation());
+    cars[i].position = vector3_to_vec3(car->physics()->location());
+    cars[i].velocity = vector3_to_vec3(car->physics()->velocity());
+    cars[i].angular_velocity = vector3_to_vec3(car->physics()->angularVelocity());
+    cars[i].orientation = rotator_to_mat3(car->physics()->rotation());
     cars[i].o_dodge = rotation(car->physics()->rotation()->yaw());
 
     // other car data
@@ -190,9 +190,9 @@ void Game::read_flatbuffer_packet(
     cars[i].time = time;
   }
 
-  ball.x = vector3_to_vec3(gameTickPacket->ball()->physics()->location());
-  ball.v = vector3_to_vec3(gameTickPacket->ball()->physics()->velocity());
-  ball.w =
+  ball.position = vector3_to_vec3(gameTickPacket->ball()->physics()->location());
+  ball.velocity = vector3_to_vec3(gameTickPacket->ball()->physics()->velocity());
+  ball.angular_velocity =
       vector3_to_vec3(gameTickPacket->ball()->physics()->angularVelocity());
 
   ball.time = time;

@@ -56,7 +56,7 @@ void GameState::BuildAndSend() {
       CREATEVECTOR3PARTIAL(carAngularVelocityOffset,
                            car.physicsState.angularVelocity);
 
-      rlbot::flat::Float boost = car.boostAmount.value_or(0);
+      rlbot::flat::Float boost = float(car.boostAmount.value_or(0));
 
       auto carPhysicsOffset = rlbot::flat::CreateDesiredPhysics(
           builder, carLocationOffset, carRotationOffset, carVelocityOffset,

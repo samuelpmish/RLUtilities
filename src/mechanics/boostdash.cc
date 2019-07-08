@@ -2,11 +2,11 @@
 
 #include <iostream>
 
-Boostdash::Boostdash(Car & c) : car(c), dodge(c), turn(c) {
+Boostdash::Boostdash(Car & c) : car(c), dodge(c), reorient(c) {
 	finished = false;
 	controls = Input();
 
-	dodge.duration = 0.0f;
+	dodge.jump_duration = 0.0f;
 	dodge.delay = 0.80f;
 
 	boost_off = 0.4f;
@@ -17,17 +17,17 @@ Boostdash::Boostdash(Car & c) : car(c), dodge(c), turn(c) {
 
 void Boostdash::step(float dt) {
 
-	vec3 direction = normalize(car.v);
-	dodge.direction = direction;
+	vec3 direction = normalize(car.velocity);
+	dodge.target_direction = xy(direction);
 	dodge.step(dt);
 
 	if (timer < turn_up) {
-		turn.target = look_at(xy(direction) - vec3{ 0.0, 0.0, 0.6f });
+		reorient.target_orientation = look_at(xy(direction) - vec3{0.0, 0.0, 0.6f});
 	}
 	else {
-		turn.target = look_at(xy(direction) + vec3{ 0.0, 0.0, 0.6f });
+		reorient.target_orientation = look_at(xy(direction) + vec3{0.0, 0.0, 0.6f});
 	}
-	turn.step(dt);
+	reorient.step(dt);
 
 	controls.jump = dodge.controls.jump;
 	if (controls.jump) {
@@ -36,16 +36,16 @@ void Boostdash::step(float dt) {
 		controls.yaw = dodge.controls.yaw;
 	}
 	else {
-		controls.roll = turn.controls.roll;
-		controls.pitch = turn.controls.pitch;
-		controls.yaw = turn.controls.yaw;
+		controls.roll = reorient.controls.roll;
+		controls.pitch = reorient.controls.pitch;
+		controls.yaw = reorient.controls.yaw;
 	}
 
 	controls.boost = (timer <= boost_off) ? 1 : 0;
 
 	timer += dt;
 
-	if (timer > 0.25f && car.on_ground && norm(xy(car.w)) < 0.5f) {
+	if (timer > 0.25f && car.on_ground && norm(xy(car.angular_velocity)) < 0.5f) {
 		finished = true;
 	}
 
@@ -95,6 +95,6 @@ void Boostdash::step(float dt) {
 //
 //  outfile.close();
 //
-//  return car_copy;
+//  rereorient car_copy;
 //
 //}

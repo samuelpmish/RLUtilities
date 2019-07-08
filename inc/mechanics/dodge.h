@@ -1,26 +1,22 @@
 #pragma once
 
-#include "misc/json.h"
-
 #include "simulation/car.h"
 #include "simulation/input.h"
 
-#include "mechanics/aerial_turn.h"
+#include "mechanics/reorient.h"
 
 #include "linear_algebra/math.h"
-
-#include <optional>
 
 class Dodge {
 
  public:
   Car & car;
 
-  std::optional < vec3 > target;
-  std::optional < vec2 > direction;
-  std::optional < mat3 > preorientation;
-  std::optional < float > duration;
-  std::optional < float > delay;
+  vec2 target_direction;
+  float jump_duration;
+  float delay;
+
+  mat3 preorientation;
 
   bool finished;
   Input controls;
@@ -32,8 +28,6 @@ class Dodge {
   void step(float dt);
 
   Car simulate();
-
-  nlohmann::json to_json();
 
   static const float timeout;
   static const float input_threshold;
@@ -48,6 +42,6 @@ class Dodge {
 
  private:
 
-  AerialTurn turn;
+  Reorient reorient;
 
 };

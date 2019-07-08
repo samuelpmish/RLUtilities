@@ -6,7 +6,7 @@
 
 const int n_sphere = 16;
 std::vector < vec3 > sphere_points = []{
-  float k = 6.28319 / n_sphere;
+  float k = 6.28319f / n_sphere;
   std::vector < vec3 > points(6 * n_sphere);
   for (int i = 0; i < n_sphere; i++) {
     float c1 = cos(i * k);
@@ -93,23 +93,25 @@ void Renderer::DrawOBB(Color c, obb box) {
 
 
 void Renderer::DrawPolyLine3D(Color color, std::vector<vec3> points) {
-  auto colorbuilder = rlbot::flat::ColorBuilder(builder);
-  colorbuilder.add_a(color.a);
-  colorbuilder.add_r(color.r);
-  colorbuilder.add_g(color.g);
-  colorbuilder.add_b(color.b);
-  auto coloroffset = colorbuilder.Finish();
+  if (points.size() >= 2) {
+    auto colorbuilder = rlbot::flat::ColorBuilder(builder);
+    colorbuilder.add_a(color.a);
+    colorbuilder.add_r(color.r);
+    colorbuilder.add_g(color.g);
+    colorbuilder.add_b(color.b);
+    auto coloroffset = colorbuilder.Finish();
 
-  for (int i = 0; i < points.size() - 1; i++) {
-    rlbot::flat::Vector3 flat_start{points[i][0], points[i][1], points[i][2]};
-    rlbot::flat::Vector3 flat_end{points[i + 1][0], points[i + 1][1],
-                                  points[i + 1][2]};
-    messages.push_back(rlbot::flat::CreateRenderMessage(
-        builder, rlbot::flat::RenderType_DrawLine3D, coloroffset, &flat_start,
-        &flat_end));
+    for (int i = 0; i < points.size() - 1; i++) {
+      rlbot::flat::Vector3 flat_start{points[i][0], points[i][1], points[i][2]};
+      rlbot::flat::Vector3 flat_end{points[i + 1][0], points[i + 1][1],
+                                    points[i + 1][2]};
+      messages.push_back(rlbot::flat::CreateRenderMessage(
+          builder, rlbot::flat::RenderType_DrawLine3D, coloroffset, &flat_start,
+          &flat_end));
+    }
+
+    if (builder.GetSize() > CLOSE_TO_MAX_RENDER_MESSAGE_SIZE) Finish();
   }
-
-  if (builder.GetSize() > CLOSE_TO_MAX_RENDER_MESSAGE_SIZE) Finish();
 }
 
 void Renderer::DrawString2D(Color color, std::string text, vec2 top_left,

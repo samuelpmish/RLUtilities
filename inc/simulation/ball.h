@@ -6,12 +6,13 @@
 #include "linear_algebra/math.h"
 
 #include "misc/json.h"
+#include "misc/rlu_dll.h"
 
 class Ball {
  public:
-  vec3 x;
-  vec3 v;
-  vec3 w;
+  vec3 position;
+  vec3 velocity;
+  vec3 angular_velocity;
   float time;
 
   float dropshot_damage;
@@ -38,11 +39,9 @@ class Ball {
   static float collision_radius;
   static float I; // moment of inertia
 
-  Ball();
+  RLU_DLL Ball();
 
-  sphere hitbox();
-  void step(float dt);
-  void step(float dt, const Car & c);
-  nlohmann::json to_json();
-
+  RLU_DLL sphere hitbox();
+  RLU_DLL void step(float dt);
+  RLU_DLL void step(float dt, const Car & c);
 };

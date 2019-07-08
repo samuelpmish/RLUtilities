@@ -22,21 +22,25 @@ set(rlu_sources
   ${PROJECT_SOURCE_DIR}/src/simulation/bvh.cc
   ${PROJECT_SOURCE_DIR}/src/simulation/game.cc
   ${PROJECT_SOURCE_DIR}/src/simulation/ogh.cc
-  ${PROJECT_SOURCE_DIR}/src/simulation/navigator.cc
 
   # mechanics
   ${PROJECT_SOURCE_DIR}/src/mechanics/jump.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/drive.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/dodge.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/aerial.cc
+  ${PROJECT_SOURCE_DIR}/src/mechanics/reorient.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/wavedash.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/boostdash.cc
-  ${PROJECT_SOURCE_DIR}/src/mechanics/aerial_turn.cc
-  ${PROJECT_SOURCE_DIR}/src/mechanics/follow_path.cc
 
   # misc
   ${PROJECT_SOURCE_DIR}/src/misc/dll.cc
   ${PROJECT_SOURCE_DIR}/src/misc/graph.cc
+  ${PROJECT_SOURCE_DIR}/src/misc/random.cc
+  ${PROJECT_SOURCE_DIR}/src/misc/logging.cc
+
+  # experimental
+  ${PROJECT_SOURCE_DIR}/src/experimental/navigator.cc
+  ${PROJECT_SOURCE_DIR}/src/experimental/follow_path.cc
 
   # resource files for meshes, lookup tables, navigation data
   ${PROJECT_SOURCE_DIR}/assets/assets.rc
@@ -48,7 +52,6 @@ if (TARGET_LANGUAGE STREQUAL "cpp" OR TARGET_LANGUAGE STREQUAL "both")
   add_library(rlutilities_cpp SHARED 
     ${rlu_sources}
 
-    #${PROJECT_SOURCE_DIR}/src/rlbot/bot.cc
     ${PROJECT_SOURCE_DIR}/src/rlbot/interface.cc
     ${PROJECT_SOURCE_DIR}/src/rlbot/renderer.cc
     ${PROJECT_SOURCE_DIR}/src/rlbot/statesetting.cc
@@ -56,6 +59,11 @@ if (TARGET_LANGUAGE STREQUAL "cpp" OR TARGET_LANGUAGE STREQUAL "both")
   target_include_directories(rlutilities_cpp PUBLIC inc)
   target_compile_features(rlutilities_cpp PUBLIC cxx_std_17)
   target_link_libraries(rlutilities_cpp PUBLIC Xinput)
+  if (CMAKE_CXX_COMPILER_ID EQUAL MSVC)
+    target_compile_definitions(rlutilities_cpp PRIVATE RLU_EXPORT)
+  else()
+    target_compile_definitions(rlutilities_cpp PRIVATE RLU_NOTHING)
+  endif()
 
   # ensures a consistent name when used with gcc, clang, msvc
   set_target_properties(rlutilities_cpp PROPERTIES PREFIX "") 
@@ -65,6 +73,7 @@ if (TARGET_LANGUAGE STREQUAL "cpp" OR TARGET_LANGUAGE STREQUAL "both")
       LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
   )
+
   
   if (WITH_TESTS)
   
@@ -87,6 +96,12 @@ if (TARGET_LANGUAGE STREQUAL "cpp" OR TARGET_LANGUAGE STREQUAL "both")
       target_include_directories(${testname} PUBLIC inc/)
       target_compile_features(${testname} PUBLIC cxx_std_17)		
       target_link_libraries(${testname} PUBLIC rlutilities_cpp)
+      if (CMAKE_CXX_COMPILER_ID EQUAL MSVC)
+        target_compile_definitions(${testname} PRIVATE RLU_IMPORT)
+      else()
+        target_compile_definitions(${testname} PRIVATE RLU_NOTHING)
+      endif()
+
       set_target_properties(${testname} PROPERTIES
           ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
           LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
@@ -117,22 +132,24 @@ if (TARGET_LANGUAGE STREQUAL "python" OR TARGET_LANGUAGE STREQUAL "both")
     ${PROJECT_SOURCE_DIR}/src/simulation/field_pybind11.cc
     ${PROJECT_SOURCE_DIR}/src/simulation/curve_pybind11.cc
     ${PROJECT_SOURCE_DIR}/src/simulation/geometry_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/simulation/navigator_pybind11.cc
 
     ${PROJECT_SOURCE_DIR}/src/mechanics/jump_pybind11.cc
     ${PROJECT_SOURCE_DIR}/src/mechanics/dodge_pybind11.cc
     ${PROJECT_SOURCE_DIR}/src/mechanics/drive_pybind11.cc
     ${PROJECT_SOURCE_DIR}/src/mechanics/aerial_pybind11.cc
+    ${PROJECT_SOURCE_DIR}/src/mechanics/reorient_pybind11.cc
     ${PROJECT_SOURCE_DIR}/src/mechanics/wavedash_pybind11.cc
     ${PROJECT_SOURCE_DIR}/src/mechanics/boostdash_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/mechanics/aerial_turn_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/mechanics/follow_path_pybind11.cc
+
+    ${PROJECT_SOURCE_DIR}/src/experimental/navigator_pybind11.cc
+    ${PROJECT_SOURCE_DIR}/src/experimental/follow_path_pybind11.cc
 
     ${PROJECT_SOURCE_DIR}/src/linear_algebra/math_pybind11.cc
 
     ${rlu_sources}
   )
   target_include_directories(rlutilities PUBLIC inc/)
+  target_compile_definitions(rlutilities PRIVATE RLU_NOTHING)
   target_compile_definitions(rlutilities PUBLIC -DGENERATE_PYTHON_BINDINGS)
   target_compile_definitions(rlutilities PUBLIC -DHAVE_SNPRINTF=1)
   target_compile_features(rlutilities PUBLIC cxx_std_17)

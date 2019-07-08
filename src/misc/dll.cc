@@ -6,7 +6,8 @@
 
 #include "misc/resource.h"
 #include "simulation/mesh.h"
-#include "simulation/navigator.h"
+
+#include "experimental/navigator.h"
 
 // soccar meshes
 extern mesh soccar_corner;

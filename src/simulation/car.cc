@@ -1,8 +1,8 @@
 #include "simulation/car.h"
 
-#include "mechanics/jump.h"
-#include "mechanics/dodge.h"
 #include "mechanics/aerial.h"
+#include "mechanics/dodge.h"
+#include "mechanics/jump.h"
 
 #include "misc/convert.h"
 
@@ -12,139 +12,134 @@ const float Car::m = 180.0f;
 const float Car::v_max = 2300.0f;
 const float Car::w_max = 5.5f;
 
-const vec3 g = { 0.0f, 0.0f, -650.0f };
+const vec3 g = {0.0f, 0.0f, -650.0f};
 
-vec3 Car::forward() const { return vec3{ o(0, 0), o(1, 0), o(2, 0) }; }
-vec3 Car::left() const { return vec3{ o(0, 1), o(1, 1), o(2, 1) }; }
-vec3 Car::up() const { return vec3{ o(0, 2), o(1, 2), o(2, 2) }; }
+vec3 Car::forward() const { 
+  return vec3{orientation(0, 0), orientation(1, 0), orientation(2, 0)}; 
+}
+
+vec3 Car::left() const { 
+  return vec3{orientation(0, 1), orientation(1, 1), orientation(2, 1)}; 
+}
+
+vec3 Car::up() const { 
+  return vec3{orientation(0, 2), orientation(1, 2), orientation(2, 2)}; 
+}
 
 void Car::jump(const Input& in, float dt) {
+  velocity += g * dt + Jump::speed * up();
+  position += velocity * dt;
 
-	v += g * dt + Jump::speed * up();
-	x += v * dt;
+  orientation = dot(axis_to_rotation(angular_velocity * dt), orientation);
 
-	o = dot(axis_to_rotation(w * dt), o);
-
-	jump_timer = 0.0f;
-	jumped = true;
-	double_jumped = false;
-	enable_jump_acceleration = true;
-	on_ground = false;
-
+  jump_timer = 0.0f;
+  jumped = true;
+  double_jumped = false;
+  enable_jump_acceleration = true;
+  on_ground = false;
 }
 
 void Car::air_dodge(const Input& in, float dt) {
+  // directional dodge
+  if (fabs(in.pitch) + fabs(in.roll) + fabs(in.yaw) >= Dodge::input_threshold) {
+    float vf = dot(velocity, forward());
+    float s = fabs(vf) / v_max;
 
-	// directional dodge
-	if (fabs(in.pitch) + fabs(in.roll) + fabs(in.yaw) >= Dodge::input_threshold) {
+    dodge_dir = normalize(vec2{-in.pitch, in.yaw});
 
-		float vf = dot(v, forward());
-		float s = fabs(vf) / v_max;
+    vec3 dodge_torque_local =
+        vec3(cross(vec2{dodge_dir[0] * 224.0f, dodge_dir[1] * 260.0f}));
+    dodge_torque = dot(orientation, dodge_torque_local);
 
-		dodge_dir = normalize(vec2{ -in.pitch, in.yaw });
+    if (fabs(dodge_dir[0]) < 0.1f) dodge_dir[0] = 0.0f;
+    if (fabs(dodge_dir[1]) < 0.1f) dodge_dir[1] = 0.0f;
 
-		vec3 dodge_torque_local = vec3(cross(vec2{ dodge_dir[0] * 224.0f, dodge_dir[1] * 260.0f }));
-		dodge_torque = dot(o, dodge_torque_local);
+    bool backward_dodge;
 
-		if (fabs(dodge_dir[0]) < 0.1f) dodge_dir[0] = 0.0f;
-		if (fabs(dodge_dir[1]) < 0.1f) dodge_dir[1] = 0.0f;
+    if (fabs(vf) < 100.0f) {
+      backward_dodge = dodge_dir[0] < 0.0f;
+    } else {
+      backward_dodge = (dodge_dir[0] >= 0.0f) != (vf > 0.0f);
+    }
 
-		bool backward_dodge;
+    vec2 dv = 500.0f * dodge_dir;
 
-		if (fabs(vf) < 100.0f) {
-			backward_dodge = dodge_dir[0] < 0.0f;
-		}
-		else {
-			backward_dodge = (dodge_dir[0] >= 0.0f) != (vf > 0.0f);
-		}
+    if (backward_dodge) {
+      dv[0] *= (16.0f / 15.0f) * (1.0f + 1.5f * s);
+    }
+    dv[1] *= (1.0f + 0.9f * s);
 
-		vec2 dv = 500.0f * dodge_dir;
+    velocity += g * dt + vec3(dot(o_dodge, dv));
+    position += velocity * dt;
 
-		if (backward_dodge) {
-			dv[0] *= (16.0f / 15.0f) * (1.0f + 1.5f * s);
-		}
-		dv[1] *= (1.0f + 0.9f * s);
+    angular_velocity += dodge_torque * dt;
+    orientation = dot(axis_to_rotation(angular_velocity * dt), orientation);
 
-		v += g * dt + vec3(dot(o_dodge, dv));
-		x += v * dt;
+    double_jumped = true;
+    dodge_timer = 0.0f;
 
-		w += dodge_torque * dt;
-		o = dot(axis_to_rotation(w * dt), o);
+  // double jump
+  } else {
+    dodge_torque = vec3{0.0f, 0.0f, 0.0f};
 
-		double_jumped = true;
-		dodge_timer = 0.0f;
+    velocity += g * dt + Jump::speed * up();
+    position += velocity * dt;
 
-		// double jump
-	}
-	else {
+    angular_velocity += dodge_torque * dt;
+    orientation = dot(axis_to_rotation(angular_velocity * dt), orientation);
 
-		dodge_torque = vec3{ 0.0f, 0.0f, 0.0f };
-
-		v += g * dt + Jump::speed * up();
-		x += v * dt;
-
-		w += dodge_torque * dt;
-		o = dot(axis_to_rotation(w * dt), o);
-
-		double_jumped = true;
-		dodge_timer = 1.01f * Dodge::torque_time;
-
-	}
-
+    double_jumped = true;
+    dodge_timer = 1.01f * Dodge::torque_time;
+  }
 }
 
-
 void Car::aerial_control(const Input& in, float dt) {
+  const float J = 10.5f;  // ?
 
-	const float J = 10.5f; // ?
+  // air control torque coefficients
+  const vec3 T{-400.0f, -130.0f, 95.0f};
 
-	// air control torque coefficients
-	const vec3 T{ -400.0f, -130.0f, 95.0f };
+  // air damping torque coefficients
+  const vec3 H{-50.0f, -30.0f * (1.0f - fabs(in.pitch)),
+               -20.0f * (1.0f - fabs(in.yaw))};
 
-	// air damping torque coefficients
-	const vec3 H{ -50.0f, -30.0f * (1.0f - fabs(in.pitch)),
-				 -20.0f * (1.0f - fabs(in.yaw)) };
+  vec3 rpy{in.roll, in.pitch, in.yaw};
 
-	vec3 rpy{ in.roll, in.pitch, in.yaw };
+  if (in.boost && boost > 0) {
+    velocity += Aerial::boost_accel * forward() * dt;
+    boost--;
+  } else {
+    velocity += in.throttle * Aerial::throttle_accel * forward() * dt;
+  }
 
-	if (in.boost && boost > 0) {
-		v += (Aerial::boost_accel + Aerial::throttle_accel) * forward() * dt;
-		boost--;
-	}
-	else {
-		v += in.throttle * Aerial::throttle_accel * forward() * dt;
-	}
+  if (in.jump && enable_jump_acceleration) {
+    if (jump_timer < Jump::min_duration) {
+      velocity += (0.75f * Jump::acceleration * up() - 510.0f * forward()) * dt;
+    } else {
+      velocity += Jump::acceleration * up() * dt;
+    }
+  }
 
-	if (in.jump && enable_jump_acceleration) {
-		if (jump_timer < Jump::min_duration) {
-			v += (0.75f * Jump::acceleration * up() - 510.0f * forward()) * dt;
-		}
-		else {
-			v += Jump::acceleration * up() * dt;
-		}
-	}
+  if (dodge_timer >= Dodge::z_damping_start &&
+      (velocity[2] < 0.0f || dodge_timer < Dodge::z_damping_end)) {
+    velocity += vec3{0.0f, 0.0f, -velocity[2] * Dodge::z_damping};
+  }
 
-	if (dodge_timer >= Dodge::z_damping_start && (v[2] < 0.0f || dodge_timer < Dodge::z_damping_end)) {
-		v += vec3{ 0.0f, 0.0f, -v[2] * Dodge::z_damping };
-	}
+  if (0.0f <= dodge_timer && dodge_timer <= 0.3f) {
+    rpy[1] = 0.0f;
+  }
 
-	if (0.0f <= dodge_timer && dodge_timer <= 0.3f) {
-		rpy[1] = 0.0f;
-	}
+  if (0.0f <= dodge_timer && dodge_timer <= Dodge::torque_time) {
+    angular_velocity += dodge_torque * dt;
+  } else {
+    vec3 omega_local = dot(angular_velocity, orientation);
+    angular_velocity += dot(orientation, T * rpy + H * omega_local) * (dt / J);
+  }
 
-	if (0.0f <= dodge_timer && dodge_timer <= Dodge::torque_time) {
-		w += dodge_torque * dt;
-	}
-	else {
-		vec3 w_local = dot(w, o);
-		w += dot(o, T * rpy + H * w_local) * (dt / J);
-	}
+  velocity += g * dt;
 
-	v += g * dt;
-
-	x += v * dt;
-	o = dot(axis_to_rotation(w * dt), o);
-
+  position += velocity * dt;
+  orientation = dot(axis_to_rotation(angular_velocity * dt), orientation);
 }
 
 float Car::drive_force_forward(const Input& in) {
@@ -226,7 +221,7 @@ float Car::drive_force_forward(const Input& in) {
 		}
 	}
 #else
-	return 0.0f;
+  return 0.0f;
 #endif
 }
 
@@ -240,7 +235,7 @@ float Car::drive_force_left(const Input& in) {
 		15.0064029f * v_l + 668.1208332f * w_u) *
 		(1.0f - exp(-0.001161f * fabs(v_f)));
 #else
-	return 0.0f;
+  return 0.0f;
 #endif
 }
 
@@ -251,7 +246,7 @@ float Car::drive_torque_up(const Input& in) {
 
 	return 15.0f * (in.steer * max_curvature(fabs(v_f)) * v_f - w_u);
 #else
-	return 0.0f;
+  return 0.0f;
 #endif
 }
 
@@ -273,145 +268,126 @@ void Car::driving(const Input& in, float dt) {
 }
 
 void Car::driving_handbrake(const Input& in, float dt) {
-	// TODO
+  // TODO
 }
 
 void Car::step(Input in, float dt) {
+  // driving
+  if (on_ground) {
+    if (in.jump == 1) {
+      // std::cout << time << " Jump" << std::endl;
+      jump(in, dt);
+    } else {
+      if (in.handbrake == 0) {
+        driving(in, dt);
+      } else {
+        driving_handbrake(in, dt);
+      }
+    }
 
-	// driving
-	if (on_ground) {
+    // in the air
+  } else {
+    if (in.jump == 1 && controls.jump == 0 && jump_timer < Dodge::timeout &&
+        double_jumped == false) {
+      // std::cout << time << " Air Dodge" << std::endl;
+      air_dodge(in, dt);
+    } else {
+      // std::cout << "Aerial Control" << std::endl;
+      aerial_control(in, dt);
+    }
+  }
 
-		if (in.jump == 1) {
-			//std::cout << time << " Jump" << std::endl;
-			jump(in, dt);
-		}
-		else {
-			if (in.handbrake == 0) {
-				driving(in, dt);
-			}
-			else {
-				driving_handbrake(in, dt);
-			}
-		}
+  // if the velocities exceed their maximum values, scale them back
+  velocity /= fmaxf(1.0f, norm(velocity) / v_max);
+  angular_velocity /= fmaxf(1.0f, norm(angular_velocity) / w_max);
 
-		// in the air
-	}
-	else {
-		if (in.jump == 1 &&
-			controls.jump == 0 &&
-			jump_timer < Dodge::timeout &&
-			double_jumped == false) {
-			//std::cout << time << " Air Dodge" << std::endl;
-			air_dodge(in, dt);
-		}
-		else {
-			//std::cout << "Aerial Control" << std::endl;
-			aerial_control(in, dt);
-		}
-	}
+  time += dt;
 
-	// if the velocities exceed their maximum values, scale them back
-	v /= fmaxf(1.0f, norm(v) / v_max);
-	w /= fmaxf(1.0f, norm(w) / w_max);
+  if (dodge_timer >= 0.0f) {
+    if (dodge_timer >= Dodge::torque_time || on_ground) {
+      dodge_timer = -1.0f;
+    } else {
+      dodge_timer += dt;
+    }
+  }
 
-	time += dt;
+  if (jump_timer >= 0.0f) {
+    if (on_ground) {
+      jump_timer = -1.0f;
+    } else {
+      jump_timer += dt;
+    }
+  }
 
-	if (dodge_timer >= 0.0f) {
-		if (dodge_timer >= Dodge::torque_time || on_ground) {
-			dodge_timer = -1.0f;
-		}
-		else {
-			dodge_timer += dt;
-		}
-	}
+  if ((in.jump == 0) || jump_timer > Jump::max_duration) {
+    enable_jump_acceleration = false;
+  }
 
-	if (jump_timer >= 0.0f) {
-		if (on_ground) {
-			jump_timer = -1.0f;
-		}
-		else {
-			jump_timer += dt;
-		}
-	}
-
-	if ((in.jump == 0) || jump_timer > Jump::max_duration) {
-		enable_jump_acceleration = false;
-	}
-
-	controls = in;
+  controls = in;
 }
 
 obb Car::hitbox() const {
-	obb box;
-	box.orientation = o;
-	box.half_width = hitbox_widths;
-	box.center = dot(o, hitbox_offset) + x;
-	return box;
+  obb box;
+  box.orientation = orientation;
+  box.half_width = hitbox_widths;
+  box.center = dot(orientation, hitbox_offset) + position;
+  return box;
 }
 
 void Car::extrapolate(float dt) { step(controls, dt); }
 
 Car::Car() {
-	x = vec3{ 0.0f, 0.0f, 0.0f };
-	v = vec3{ 0.0f, 0.0f, 0.0f };
-	w = vec3{ 0.0f, 0.0f, 0.0f };
-	o = eye<3>();
+  position = vec3{0.0f, 0.0f, 0.0f};
+  velocity = vec3{0.0f, 0.0f, 0.0f};
+  angular_velocity = vec3{0.0f, 0.0f, 0.0f};
+  orientation = eye<3>();
   q = vec4{0.0f, 0.0f, 0.0f, 0.0f};
   rotator = vec3{0.0f, 0.0f, 0.0f};
 
-	supersonic = false;
-	jumped = false;
-	double_jumped = false;
-	on_ground = false;
+  supersonic = false;
+  jumped = false;
+  double_jumped = false;
+  on_ground = false;
 
-	time = 0.0f;
+  //state = "OnGround";
 
-	I = m * mat3{{751.0f,    0.0f,    0.0f},
-				       {  0.0f, 1334.0f,    0.0f},
-				       {  0.0f,    0.0f, 1836.0f}};
-	invI = inv(I);
+  time = 0.0f;
 
-	jump_timer = -1.0f;
-	dodge_timer = -1.0f;
-	enable_jump_acceleration = false;
+  I = m *
+      mat3{{751.0f, 0.0f, 0.0f}, {0.0f, 1334.0f, 0.0f}, {0.0f, 0.0f, 1836.0f}};
+  invI = inv(I);
 
-	hitbox_widths = vec3{ 59.00368881f, 42.09970474f, 18.07953644f };
-	hitbox_offset = vec3{ 13.97565993f, 0.0f, 20.75498772f };
+  jump_timer = -1.0f;
+  dodge_timer = -1.0f;
+  enable_jump_acceleration = false;
 
-	controls = Input();
+  hitbox_widths = vec3{59.00368881f, 42.09970474f, 18.07953644f};
+  hitbox_offset = vec3{13.97565993f, 0.0f, 20.75498772f};
+
+  controls = Input();
 }
 
 void Car::update(Car next) {
-
   float dt = next.time - time;
 
   if (next.on_ground) {
-
     jump_timer = -1.0f;
     dodge_timer = -1.0f;
     enable_jump_acceleration = false;
 
   } else {
-
     if (on_ground) {
-
       if (next.jumped) {
-
         jump_timer = 0.0f;
         enable_jump_acceleration = true;
 
       } else {
-
         // TODO
-      
       }
-      
+
     } else {
-
       // TODO
-      
     }
-
   }
 
   if (next.controls.boost) {
@@ -423,28 +399,5 @@ void Car::update(Car next) {
   } else {
     boost_timer = -1.0f;
   }
-
 }
 
-nlohmann::json Car::to_json() {
-
-  nlohmann::json obj;
-  obj["x"] = {x[0], x[1], x[2]};
-  obj["v"] = {v[0], v[1], v[2]};
-  obj["w"] = {w[0], w[1], w[2]};
-  obj["o"] = {{o(0, 0), o(0, 1), o(0, 2)},
-              {o(1, 0), o(1, 1), o(1, 2)}, 
-              {o(2, 0), o(2, 1), o(2, 2)}};
-
-  obj["supersonic"] = supersonic;
-  obj["jumped"] = jumped;
-  obj["double_jumped"] = double_jumped;
-  obj["on_ground"] = on_ground;
-  obj["boost_left"] = boost;
-  obj["jump_timer"] = jump_timer;
-  obj["dodge_timer"] = dodge_timer;
-  obj["dodge_dir"] = {dodge_dir[0], dodge_dir[1]};
-  obj["time"] = time;
-  return obj; 
-
-}

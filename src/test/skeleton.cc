@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
 
         if (count++ % 500 == 0) {
           Game desired = g;
-          desired.cars[0].x[2] += 500.0f;
+          desired.cars[0].position[2] += 500.0f;
           desired.SetState();
         }
 

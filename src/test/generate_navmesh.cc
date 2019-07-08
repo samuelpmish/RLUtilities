@@ -101,7 +101,7 @@ void generate_edges(std::string infile_prefix, std::string outfile_name) {
           float delta_theta = acos(clip(dot(ti, tj_para), -1.0f, 1.0f));
 
           // discard curves that have require too much turning
-          if (delta_theta > 1.5f) continue;
+          if (delta_theta > 1.0f) continue;
 
           OGH g(pi, ti, pj, tj);
 
@@ -113,7 +113,7 @@ void generate_edges(std::string infile_prefix, std::string outfile_name) {
           float dev_curvature = standard_deviation(segment.curvatures);
 
           //if (mean_curvature < 0.003f && dev_curvature < 0.0015f) {
-          if (mean_curvature < 0.002f && dev_curvature < 0.0005f) {
+          if (mean_curvature < 0.0025f && dev_curvature < 0.0002f) {
             
             total++;            
 

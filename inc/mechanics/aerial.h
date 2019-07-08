@@ -4,7 +4,7 @@
 #include "simulation/input.h"
 
 #include "mechanics/dodge.h"
-#include "mechanics/aerial_turn.h"
+#include "mechanics/reorient.h"
 
 #include "linear_algebra/math.h"
 
@@ -17,18 +17,22 @@ class Aerial {
 
   Car & car;
 
+  // required
   float arrival_time;
-  vec3 target;
-  std::optional < mat3 > target_orientation;
+  vec3 target_position;
+
+  // optional arguments to tweak behavior
   vec3 up;
+  bool double_jump; 
+  mat3 target_orientation;
+
+  // parameters that govern the controller
   float angle_threshold;
   float reorient_distance;
   float throttle_distance;
-
+  
   Input controls;
   bool finished;
-  float boost_estimate;
-  vec3 velocity_estimate;
 
   Aerial(Car & c);
 
@@ -37,8 +41,6 @@ class Aerial {
   bool is_viable();
 
   Car simulate();
-
-
 
   static const float max_speed;
   static const float boost_accel;
@@ -49,7 +51,7 @@ class Aerial {
 
   bool jumping;
 
-  Dodge double_jump;
-  AerialTurn turn;
+  Dodge dodge;
+  Reorient reorient;
 
 };

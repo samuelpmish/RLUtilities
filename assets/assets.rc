@@ -49,8 +49,3 @@ THROWBACK_SIDE_RAMPS_LOWER_IDS BINARY_FILE throwback/throwback_side_ramps_lower_
 THROWBACK_SIDE_RAMPS_LOWER_VERTICES BINARY_FILE throwback/throwback_side_ramps_lower_vertices.bin
 THROWBACK_SIDE_RAMPS_UPPER_IDS BINARY_FILE throwback/throwback_side_ramps_upper_ids.bin
 THROWBACK_SIDE_RAMPS_UPPER_VERTICES BINARY_FILE throwback/throwback_side_ramps_upper_vertices.bin
-
-
-LUT_PATHS BINARY_FILE LUT/LUT_paths.bin
-LUT_TIMES BINARY_FILE LUT/LUT_times.bin
-LUT_PARAMETERS BINARY_FILE LUT/LUT_parameters.bin

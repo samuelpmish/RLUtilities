@@ -91,7 +91,7 @@ void Drive::step(float dt) {
 
   speed_controller(dt);
 
-  if (norm(car.x - target) < 100.0f) {
+  if (norm(car.position - target) < 100.0f) {
     finished = true;
   }
 
@@ -99,19 +99,90 @@ void Drive::step(float dt) {
 
 void Drive::steer_controller(float dt) {
 
-  // that same point, but in local coordinates
-  vec3 target_local = dot(target - car.x, car.o);
+#if 1
 
-  // angle between car's forward direction and hare_local
-  float angle = atan2(target_local[1], target_local[0]);
+	// first, transform everything into local coordinates    
+	vec3 p = dot(target - car.position, car.orientation);
 
-  controls.steer = clip(3.0f * angle, -1.0f, 1.0f);
+  // if the point is not in the same plane as the car
+  // perform an unrolling transformation so it is
+	if (p[0] > 15.0f) {
+
+    const float r = 250.0f;
+
+    // get the surface normal at the point of interest
+    vec3 n = Field::collide(sphere{target, 100.0f}).direction;
+
+    if ((norm(n) > 0.0f) && dot(n, car.up()) < 0.95f) {
+
+	    vec3 n_local = dot(n, car.orientation);
+
+      // define a basis for a coordinate system that
+      // is more natural for the unrolling transformation
+	    vec3 e2 = vec3{0.0f, 0.0f, 1.0f};
+	    vec3 e3 = normalize(cross(e2, n_local));
+	    vec3 e1 = normalize(cross(e2, e3));
+
+      // the angle between the car's up direction and the destination surface normal
+	    float phi_max = atan2(dot(n_local, -e1), n_local[2]);
+
+      // the maximum height of the curved section
+	    float h = r * (1.0f - cos(phi_max));
+
+  	  float phi = (p[2] >= h) ? phi_max : acos(1.0f - clip(p[2] / r, 0.0f, 1.0f));
+  	  float l = (p[2] >= h) ? (p[2] - h) / sin(phi) : 0.0f;
+  
+      p += (r * (phi - sin(phi)) + l * (1.0f - cos(phi))) * e1;
+      p[2] = 0.0f;
+
+    } 
+
+  }
+
+  float angle = atan2(p[1], p[0]);
+  float omega = dot(car.angular_velocity, car.up());
+
+  controls.steer = clip(3.4f * angle + 0.235f * omega, -1.0f, 1.0f);
+
+#else
+
+  // time horizon
+  float delta_t = 0.08f;
+
+  // characteristic time of the angular acceleration
+  float tau = 0.0625f;
+
+  float speed = fmax(200.0f, norm(car.v));
+  float w_max = turning_curvature(v) * v;
+  float w_now = dot(car.w, car.up());
+  float w_future = 1.0;
+
+  // we want to find the right value of "steer" such that
+  // w(t + delta_t) == w_target
+  //
+  // kinematically, we approximate this by
+  // w(t + delta_t) ~= w(t) + alpha * delta_t
+  //
+  // we model alpha in the following way
+  // alpha ~= (w_max * steer - w(t)) / tau
+  //
+  // substitute in
+  // w(t + delta_t) == w(t) + (w_max * steer - w(t)) * r
+  // (where r = (delta_t / tau))
+  //
+  // solve for steering value
+  // steer == (w(t + delta_t) + (r - 1) * w(t)) / (r * w_max) 
+
+  controls.steer = (w_future + (r - 1.0f) * w_now) / (r * w_max);
+  controls.steer = clip(controls.steer, -1.0f, 1.0f);
+
+#endif
 
 }
 
 void Drive::speed_controller(float dt) {
 
-  float vf = dot(car.v, car.forward());
+  float vf = dot(car.velocity, car.forward());
 
   // the average acceleration we would like to produce
   float acceleration = (speed - vf) / reaction_time;

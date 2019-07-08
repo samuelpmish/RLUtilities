@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
         // human is player 0
         int status1 = Interface::SetBotInput(GamePad::GetOutput(), 0);
 
-        drive_toward_player.target = g.cars[0].x;
+        drive_toward_player.target = g.cars[0].position;
         drive_toward_player.speed = 500.0f;
         drive_toward_player.step(1.0f / 120.0f);
 

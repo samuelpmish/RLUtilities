@@ -4,7 +4,7 @@
 #include "simulation/input.h"
 
 #include "mechanics/dodge.h"
-#include "mechanics/aerial_turn.h"
+#include "mechanics/reorient.h"
 
 #include "linear_algebra/math.h"
 
@@ -17,7 +17,7 @@ class Wavedash {
 
   Car & car;
 
-  std::optional < vec2 > direction;
+  vec2 target_direction;
 
   Input controls;
   bool finished;
@@ -33,6 +33,6 @@ class Wavedash {
   float timer;
 
   Dodge dodge;
-  AerialTurn turn;
+  Reorient reorient;
 
 };

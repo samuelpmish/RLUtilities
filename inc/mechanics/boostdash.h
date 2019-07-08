@@ -4,7 +4,7 @@
 #include "simulation/input.h"
 
 #include "mechanics/dodge.h"
-#include "mechanics/aerial_turn.h"
+#include "mechanics/reorient.h"
 
 #include <string>
 #include <optional>
@@ -31,6 +31,6 @@ class Boostdash {
   float boost_off;
 
   Dodge dodge;
-  AerialTurn turn;
+  Reorient reorient;
 
 };

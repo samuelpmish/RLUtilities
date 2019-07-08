@@ -13,6 +13,7 @@ CMakeFiles/*
 build*/
 
 .vs/
+.vscode/
 
 # Python
 __pycache__/

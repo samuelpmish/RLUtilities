@@ -22,6 +22,8 @@ class Curve {
   explicit Curve(const std::vector<vec3> & _points);
 
   explicit Curve(std::vector < ControlPoint >);
+  explicit Curve(std::vector < ControlPoint > info,
+      vec3 dx0, vec3 dt0, vec3 dx1, vec3 dt1, vec3 start, vec3 end);
 
   vec3 point_at(float s);
   vec3 tangent_at(float s);

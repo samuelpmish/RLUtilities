@@ -128,10 +128,10 @@ int Interface::SetGameState(Game desired) {
   flatbuffers::FlatBufferBuilder builder(1000);
 
   auto ballPhysicsOffset = rlbot::flat::CreateDesiredPhysics(
-      builder, vec3_to_Vector3Partial(builder, desired.ball.x),
+      builder, vec3_to_Vector3Partial(builder, desired.ball.position),
       vec3_to_RotatorPartial(builder, vec3{0.0, 0.0, 0.0f}),
-      vec3_to_Vector3Partial(builder, desired.ball.v),
-      vec3_to_Vector3Partial(builder, desired.ball.w));
+      vec3_to_Vector3Partial(builder, desired.ball.velocity),
+      vec3_to_Vector3Partial(builder, desired.ball.angular_velocity));
   auto ballStateOffset =
       rlbot::flat::CreateDesiredBallState(builder, ballPhysicsOffset);
 
@@ -139,10 +139,10 @@ int Interface::SetGameState(Game desired) {
 
   for (int i = 0; i < desired.num_cars; i++) {
     auto carPhysicsOffset = rlbot::flat::CreateDesiredPhysics(
-        builder, vec3_to_Vector3Partial(builder, desired.cars[i].x),
-        vec3_to_RotatorPartial(builder, rotation_to_euler(desired.cars[i].o)),
-        vec3_to_Vector3Partial(builder, desired.cars[i].v),
-        vec3_to_Vector3Partial(builder, desired.cars[i].w));
+        builder, vec3_to_Vector3Partial(builder, desired.cars[i].position),
+        vec3_to_RotatorPartial(builder, rotation_to_euler(desired.cars[i].orientation)),
+        vec3_to_Vector3Partial(builder, desired.cars[i].velocity),
+        vec3_to_Vector3Partial(builder, desired.cars[i].angular_velocity));
 
     flat_float boost = desired.cars[i].boost;
 

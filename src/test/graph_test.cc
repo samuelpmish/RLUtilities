@@ -39,6 +39,8 @@ int main(int argc, char** argv) {
     auto parents_bf = g.bellman_ford_sssp(source, max_time);
     stopwatch.stop();
     std::cout << "bellman_ford_sssp() time: " << stopwatch.elapsed() << std::endl;
+
+    std::cout << "unreachables: " << std::count(parents_bf.begin(), parents_bf.end(), -1) << std::endl;
   
     write_binary(parents_bf, "C:\\Users\\sam\\Desktop\\LUT\\parents_bf.bin");
   
