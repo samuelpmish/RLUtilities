@@ -27,7 +27,7 @@ std::vector < vec3 > sphere_points = []{
 }();
 
 Renderer::Renderer(int _index) : builder(CLOSE_TO_MAX_RENDER_MESSAGE_SIZE) {
-  index = index;
+  index = _index;
   int approx_max_messages = CLOSE_TO_MAX_RENDER_MESSAGE_SIZE / 44;
   messages.resize(approx_max_messages);
 }

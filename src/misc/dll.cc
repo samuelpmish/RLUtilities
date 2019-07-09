@@ -1,11 +1,12 @@
 #define NOMINMAX
 
-#include <windows.h>
+#include <Windows.h>
 #include <iostream>
 #include <string>
 
 #include "misc/resource.h"
 #include "simulation/mesh.h"
+#include "mechanics/reorient_ML.h"
 
 #include "experimental/navigator.h"
 
@@ -139,10 +140,10 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpReserved) {
       Navigator::init_statics(
           load_resource<Graph::edge>(hinstDLL, SOCCAR_NAV_GRAPH),
           load_resource<vec3>(hinstDLL, SOCCAR_NAV_NODES),
-          load_resource<vec3>(hinstDLL, SOCCAR_NAV_NORMALS),
-          load_resource<int>(hinstDLL, LUT_PARAMETERS),
-          load_resource<float>(hinstDLL, LUT_TIMES),
-          load_resource<uint32_t>(hinstDLL, LUT_PATHS));
+          load_resource<vec3>(hinstDLL, SOCCAR_NAV_NORMALS));
+
+      ReorientML::set_model(
+          Model(load_resource<float>(hinstDLL, REORIENT_ML_MODEL)));
       // clang-format on
       break;
     }

@@ -100,7 +100,7 @@ int main(int argc, char** argv) {
           vec3 destination = waypoints[which].pos;
           vec3 direction = waypoints[which].tangent;
 
-          Curve path = nav.navmesh_path_to(destination, direction, 150.0f);
+          Curve path = nav.path_to(destination, direction, 150.0f);
           float arrival_time = g.time + waypoints[which].time;
           float arrival_speed = 1000.0f;
 

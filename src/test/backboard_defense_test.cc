@@ -93,7 +93,7 @@ int main(int argc, char** argv) {
 
               vec3 direction = vec3{1.0, 0, 0.0};
               vec3 destination = prediction.position - 75.0f * direction;
-              Curve path = nav.navmesh_path_to(destination, direction, 150.0f);
+              Curve path = nav.path_to(destination, direction, 150.0f);
 
               float arrival_time = prediction.time + 0.03f;
               float arrival_speed = 1600.0;

@@ -10,14 +10,14 @@
 #include "misc/io.h"
 #include "misc/timer.h"
 
-float Navigator::scale = -1.0f;
-int Navigator::nx = -1;
-int Navigator::ntheta = -1;
-int Navigator::nv = -1;
+//float Navigator::scale = -1.0f;
+//int Navigator::nx = -1;
+int Navigator::ntheta = 16;
+//int Navigator::nv = -1;
 
-std::array < int, 3 > Navigator::strides;
-std::vector < float > Navigator::LUT_times;
-std::vector < uint32_t > Navigator::LUT_paths;
+//std::array < int, 3 > Navigator::strides;
+//std::vector < float > Navigator::LUT_times;
+//std::vector < uint32_t > Navigator::LUT_paths;
 
 Graph Navigator::navigation_graph;
 std::vector < vec3 > Navigator::navigation_nodes;
@@ -28,15 +28,14 @@ std::vector < vec3 > Navigator::directions;
 void Navigator::init_statics(
     std::vector< Graph::edge > nav_edges,
     std::vector< vec3 > nav_nodes,
-    std::vector< vec3 > nav_normals,
-    std::vector< int > parameters,
-    std::vector< float > times,
-    std::vector< uint32_t > paths) {
+    std::vector< vec3 > nav_normals) {
 
-  scale = float(parameters[0]);
-  nx = parameters[1];
-  ntheta = parameters[2];
-  nv = parameters[3];
+  //scale = float(parameters[0]);
+  //nx = parameters[1];
+  //ntheta = parameters[2];
+  //nv = parameters[3];
+  //
+  //strides = {nv * ntheta * (2 * nx + 1), nv * ntheta, nv};
 
   navigation_graph = Graph(nav_edges);
 
@@ -58,10 +57,6 @@ void Navigator::init_statics(
     }
   };
 
-  strides = {nv * ntheta * (2 * nx + 1), nv * ntheta, nv};
-
-  LUT_times = times;
-  LUT_paths = paths;
 }
 
 Navigator::Navigator(Car & c) : car(c) {
@@ -133,14 +128,6 @@ void Navigator::analyze_surroundings(float time_budget) {
 }
 
 Curve Navigator::path_to(vec3 destination, vec3 tangent, float offset) {
-  if (fmaxf(car.position[2], destination[2]) < 50.0f) {
-    return lut_path_to(destination, tangent, offset);
-  } else {
-    return navmesh_path_to(destination, tangent, offset);
-  }
-}
-
-Curve Navigator::navmesh_path_to(vec3 destination, vec3 tangent, float offset) {
 
   vec3 unit_tangent = normalize(tangent);
 
@@ -223,87 +210,87 @@ Curve Navigator::navmesh_path_to(vec3 destination, vec3 tangent, float offset) {
 
 }
 
-Curve Navigator::lut_path_to(vec3 destination, vec3 tangent, float offset) {
-
-  const float k = ntheta / 6.28318530f;
-  const vec3 n = vec3{0.0f, 0.0f, 1.0f};
-
-  vec3 unit_tangent = normalize(tangent);
-  mat3 orientation = look_at(xy(car.forward()), n);
-
-  vec3 destination_local = dot(destination - offset * unit_tangent - car.position, orientation);
-  vec3 tangent_local;
-
-  int x = clip(int(roundf(destination_local[0] / scale)), -nx, nx);
-  int y = clip(int(roundf(destination_local[1] / scale)), -nx, nx);
-
-  tangent_local = dot(unit_tangent, orientation);
-  float angle = atan2(tangent_local[1], tangent_local[0]);
-  int theta = int(roundf(k * angle));
-  if (theta < 0) theta += ntheta;
-
-  int v = -1;
-  int v_min = 0;
-  int v_max = nv-1;
-
-  // TODO 
-  // TODO 
-  float speed = 1400.0f;
-  // TODO 
-  // TODO 
-
-  if (isnormal(speed)) {
-    v_min = clip(int(floor(speed / 100.0f)), 0, nv-1);
-  }
-
-  float best_time = 1.0e10f;
-
-  const std::vector < float > & times = LUT_times;
-  const std::vector < uint32_t > & paths = LUT_paths;
-  for (int u = v_min; u <= v_max; u++) {
-    if (times[to_id(x, y, theta, u)] < best_time) {
-      best_time = times[to_id(x, y, theta, u)];
-      v = u;
-    }
-  }
-
-  std::vector < ControlPoint > ctrl_pts;
-
-  for (int i = 0; i < 32; i++) {
-
-    vec3 p = dot(orientation, vec3{x * scale, y * scale, 0.0f}) + car.position;
-    vec3 t = dot(orientation, directions[theta]);
-
-    if (i == 0) {
-      p = destination;
-      t = tangent;
-    }
-
-    ctrl_pts.push_back(ControlPoint{p, t, n});
-
-    std::tie(x, y, theta, v) = from_id(paths[to_id(x, y, theta, v)]);
-
-    if (x == 0 && y == 0 && theta == 0) break;
-
-  }
-  ctrl_pts.push_back(ControlPoint{car.position, car.forward(), n});
-
-  std::reverse(ctrl_pts.begin(), ctrl_pts.end());
-
-  ctrl_pts.push_back(ControlPoint{destination, unit_tangent, n});
-
-  return Curve(ctrl_pts);
-
-};
-
-uint32_t Navigator::to_id(int x, int y, int theta, int v) {
-  return (x + nx) * strides[0] + (y + nx) * strides[1] + theta * strides[2] + v;
-}
-
-std::tuple < int, int, int, int > Navigator::from_id(uint32_t id) {
-  int16_t x     = int16_t((id / strides[0]) - nx); id %= strides[0];
-  int16_t y     = int16_t((id / strides[1]) - nx); id %= strides[1];
-  int16_t theta = int16_t(id / strides[2]);        id %= strides[2];
-  int16_t v     = int16_t(id);
-  return std::make_tuple(x, y, theta, v);
-}
+//Curve Navigator::lut_path_to(vec3 destination, vec3 tangent, float offset) {
+//
+//  const float k = ntheta / 6.28318530f;
+//  const vec3 n = vec3{0.0f, 0.0f, 1.0f};
+//
+//  vec3 unit_tangent = normalize(tangent);
+//  mat3 orientation = look_at(xy(car.forward()), n);
+//
+//  vec3 destination_local = dot(destination - offset * unit_tangent - car.position, orientation);
+//  vec3 tangent_local;
+//
+//  int x = clip(int(roundf(destination_local[0] / scale)), -nx, nx);
+//  int y = clip(int(roundf(destination_local[1] / scale)), -nx, nx);
+//
+//  tangent_local = dot(unit_tangent, orientation);
+//  float angle = atan2(tangent_local[1], tangent_local[0]);
+//  int theta = int(roundf(k * angle));
+//  if (theta < 0) theta += ntheta;
+//
+//  int v = -1;
+//  int v_min = 0;
+//  int v_max = nv-1;
+//
+//  // TODO 
+//  // TODO 
+//  float speed = 1400.0f;
+//  // TODO 
+//  // TODO 
+//
+//  if (isnormal(speed)) {
+//    v_min = clip(int(floor(speed / 100.0f)), 0, nv-1);
+//  }
+//
+//  float best_time = 1.0e10f;
+//
+//  const std::vector < float > & times = LUT_times;
+//  const std::vector < uint32_t > & paths = LUT_paths;
+//  for (int u = v_min; u <= v_max; u++) {
+//    if (times[to_id(x, y, theta, u)] < best_time) {
+//      best_time = times[to_id(x, y, theta, u)];
+//      v = u;
+//    }
+//  }
+//
+//  std::vector < ControlPoint > ctrl_pts;
+//
+//  for (int i = 0; i < 32; i++) {
+//
+//    vec3 p = dot(orientation, vec3{x * scale, y * scale, 0.0f}) + car.position;
+//    vec3 t = dot(orientation, directions[theta]);
+//
+//    if (i == 0) {
+//      p = destination;
+//      t = tangent;
+//    }
+//
+//    ctrl_pts.push_back(ControlPoint{p, t, n});
+//
+//    std::tie(x, y, theta, v) = from_id(paths[to_id(x, y, theta, v)]);
+//
+//    if (x == 0 && y == 0 && theta == 0) break;
+//
+//  }
+//  ctrl_pts.push_back(ControlPoint{car.position, car.forward(), n});
+//
+//  std::reverse(ctrl_pts.begin(), ctrl_pts.end());
+//
+//  ctrl_pts.push_back(ControlPoint{destination, unit_tangent, n});
+//
+//  return Curve(ctrl_pts);
+//
+//};
+//
+//uint32_t Navigator::to_id(int x, int y, int theta, int v) {
+//  return (x + nx) * strides[0] + (y + nx) * strides[1] + theta * strides[2] + v;
+//}
+//
+//std::tuple < int, int, int, int > Navigator::from_id(uint32_t id) {
+//  int16_t x     = int16_t((id / strides[0]) - nx); id %= strides[0];
+//  int16_t y     = int16_t((id / strides[1]) - nx); id %= strides[1];
+//  int16_t theta = int16_t(id / strides[2]);        id %= strides[2];
+//  int16_t v     = int16_t(id);
+//  return std::make_tuple(x, y, theta, v);
+//}

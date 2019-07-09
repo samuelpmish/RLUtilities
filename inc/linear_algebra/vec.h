@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <iostream>
+#include <algorithm>
 #include <initializer_list>
 
 template <int n>
@@ -195,6 +196,24 @@ std::ostream& operator<<(std::ostream& os, const vec<d>& v) {
     if (i != d-1) os << ", ";
   }
   return os;
+}
+
+template <int n>
+inline vec<n> relu(const vec<n>& v) {
+  vec<n> u;
+  for (int i = 0; i < n; i++) {
+    u(i) = std::max(v(i), 0.f);
+  }
+  return u;
+}
+
+template <int n>
+inline vec<n> clamp(const vec<n>& v, const float min_value, const float max_value) {
+  vec<n> u;
+  for (int i = 0; i < n; i++) {
+    u(i) = std::clamp(v(i), min_value, max_value);
+  }
+  return u;
 }
 
 typedef vec<2> vec2;

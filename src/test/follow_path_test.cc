@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
     vec3 tangent = vec3{input["tangent"][0], input["tangent"][1], input["tangent"][2]};
     float offset = input["offset"];
 
-    Curve path = nav.navmesh_path_to(destination, tangent, offset);
+    Curve path = nav.path_to(destination, tangent, offset);
 
     FollowPath follow(g.cars[0]);
 

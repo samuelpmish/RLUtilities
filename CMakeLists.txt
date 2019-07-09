@@ -29,6 +29,7 @@ set(rlu_sources
   ${PROJECT_SOURCE_DIR}/src/mechanics/dodge.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/aerial.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/reorient.cc
+  ${PROJECT_SOURCE_DIR}/src/mechanics/reorient_ML.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/wavedash.cc
   ${PROJECT_SOURCE_DIR}/src/mechanics/boostdash.cc
 
@@ -138,6 +139,7 @@ if (TARGET_LANGUAGE STREQUAL "python" OR TARGET_LANGUAGE STREQUAL "both")
     ${PROJECT_SOURCE_DIR}/src/mechanics/drive_pybind11.cc
     ${PROJECT_SOURCE_DIR}/src/mechanics/aerial_pybind11.cc
     ${PROJECT_SOURCE_DIR}/src/mechanics/reorient_pybind11.cc
+    ${PROJECT_SOURCE_DIR}/src/mechanics/reorient_ML_pybind11.cc
     ${PROJECT_SOURCE_DIR}/src/mechanics/wavedash_pybind11.cc
     ${PROJECT_SOURCE_DIR}/src/mechanics/boostdash_pybind11.cc
 
