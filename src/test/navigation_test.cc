@@ -41,7 +41,7 @@ int main(int argc, char** argv) {
   Color blue{0, 0, 255, 255};
 
   Renderer r(1);
-  Game g(0, 0);
+  Game g;
   Game::set_mode(std::string("soccar"));
 
   Navigator nav(g.cars[0]);

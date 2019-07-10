@@ -12,11 +12,12 @@ class Dodge {
  public:
   Car & car;
 
-  vec2 target_direction;
+  vec2 direction;
   float jump_duration;
   float delay;
 
   mat3 preorientation;
+  mat3 postorientation;
 
   bool finished;
   Input controls;

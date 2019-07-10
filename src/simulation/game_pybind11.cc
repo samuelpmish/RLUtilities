@@ -54,11 +54,10 @@ void Game::read_game_information(pybind11::object gametick,
       pybind11::object rigidbody_physics = players[i].attr("state");
       pybind11::object inputs = players[i].attr("input");
 
-      cars[i].x = vector3_to_vec3(gametick_physics.attr("location"));
-      cars[i].v = vector3_to_vec3(gametick_physics.attr("velocity"));
-      cars[i].w = vector3_to_vec3(gametick_physics.attr("angular_velocity"));
-      cars[i].o = rotator_to_mat3(gametick_physics.attr("rotation"));
-      cars[i].o_dodge = rotation(gametick_physics.attr("rotation").attr("yaw").cast<float>());
+      cars[i].position = vector3_to_vec3(gametick_physics.attr("location"));
+      cars[i].velocity = vector3_to_vec3(gametick_physics.attr("velocity"));
+      cars[i].angular_velocity = vector3_to_vec3(gametick_physics.attr("angular_velocity"));
+      cars[i].orientation = rotator_to_mat3(gametick_physics.attr("rotation"));
 
       // other car data
       cars[i].boost = game_car.attr("boost").cast<int>();
@@ -83,9 +82,9 @@ void Game::read_game_information(pybind11::object gametick,
 
     pybind11::object physics = gametick.attr("game_ball").attr("physics");
 
-    ball.x = vector3_to_vec3(physics.attr("location"));
-    ball.v = vector3_to_vec3(physics.attr("velocity"));
-    ball.w = vector3_to_vec3(physics.attr("angular_velocity"));
+    ball.position = vector3_to_vec3(physics.attr("location"));
+    ball.velocity = vector3_to_vec3(physics.attr("velocity"));
+    ball.angular_velocity = vector3_to_vec3(physics.attr("angular_velocity"));
 
     ball.time = time;
 
@@ -105,7 +104,7 @@ void Game::read_game_information(pybind11::object gametick,
         pybind11::object boost_pad = boost_pads[i];
         pybind11::object game_boost = game_boosts[i];
   
-        pads[i].location = vector3_to_vec3(boost_pads[i].attr("location"));
+        pads[i].position = vector3_to_vec3(boost_pads[i].attr("location"));
         pads[i].is_full_boost = boost_pad.attr("is_full_boost").cast<bool>();
         pads[i].is_active = game_boost.attr("is_active").cast<bool>();
         pads[i].timer = game_boost.attr("timer").cast<float>();
@@ -119,9 +118,7 @@ void Game::read_game_information(pybind11::object gametick,
 
 void init_game(pybind11::module & m) {
 	pybind11::class_<Game>(m, "Game")
-		.def(pybind11::init<int, int>())
-		.def_readwrite("id", &Game::id)
-		.def_readwrite("team", &Game::team)
+		.def(pybind11::init())
 		.def_readwrite("time", &Game::time)
 		.def_readwrite("time_delta", &Game::time_delta)
 		.def_readwrite("time_remaining", &Game::time_remaining)
@@ -133,7 +130,6 @@ void init_game(pybind11::module & m) {
 		.def_readwrite("kickoff_pause", &Game::kickoff_pause)
 		.def_readwrite("match_ended", &Game::match_ended)
 		.def_readwrite("ball", &Game::ball)
-		.def_readwrite("my_car", &Game::my_car)
 		.def_readwrite("cars", &Game::cars)
 		.def_readonly("pads", &Game::pads)
     .def_readonly_static("map", &Game::map)
@@ -141,5 +137,4 @@ void init_game(pybind11::module & m) {
     .def_readonly_static("frametime", &Game::frametime)
     .def_static("set_mode", &Game::set_mode)
     .def("read_game_information", &Game::read_game_information);
-//    .def("log", &Game::log);
 }

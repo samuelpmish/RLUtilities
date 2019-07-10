@@ -15,13 +15,10 @@ void init_car(pybind11::module & m) {
 		.def_readwrite("time", &Car::time)
 		.def_readwrite("id", &Car::id)
 		.def_readwrite("team", &Car::team)
-		.def_readwrite("location", &Car::x)
-		.def_readwrite("velocity", &Car::v)
-		.def_readwrite("angular_velocity", &Car::w)
-		.def_readwrite("rotation", &Car::o)
-		.def_readwrite("dodge_rotation", &Car::o_dodge)
-		.def_readwrite("rotator", &Car::rotator)
-		.def_readwrite("quaternion", &Car::q)
+		.def_readwrite("position", &Car::position)
+		.def_readwrite("velocity", &Car::velocity)
+		.def_readwrite("angular_velocity", &Car::angular_velocity)
+		.def_readwrite("orientation", &Car::orientation)
 		.def_readwrite("supersonic", &Car::supersonic)
 		.def_readwrite("jumped", &Car::jumped)
 		.def_readwrite("double_jumped", &Car::double_jumped)
@@ -40,6 +37,7 @@ void init_car(pybind11::module & m) {
 		.def_readwrite("throttle", &Input::throttle)
 		.def_readwrite("jump", &Input::jump)
 		.def_readwrite("boost", &Input::boost)
-		.def_readwrite("handbrake", &Input::handbrake);
+		.def_readwrite("handbrake", &Input::handbrake)
+		.def_readwrite("useItem", &Input::useItem);
 }
 #endif

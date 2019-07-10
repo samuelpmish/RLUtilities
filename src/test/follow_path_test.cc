@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
 
     infile >> input;
   
-    Game g(0, 0);
+    Game g;
     Game::set_mode(std::string("soccar"));
   
     g.time = 0.0f;

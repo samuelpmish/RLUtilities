@@ -19,12 +19,7 @@ float Game::frametime = 1.0f / 120.0f;
 std::string Game::map = "map_not_set";
 std::string Game::mode = "mode_not_set";
 
-Game::Game(int my_id, int my_team) {
-  id = my_id;
-  team = my_team;
-
-  my_car = &cars[id];
-
+Game::Game() {
   frame = -1;
   frame_delta = -1;
 
@@ -177,7 +172,6 @@ void Game::read_flatbuffer_packet(
     cars[i].velocity = vector3_to_vec3(car->physics()->velocity());
     cars[i].angular_velocity = vector3_to_vec3(car->physics()->angularVelocity());
     cars[i].orientation = rotator_to_mat3(car->physics()->rotation());
-    cars[i].o_dodge = rotation(car->physics()->rotation()->yaw());
 
     // other car data
     cars[i].boost = car->boost();
@@ -210,7 +204,7 @@ void Game::read_flatbuffer_packet(
       auto boost_pad = fieldInfo->boostPads()->Get(i);
       auto game_boost = gameTickPacket->boostPadStates()->Get(i);
 
-      pads[i].location = vector3_to_vec3(boost_pad->location());
+      pads[i].position = vector3_to_vec3(boost_pad->location());
       pads[i].is_full_boost = boost_pad->isFullBoost();
       pads[i].is_active = game_boost->isActive();
       pads[i].timer = game_boost->timer();

@@ -1,4 +1,4 @@
-#include "mechanics/follow_path.h"
+#include "experimental/follow_path.h"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 void init_followpath(pybind11::module & m) {
@@ -9,7 +9,5 @@ void init_followpath(pybind11::module & m) {
     .def_readwrite("path", &FollowPath::path)
     .def_readonly("finished", &FollowPath::finished)
     .def_readonly("controls", &FollowPath::controls)
-    .def_readwrite("expected_error", &FollowPath::expected_error)
-    .def_readwrite("expected_speed", &FollowPath::expected_speed)
     .def("step", &FollowPath::step);
 }

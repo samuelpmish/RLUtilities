@@ -111,6 +111,8 @@ struct MutatorSettings;
 
 struct MatchSettings;
 
+struct QuickChatMessages;
+
 enum TileState {
   TileState_Unknown = 0  /// The default state of the tiles.
 ,
@@ -1034,11 +1036,12 @@ enum RumbleOption {
   RumbleOption_Destruction_Derby = 4,
   RumbleOption_Spring_Loaded = 5,
   RumbleOption_Spikes_Only = 6,
+  RumbleOption_Spike_Rush = 7,
   RumbleOption_MIN = RumbleOption_None,
-  RumbleOption_MAX = RumbleOption_Spikes_Only
+  RumbleOption_MAX = RumbleOption_Spike_Rush
 };
 
-inline const RumbleOption (&EnumValuesRumbleOption())[7] {
+inline const RumbleOption (&EnumValuesRumbleOption())[8] {
   static const RumbleOption values[] = {
     RumbleOption_None,
     RumbleOption_Default,
@@ -1046,7 +1049,8 @@ inline const RumbleOption (&EnumValuesRumbleOption())[7] {
     RumbleOption_Civilized,
     RumbleOption_Destruction_Derby,
     RumbleOption_Spring_Loaded,
-    RumbleOption_Spikes_Only
+    RumbleOption_Spikes_Only,
+    RumbleOption_Spike_Rush
   };
   return values;
 }
@@ -1060,6 +1064,7 @@ inline const char * const *EnumNamesRumbleOption() {
     "Destruction_Derby",
     "Spring_Loaded",
     "Spikes_Only",
+    "Spike_Rush",
     nullptr
   };
   return names;
@@ -1382,7 +1387,8 @@ struct ControllerState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
     VT_ROLL = 12,
     VT_JUMP = 14,
     VT_BOOST = 16,
-    VT_HANDBRAKE = 18
+    VT_HANDBRAKE = 18,
+    VT_USEITEM = 20
   };
   /// -1 for full reverse, 1 for full forward
   float throttle() const {
@@ -1416,6 +1422,10 @@ struct ControllerState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool handbrake() const {
     return GetField<uint8_t>(VT_HANDBRAKE, 0) != 0;
   }
+  /// true if you want to press the 'use item' button, used in rumble etc.
+  bool useItem() const {
+    return GetField<uint8_t>(VT_USEITEM, 0) != 0;
+  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<float>(verifier, VT_THROTTLE) &&
@@ -1426,6 +1436,7 @@ struct ControllerState FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
            VerifyField<uint8_t>(verifier, VT_JUMP) &&
            VerifyField<uint8_t>(verifier, VT_BOOST) &&
            VerifyField<uint8_t>(verifier, VT_HANDBRAKE) &&
+           VerifyField<uint8_t>(verifier, VT_USEITEM) &&
            verifier.EndTable();
   }
 };
@@ -1457,6 +1468,9 @@ struct ControllerStateBuilder {
   void add_handbrake(bool handbrake) {
     fbb_.AddElement<uint8_t>(ControllerState::VT_HANDBRAKE, static_cast<uint8_t>(handbrake), 0);
   }
+  void add_useItem(bool useItem) {
+    fbb_.AddElement<uint8_t>(ControllerState::VT_USEITEM, static_cast<uint8_t>(useItem), 0);
+  }
   explicit ControllerStateBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
     start_ = fbb_.StartTable();
@@ -1478,13 +1492,15 @@ inline flatbuffers::Offset<ControllerState> CreateControllerState(
     float roll = 0.0f,
     bool jump = false,
     bool boost = false,
-    bool handbrake = false) {
+    bool handbrake = false,
+    bool useItem = false) {
   ControllerStateBuilder builder_(_fbb);
   builder_.add_roll(roll);
   builder_.add_yaw(yaw);
   builder_.add_pitch(pitch);
   builder_.add_steer(steer);
   builder_.add_throttle(throttle);
+  builder_.add_useItem(useItem);
   builder_.add_handbrake(handbrake);
   builder_.add_boost(boost);
   builder_.add_jump(jump);
@@ -3679,7 +3695,9 @@ struct QuickChat FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   enum {
     VT_QUICKCHATSELECTION = 4,
     VT_PLAYERINDEX = 6,
-    VT_TEAMONLY = 8
+    VT_TEAMONLY = 8,
+    VT_MESSAGEINDEX = 10,
+    VT_TIMESTAMP = 12
   };
   QuickChatSelection quickChatSelection() const {
     return static_cast<QuickChatSelection>(GetField<int8_t>(VT_QUICKCHATSELECTION, 0));
@@ -3692,11 +3710,19 @@ struct QuickChat FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
   bool teamOnly() const {
     return GetField<uint8_t>(VT_TEAMONLY, 0) != 0;
   }
+  int32_t messageIndex() const {
+    return GetField<int32_t>(VT_MESSAGEINDEX, 0);
+  }
+  float timeStamp() const {
+    return GetField<float>(VT_TIMESTAMP, 0.0f);
+  }
   bool Verify(flatbuffers::Verifier &verifier) const {
     return VerifyTableStart(verifier) &&
            VerifyField<int8_t>(verifier, VT_QUICKCHATSELECTION) &&
            VerifyField<int32_t>(verifier, VT_PLAYERINDEX) &&
            VerifyField<uint8_t>(verifier, VT_TEAMONLY) &&
+           VerifyField<int32_t>(verifier, VT_MESSAGEINDEX) &&
+           VerifyField<float>(verifier, VT_TIMESTAMP) &&
            verifier.EndTable();
   }
 };
@@ -3712,6 +3738,12 @@ struct QuickChatBuilder {
   }
   void add_teamOnly(bool teamOnly) {
     fbb_.AddElement<uint8_t>(QuickChat::VT_TEAMONLY, static_cast<uint8_t>(teamOnly), 0);
+  }
+  void add_messageIndex(int32_t messageIndex) {
+    fbb_.AddElement<int32_t>(QuickChat::VT_MESSAGEINDEX, messageIndex, 0);
+  }
+  void add_timeStamp(float timeStamp) {
+    fbb_.AddElement<float>(QuickChat::VT_TIMESTAMP, timeStamp, 0.0f);
   }
   explicit QuickChatBuilder(flatbuffers::FlatBufferBuilder &_fbb)
         : fbb_(_fbb) {
@@ -3729,8 +3761,12 @@ inline flatbuffers::Offset<QuickChat> CreateQuickChat(
     flatbuffers::FlatBufferBuilder &_fbb,
     QuickChatSelection quickChatSelection = QuickChatSelection_Information_IGotIt,
     int32_t playerIndex = 0,
-    bool teamOnly = false) {
+    bool teamOnly = false,
+    int32_t messageIndex = 0,
+    float timeStamp = 0.0f) {
   QuickChatBuilder builder_(_fbb);
+  builder_.add_timeStamp(timeStamp);
+  builder_.add_messageIndex(messageIndex);
   builder_.add_playerIndex(playerIndex);
   builder_.add_teamOnly(teamOnly);
   builder_.add_quickChatSelection(quickChatSelection);
@@ -4912,6 +4948,56 @@ inline flatbuffers::Offset<MatchSettings> CreateMatchSettingsDirect(
       instantStart,
       mutatorSettings,
       existingMatchBehavior);
+}
+
+struct QuickChatMessages FLATBUFFERS_FINAL_CLASS : private flatbuffers::Table {
+  enum {
+    VT_MESSAGES = 4
+  };
+  const flatbuffers::Vector<flatbuffers::Offset<QuickChat>> *messages() const {
+    return GetPointer<const flatbuffers::Vector<flatbuffers::Offset<QuickChat>> *>(VT_MESSAGES);
+  }
+  bool Verify(flatbuffers::Verifier &verifier) const {
+    return VerifyTableStart(verifier) &&
+           VerifyOffset(verifier, VT_MESSAGES) &&
+           verifier.Verify(messages()) &&
+           verifier.VerifyVectorOfTables(messages()) &&
+           verifier.EndTable();
+  }
+};
+
+struct QuickChatMessagesBuilder {
+  flatbuffers::FlatBufferBuilder &fbb_;
+  flatbuffers::uoffset_t start_;
+  void add_messages(flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<QuickChat>>> messages) {
+    fbb_.AddOffset(QuickChatMessages::VT_MESSAGES, messages);
+  }
+  explicit QuickChatMessagesBuilder(flatbuffers::FlatBufferBuilder &_fbb)
+        : fbb_(_fbb) {
+    start_ = fbb_.StartTable();
+  }
+  QuickChatMessagesBuilder &operator=(const QuickChatMessagesBuilder &);
+  flatbuffers::Offset<QuickChatMessages> Finish() {
+    const auto end = fbb_.EndTable(start_);
+    auto o = flatbuffers::Offset<QuickChatMessages>(end);
+    return o;
+  }
+};
+
+inline flatbuffers::Offset<QuickChatMessages> CreateQuickChatMessages(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    flatbuffers::Offset<flatbuffers::Vector<flatbuffers::Offset<QuickChat>>> messages = 0) {
+  QuickChatMessagesBuilder builder_(_fbb);
+  builder_.add_messages(messages);
+  return builder_.Finish();
+}
+
+inline flatbuffers::Offset<QuickChatMessages> CreateQuickChatMessagesDirect(
+    flatbuffers::FlatBufferBuilder &_fbb,
+    const std::vector<flatbuffers::Offset<QuickChat>> *messages = nullptr) {
+  return rlbot::flat::CreateQuickChatMessages(
+      _fbb,
+      messages ? _fbb.CreateVector<flatbuffers::Offset<QuickChat>>(*messages) : 0);
 }
 
 inline bool VerifyPlayerClass(flatbuffers::Verifier &verifier, const void *obj, PlayerClass type) {

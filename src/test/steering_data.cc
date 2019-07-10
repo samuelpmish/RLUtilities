@@ -1,7 +1,6 @@
 #include <fstream>
 #include <iostream>
 
-#include <Xinput.h>
 #include <Windows.h>
 
 #include "misc/timer.h"
@@ -30,7 +29,7 @@ int main(int argc, char** argv) {
 
   timer stopwatch;
   stopwatch.start();
-  Game g(0, 0);
+  Game g;
 
   Drive d(g.cars[0]);
 

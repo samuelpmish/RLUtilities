@@ -4,10 +4,9 @@
 void init_dodge(pybind11::module & m) {
 	pybind11::class_<Dodge>(m, "Dodge")
 		.def(pybind11::init<Car &>())
-		.def_readwrite("target", &Dodge::target)
 		.def_readwrite("direction", &Dodge::direction)
 		.def_readwrite("preorientation", &Dodge::preorientation)
-		.def_readwrite("duration", &Dodge::duration)
+		.def_readwrite("jump_duration", &Dodge::jump_duration)
 		.def_readwrite("delay", &Dodge::delay)
 		.def_readonly("timer", &Dodge::timer)
 		.def_readonly("finished", &Dodge::finished)

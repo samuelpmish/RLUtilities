@@ -14,12 +14,12 @@ Wavedash::Wavedash(Car & c) : car(c), dodge(c), reorient(c) {
 
 void Wavedash::step(float dt) {
 
-  target_direction = normalize(target_direction);
+  direction = normalize(direction);
 
-	dodge.target_direction = target_direction;
+	dodge.direction = direction;
 	dodge.step(dt);
 
-	reorient.target_orientation = look_at(vec3(target_direction) + vec3{ 0.0, 0.0, 0.4f });
+	reorient.target_orientation = look_at(vec3(direction) + vec3{ 0.0, 0.0, 0.4f });
 	reorient.step(dt);
 
 	controls.jump = dodge.controls.jump;

@@ -95,16 +95,13 @@ nlohmann::json to_json(Input i) {
 
 nlohmann::json to_json(Dodge d) {
 
-  vec2 _direction = d.target_direction;
-  mat3 _preorientation = d.preorientation;
-  float _duration = d.jump_duration;
-  float _delay = d.delay;
-
   nlohmann::json obj;
   obj["type"] = "Dodge";
-  obj["direction"] = _direction;
-  obj["preorientation"] = _preorientation;
-  obj["jump_duration"] = _duration;
+  obj["direction"] = d.direction;
+  obj["preorientation"] = d.preorientation;
+  obj["postorientation"] = d.postorientation;
+  obj["jump_duration"] = d.jump_duration;
+  obj["delay"] = d.delay;
   obj["timer"] = d.timer;
   obj["finished"] = d.finished;
   return obj;

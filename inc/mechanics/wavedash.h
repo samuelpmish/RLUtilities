@@ -17,7 +17,7 @@ class Wavedash {
 
   Car & car;
 
-  vec2 target_direction;
+  vec2 direction;
 
   Input controls;
   bool finished;

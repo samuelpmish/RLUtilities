@@ -9,6 +9,7 @@ struct Input {
   bool jump;
   bool boost;
   bool handbrake;
+  bool useItem;
 
   Input() {
     steer = 0.0;
@@ -19,5 +20,6 @@ struct Input {
     jump = false;
     boost = false;
     handbrake = false;
+	  useItem = false;
   }
 };

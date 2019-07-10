@@ -4,7 +4,7 @@
 
 class Pad {
  public:
-  vec3 location;
+  vec3 position;
   bool is_active;
   bool is_full_boost;
   float timer;

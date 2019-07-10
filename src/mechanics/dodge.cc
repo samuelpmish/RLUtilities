@@ -16,7 +16,7 @@ const float Dodge::forward_torque = 224.0f;
 
 Dodge::Dodge(Car & c) : car(c), reorient(c) {
 
-	target_direction = vec2{0.0f, 0.0f};
+	direction = vec2{0.0f, 0.0f};
   jump_duration = 0.15f;
 
   preorientation = mat3(0.0f);
@@ -42,11 +42,11 @@ void Dodge::step(float dt) {
 
 	if (car.time >= delay && !car.double_jumped && !car.on_ground) {
 
-		if (norm(target_direction) > 0.0f) {
+		if (norm(direction) > 0.0f) {
 
       vec3 f = car.forward();
       mat2 orientation_xy = rotation(atan2(f[1], f[0]));
-			vec2 direction_local = dot(normalize(target_direction), orientation_xy);
+			vec2 direction_local = dot(normalize(direction), orientation_xy);
 
 			float vf = dot(car.velocity, car.forward());
 			float s = fabs(vf) / 2300.0f;
@@ -101,7 +101,7 @@ Car Dodge::simulate() {
 	// make a copy of the car's state and get a pointer to it
 	Car car_copy = Car(car);
 	Dodge copy = Dodge(car_copy);
-	copy.target_direction = target_direction;
+	copy.direction = direction;
 	copy.jump_duration = jump_duration;
   copy.delay = delay;
 	copy.preorientation = preorientation;

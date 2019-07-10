@@ -17,15 +17,15 @@ Boostdash::Boostdash(Car & c) : car(c), dodge(c), reorient(c) {
 
 void Boostdash::step(float dt) {
 
-	vec3 direction = normalize(car.velocity);
-	dodge.target_direction = xy(direction);
+	vec2 direction = normalize(xy(car.velocity));
+	dodge.direction = direction;
 	dodge.step(dt);
 
 	if (timer < turn_up) {
-		reorient.target_orientation = look_at(xy(direction) - vec3{0.0, 0.0, 0.6f});
+		reorient.target_orientation = look_at(vec3(direction) - vec3{0.0, 0.0, 0.6f});
 	}
 	else {
-		reorient.target_orientation = look_at(xy(direction) + vec3{0.0, 0.0, 0.6f});
+		reorient.target_orientation = look_at(vec3(direction) + vec3{0.0, 0.0, 0.6f});
 	}
 	reorient.step(dt);
 

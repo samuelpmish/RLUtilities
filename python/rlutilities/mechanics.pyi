@@ -6,12 +6,13 @@ _Shape = Tuple[int, ...]
 import rlutilities.simulation
 __all__  = [
 "Aerial",
-"AerialTurn",
 "Boostdash",
 "Dodge",
 "Drive",
 "FollowPath",
 "Jump",
+"Reorient",
+"ReorientML",
 "Wavedash"
 ]
 class Aerial():
@@ -34,10 +35,6 @@ class Aerial():
         pass
     
     @property
-    def boost_estimate(self) -> float:
-        pass
-    
-    @property
     def controls(self) -> rlutilities.simulation.Input:
         pass
     
@@ -50,11 +47,11 @@ class Aerial():
         pass
     
     @property
-    def target(self) -> vec3:
+    def target_orientation(self) -> mat3:
         pass
     
     @property
-    def target_orientation(self) -> Optional[mat3]:
+    def target_position(self) -> vec3:
         pass
     
     @property
@@ -63,45 +60,6 @@ class Aerial():
     
     @property
     def up(self) -> vec3:
-        pass
-    
-    @property
-    def velocity_estimate(self) -> vec3:
-        pass
-    
-    pass
-class AerialTurn():
-
-    def __init__(self, arg0: rlutilities.simulation.Car) -> None: ...
-    def simulate(self) -> rlutilities.simulation.Car: ...
-    def step(self, arg0: float) -> None: ...
-
-    @property
-    def alpha(self) -> vec3:
-        pass
-    
-    @property
-    def controls(self) -> rlutilities.simulation.Input:
-        pass
-    
-    @property
-    def eps_omega(self) -> float:
-        pass
-    
-    @property
-    def eps_phi(self) -> float:
-        pass
-    
-    @property
-    def finished(self) -> bool:
-        pass
-    
-    @property
-    def horizon_time(self) -> float:
-        pass
-    
-    @property
-    def target(self) -> mat3:
         pass
     
     pass
@@ -123,7 +81,7 @@ class Dodge():
     forward_torque = 224.0
     input_threshold = 0.5
     side_torque = 260.0
-    timeout = 1.5
+    timeout = 1.25
     torque_time = 0.6499999761581421
     z_damping = 0.3499999940395355
     z_damping_end = 0.20999999344348907
@@ -138,15 +96,11 @@ class Dodge():
         pass
     
     @property
-    def delay(self) -> Optional[float]:
+    def delay(self) -> float:
         pass
     
     @property
-    def direction(self) -> Optional[vec2]:
-        pass
-    
-    @property
-    def duration(self) -> Optional[float]:
+    def direction(self) -> vec2:
         pass
     
     @property
@@ -154,11 +108,11 @@ class Dodge():
         pass
     
     @property
-    def preorientation(self) -> Optional[mat3]:
+    def jump_duration(self) -> float:
         pass
     
     @property
-    def target(self) -> Optional[vec3]:
+    def preorientation(self) -> mat3:
         pass
     
     @property
@@ -221,14 +175,6 @@ class FollowPath():
         pass
     
     @property
-    def expected_error(self) -> float:
-        pass
-    
-    @property
-    def expected_speed(self) -> float:
-        pass
-    
-    @property
     def finished(self) -> bool:
         pass
     
@@ -260,6 +206,64 @@ class Jump():
         pass
     
     pass
+class Reorient():
+
+    def __init__(self, arg0: rlutilities.simulation.Car) -> None: ...
+    def simulate(self) -> rlutilities.simulation.Car: ...
+    def step(self, arg0: float) -> None: ...
+
+    @property
+    def alpha(self) -> vec3:
+        pass
+    
+    @property
+    def controls(self) -> rlutilities.simulation.Input:
+        pass
+    
+    @property
+    def eps_omega(self) -> float:
+        pass
+    
+    @property
+    def eps_phi(self) -> float:
+        pass
+    
+    @property
+    def finished(self) -> bool:
+        pass
+    
+    @property
+    def horizon_time(self) -> float:
+        pass
+    
+    @property
+    def target_orientation(self) -> mat3:
+        pass
+    
+    pass
+class ReorientML():
+
+    def __init__(self, arg0: rlutilities.simulation.Car) -> None: ...
+    def simulate(self) -> rlutilities.simulation.Car: ...
+    def step(self, arg0: float) -> None: ...
+
+    @property
+    def controls(self) -> rlutilities.simulation.Input:
+        pass
+    
+    @property
+    def eps_phi(self) -> float:
+        pass
+    
+    @property
+    def finished(self) -> bool:
+        pass
+    
+    @property
+    def target_orientation(self) -> mat3:
+        pass
+    
+    pass
 class Wavedash():
 
     def __init__(self, arg0: rlutilities.simulation.Car) -> None: ...
@@ -270,7 +274,7 @@ class Wavedash():
         pass
     
     @property
-    def direction(self) -> Optional[vec2]:
+    def direction(self) -> vec2:
         pass
     
     @property

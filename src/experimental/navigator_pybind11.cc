@@ -1,4 +1,4 @@
-#include "simulation/navigator.h"
+#include "experimental/navigator.h"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 void init_navigator(pybind11::module & m) {
