@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <iostream>
+#include <algorithm>
 #include <initializer_list>
 
 template <int n>
