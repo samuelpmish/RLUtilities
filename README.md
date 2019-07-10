@@ -14,7 +14,7 @@ To build, you need a copy of 64 bit python 3.7 and a C++ compiler (assuming Wind
 Get a copy of the repo
 
 ```
-git clone https://github.com/samuelpmish/RLUtilities
+git clone https://github.com/samuelpmish/RLUtilities --recursive
 ```
 
 Run build.sh to build the C++ tools and/or python bindings
