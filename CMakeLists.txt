@@ -38,6 +38,7 @@ set(rlu_sources
   ${PROJECT_SOURCE_DIR}/src/misc/graph.cc
   ${PROJECT_SOURCE_DIR}/src/misc/random.cc
   ${PROJECT_SOURCE_DIR}/src/misc/logging.cc
+  ${PROJECT_SOURCE_DIR}/src/misc/rlurenderer.cc
 
   # experimental
   ${PROJECT_SOURCE_DIR}/src/experimental/navigator.cc
@@ -52,11 +53,13 @@ if (TARGET_LANGUAGE STREQUAL "cpp" OR TARGET_LANGUAGE STREQUAL "both")
 
   add_library(rlutilities_cpp SHARED 
     ${rlu_sources}
-
-    ${PROJECT_SOURCE_DIR}/src/rlbot/interface.cc
-    ${PROJECT_SOURCE_DIR}/src/rlbot/renderer.cc
-    ${PROJECT_SOURCE_DIR}/src/rlbot/statesetting.cc
   )
+
+  add_subdirectory(RLBotCPP)
+  target_include_directories(rlutilities_cpp PUBLIC RLBotCPP/inc)
+  target_include_directories(rlutilities_cpp PUBLIC RLBotCPP/lib/inc)
+  target_link_libraries(rlutilities_cpp PUBLIC RLBotCPP)
+
   target_include_directories(rlutilities_cpp PUBLIC inc)
   target_compile_features(rlutilities_cpp PUBLIC cxx_std_17)
   target_link_libraries(rlutilities_cpp PUBLIC Xinput)

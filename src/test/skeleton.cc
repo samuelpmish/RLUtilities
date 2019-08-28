@@ -1,25 +1,27 @@
 #include <iostream>
 
-#include "rlbot/bot.h"
-#include "rlbot/botmanager.h"
-#include "rlbot/examplebot.h"
-#include "rlbot/interface.h"
-#include "rlbot/rlbot_generated.h"
+#include "bot.h"
+#include "botmanager.h"
+#include "interface.h"
+#include "rlbot_generated.h"
+#include "platform.h"
+
+#include "simulation/game.h"
 
 int main(int argc, char** argv) {
 
   std::string interface_dll = std::string(DLLNAME);
 
   // establish our connection to the RLBot interface
-  Interface::LoadInterface(interface_dll);
+  rlbot::Interface::LoadInterface(interface_dll);
 
-  int code = Interface::StartMatch();
+  int code = rlbot::Interface::StartMatch(rlbot::MatchSettings());
 
   std::cout << "error code: " << code << std::endl;
 
   // wait for everything to be initialized
-  while (!Interface::IsInitialized()) {
-    Sleep(100);
+  while (!rlbot::Interface::IsInitialized()) {
+    rlbot::platform::SleepMilliseconds(100);
   }
 
   Game g;
@@ -33,10 +35,10 @@ int main(int argc, char** argv) {
 
     switch (status) {
       case UpdateStatus::OldData:
-        Sleep(1);
+        rlbot::platform::SleepMilliseconds(1);
         break;
       case UpdateStatus::InvalidData:
-        Sleep(100);
+        rlbot::platform::SleepMilliseconds(100);
         break;
       case UpdateStatus::NewData:
 
@@ -51,7 +53,7 @@ int main(int argc, char** argv) {
         controls.handbrake = 0;
         controls.useItem = 0;
 
-        int status = Interface::SetBotInput(controls, 0);
+        int status = rlbot::Interface::SetBotInput(controls.to_controller(), 0);
 
         if (count++ % 500 == 0) {
           Game desired = g;

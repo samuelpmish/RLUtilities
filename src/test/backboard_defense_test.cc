@@ -7,15 +7,17 @@
 
 #include "simulation/car.h"
 #include "simulation/field.h"
+#include "simulation/game.h"
 
 #include "experimental/navigator.h"
 #include "experimental/follow_path.h"
 
-#include "rlbot/renderer.h"
-#include "rlbot/interface.h"
-#include "rlbot/rlbot_generated.h"
+#include "misc/rlurenderer.h"
+#include "interface.h"
+#include "rlbot_generated.h"
+#include "platform.h"
 
-#include "rlbot/gamepad.h"
+#include "misc/gamepad.h"
 
 int main(int argc, char** argv) {
 
@@ -31,16 +33,15 @@ int main(int argc, char** argv) {
 
   // establish our connection to the RLBot interface
   std::cout << "Loading Interface...";
-  Interface::LoadInterface(std::string(DLLNAME));
+  rlbot::Interface::LoadInterface(std::string(DLLNAME));
   std::cout << "done" << std::endl;
 
-  int code = Interface::StartMatch();
+  int code = rlbot::Interface::StartMatch(rlbot::MatchSettings());
   std::cout << "StartMatch: " << code << std::endl;
 
-  Color red{255, 0, 0, 255};
-  Color blue{0, 0, 255, 255};
+  rlbot::Color red{255, 0, 0, 255};
+  rlbot::Color blue{0, 0, 255, 255};
 
-  Renderer r(1);
   Game g;
   Game::set_mode(std::string("soccar"));
 
@@ -56,10 +57,10 @@ int main(int argc, char** argv) {
 
     switch (status) {
       case UpdateStatus::OldData:
-        Sleep(1);
+        rlbot::platform::SleepMilliseconds(1);
         break;
       case UpdateStatus::InvalidData:
-        Sleep(100);
+        rlbot::platform::SleepMilliseconds(100);
         break;
       case UpdateStatus::NewData:
 
@@ -127,14 +128,13 @@ int main(int argc, char** argv) {
 
         outfile << output << std::endl;
 
-        r.Start();
+        RLURenderer r("test");
         r.DrawPolyLine3D(red, follow.path.points);
         r.DrawString2D(red, std::to_string(follow.arrival_time - g.time), vec2{100, 100}, 4, 4);
         r.DrawSphere(red, sphere{follow.path.point_at(expectation[0]), 50.0f});
         r.DrawSphere(blue, sphere{g.cars[0].position, 50.0f});
-        r.Finish();
 
-        int status = Interface::SetBotInput(follow.controls, 0);
+        int status = rlbot::Interface::SetBotInput(follow.controls.to_controller(), 0);
 
         if (follow.arrival_time - g.time < -1.5) {
           state = "setup";

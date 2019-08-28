@@ -1,30 +1,33 @@
 #include <iostream>
 #include <Windows.h>
 
-#include "rlbot/gamepad.h"
-#include "rlbot/renderer.h"
-#include "rlbot/interface.h"
-#include "rlbot/rlbot_generated.h"
+#include "misc/gamepad.h"
+#include "platform.h"
+#include "interface.h"
+#include "rlbot_generated.h"
+
+#include "misc/rlurenderer.h"
+
+#include "simulation/game.h"
 
 int main(int argc, char** argv) {
 
   std::string interface_dll = std::string(DLLNAME);
 
   // establish our connection to the RLBot interface
-  Interface::LoadInterface(interface_dll);
+  rlbot::Interface::LoadInterface(interface_dll);
 
-  int code = Interface::StartMatch();
+  int code = rlbot::Interface::StartMatch(rlbot::MatchSettings());
 
   std::cout << "error code: " << code << std::endl;
 
   Game g;
   g.set_mode("soccar");
 
-  Color red{255, 0, 0, 255};
-  Color green{0, 255, 0, 255};
-  Color blue{0, 0, 255, 255};
-  Color white{255, 255, 255, 255};
-  Renderer r(0);
+  rlbot::Color red{255, 0, 0, 255};
+  rlbot::Color green{0, 255, 0, 255};
+  rlbot::Color blue{0, 0, 255, 255};
+  rlbot::Color white{255, 255, 255, 255};
 
   while (true) {
 
@@ -33,14 +36,14 @@ int main(int argc, char** argv) {
 
     switch (status) {
       case UpdateStatus::OldData:
-        Sleep(1);
+        rlbot::platform::SleepMilliseconds(1);
         break;
       case UpdateStatus::InvalidData:
-        Sleep(100);
+        rlbot::platform::SleepMilliseconds(100);
         break;
       case UpdateStatus::NewData:
-        r.Start();
-        r.DrawSphere(Color::red(), sphere{g.ball.position, 100.0f});
+        RLURenderer r("test");
+        r.DrawSphere(red, sphere{g.ball.position, 100.0f});
         r.DrawOBB(blue, g.cars[0].hitbox());
         r.DrawString2D(green, std::string("2D text"), vec2{100, 100}, 4, 4);
         r.DrawString3D(green, std::string("3D text"), g.ball.position + vec3{0, 0, 200}, 4, 4);
@@ -52,8 +55,7 @@ int main(int argc, char** argv) {
           polyline.push_back(b.position);
         }
         r.DrawPolyLine3D(white, polyline);
-        r.Finish();
-        int status = Interface::SetBotInput(GamePad::GetOutput(), 0);
+        int status = rlbot::Interface::SetBotInput(GamePad::GetOutput().to_controller(), 0);
         break;
     }
   }

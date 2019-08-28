@@ -3,15 +3,18 @@
 
 #include "simulation/car.h"
 #include "simulation/field.h"
+#include "simulation/game.h"
 
 #include "experimental/navigator.h"
 #include "experimental/follow_path.h"
 
-#include "rlbot/renderer.h"
-#include "rlbot/interface.h"
-#include "rlbot/rlbot_generated.h"
+#include "interface.h"
+#include "rlbot_generated.h"
+#include "platform.h"
 
-#include "rlbot/gamepad.h"
+#include "misc/rlurenderer.h"
+#include "misc/gamepad.h"
+
 
 struct waypoint {
   vec3 pos;
@@ -22,13 +25,12 @@ struct waypoint {
 int main(int argc, char** argv) {
 
   // establish our connection to the RLBot interface
-  Interface::LoadInterface(std::string(DLLNAME));
+  rlbot::Interface::LoadInterface(std::string(DLLNAME));
 
-  int code = Interface::StartMatch();
+  int code = rlbot::Interface::StartMatch(rlbot::MatchSettings());
 
-  Color red{255, 0, 0, 255};
+  rlbot::Color red{255, 0, 0, 255};
 
-  Renderer r(1);
   Game g;
   Game::set_mode(std::string("soccar"));
 
@@ -57,10 +59,10 @@ int main(int argc, char** argv) {
 
     switch (status) {
       case UpdateStatus::OldData:
-        Sleep(1);
+        rlbot::platform::SleepMilliseconds(1);
         break;
       case UpdateStatus::InvalidData:
-        Sleep(100);
+        rlbot::platform::SleepMilliseconds(100);
         break;
       case UpdateStatus::NewData:
         if (which == -1 || norm(g.cars[0].position - waypoints[which].pos) < 50.0f) {
@@ -76,12 +78,11 @@ int main(int argc, char** argv) {
 
         follow.step(g.time_delta);
 
-        r.Start();
+        RLURenderer r("test");
         r.DrawPolyLine3D(red, follow.path.points);
         r.DrawString2D(red, std::to_string(follow.arrival_time - g.time), vec2{100, 100}, 4, 4);
-        r.Finish();
 
-        int status = Interface::SetBotInput(follow.controls, 0);
+        int status = rlbot::Interface::SetBotInput(follow.controls.to_controller(), 0);
         break;
     }
   }

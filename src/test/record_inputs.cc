@@ -6,10 +6,13 @@
 #include "misc/timer.h"
 #include "misc/logging.h"
 
-#include "rlbot/interface.h"
-#include "rlbot/rlbot_generated.h"
+#include "interface.h"
+#include "rlbot_generated.h"
+#include "platform.h"
 
-#include "rlbot/gamepad.h"
+#include "misc/gamepad.h"
+
+#include "simulation/game.h"
 
 int main(int argc, char** argv) {
 
@@ -24,9 +27,9 @@ int main(int argc, char** argv) {
   std::string interface_dll = std::string(DLLNAME);
 
   // establish our connection to the RLBot interface
-  Interface::LoadInterface(interface_dll);
+  rlbot::Interface::LoadInterface(interface_dll);
 
-  int code = Interface::StartMatch();
+  int code = rlbot::Interface::StartMatch(rlbot::MatchSettings());
 
   timer stopwatch;
   stopwatch.start();
@@ -39,10 +42,10 @@ int main(int argc, char** argv) {
 
     switch (status) {
       case UpdateStatus::OldData:
-        Sleep(1);
+        rlbot::platform::SleepMilliseconds(1);
         break;
       case UpdateStatus::InvalidData:
-        Sleep(100);
+        rlbot::platform::SleepMilliseconds(100);
         break;
       case UpdateStatus::NewData:
         XINPUT_STATE gamepadState;
@@ -71,7 +74,7 @@ int main(int argc, char** argv) {
             outfile.close();
           }
         }
-        int status = Interface::SetBotInput(controls, 0);
+        int status = rlbot::Interface::SetBotInput(controls.to_controller(), 0);
         break;
     }
   }

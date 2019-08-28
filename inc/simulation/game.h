@@ -10,7 +10,7 @@
 #include "simulation/goal.h"
 #include "simulation/pad.h"
 
-#include "rlbot/rlbot_generated.h"
+#include "rlbot_generated.h"
 
 #ifdef GENERATE_PYTHON_BINDINGS
 #include <pybind11/pybind11.h>

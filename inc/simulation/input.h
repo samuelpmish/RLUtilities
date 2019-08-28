@@ -1,4 +1,5 @@
 #pragma once
+#include "controller.h"
 
 struct Input {
   float steer;
@@ -21,5 +22,20 @@ struct Input {
     boost = false;
     handbrake = false;
 	  useItem = false;
+  }
+
+  rlbot::Controller to_controller()
+  {
+    rlbot::Controller controller;
+    controller.steer = steer;
+    controller.roll = roll;
+    controller.pitch = pitch;
+    controller.yaw = yaw;
+    controller.throttle = throttle;
+    controller.jump = jump;
+    controller.boost = boost;
+    controller.handbrake = handbrake;
+    controller.useItem = useItem;
+    return controller;
   }
 };

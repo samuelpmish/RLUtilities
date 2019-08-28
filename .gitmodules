@@ -1,0 +1,3 @@
+[submodule "RLBotCPP"]
+	path = RLBotCPP
+	url = https://github.com/kipje13/RLBotCPP.git

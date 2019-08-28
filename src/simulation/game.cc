@@ -5,8 +5,9 @@
 #include "misc/json.h"
 
 #ifndef GENERATE_PYTHON_BINDINGS
-#include "rlbot/interface.h"
-#include "rlbot/rlbot_generated.h"
+#include "interface.h"
+#include "rlbot_generated.h"
+#include "statesetting.h"
 #endif
 
 #include <thread>
@@ -108,22 +109,53 @@ mat3 rotator_to_mat3(const rlbot::flat::Rotator *flat_vector) {
       vec3({flat_vector->pitch(), flat_vector->yaw(), flat_vector->roll()}));
 }
 
+rlbot::DesiredVector3 vec3_to_DesiredVector3(vec3 v)
+{
+  return {v[0], v[1], v[2]};
+}
+
+rlbot::DesiredRotator vec3_to_DesiredRotator(vec3 v)
+{
+  return {v[0], v[1], v[2]};
+}
+
 int Game::SetState() {
+  rlbot::GameState game_state;
+
+  // set ball state
+  game_state.ballState.physicsState.location = vec3_to_DesiredVector3(ball.position);
+  game_state.ballState.physicsState.velocity = vec3_to_DesiredVector3(ball.velocity);
+  game_state.ballState.physicsState.angularVelocity = vec3_to_DesiredVector3(ball.angular_velocity);
+
+  // set car states
+  for (size_t i = 0; i < num_cars; i++)
+  {
+    rlbot::CarState car_state;
+    car_state.physicsState.location = vec3_to_DesiredVector3(cars[i].position);
+    car_state.physicsState.velocity = vec3_to_DesiredVector3(cars[i].velocity);
+    car_state.physicsState.angularVelocity = vec3_to_DesiredVector3(cars[i].angular_velocity);
+    car_state.physicsState.rotation = vec3_to_DesiredRotator(rotation_to_euler(cars[i].orientation));
+    car_state.boostAmount = cars[i].boost;
+
+    game_state.carStates[i] = car_state;
+  }
+  
   // This is an ugly hack, but at least it works
   auto one_frame = std::chrono::milliseconds(1);
-  int error_code = Interface::SetGameState(*this);
+
+  int error_code = rlbot::Interface::SetGameState(game_state);
   std::this_thread::sleep_for(one_frame);
-  Interface::SetGameState(*this);  
+  rlbot::Interface::SetGameState(game_state);  
   std::this_thread::sleep_for(one_frame);
-  Interface::SetGameState(*this);  
+  rlbot::Interface::SetGameState(game_state);  
   std::this_thread::sleep_for(one_frame);
   return error_code;
 }
 
 UpdateStatus Game::GetState() {
   UpdateStatus status;
-  ByteBuffer gametickData = Interface::UpdateLiveDataPacketFlatbuffer();
-  ByteBuffer fieldInfoData = Interface::UpdateFieldInfoFlatbuffer();
+  rlbot::ByteBuffer gametickData = rlbot::Interface::UpdateLiveDataPacketFlatbuffer();
+  rlbot::ByteBuffer fieldInfoData = rlbot::Interface::UpdateFieldInfoFlatbuffer();
 
   // Don't try to read the packets when they are very small.
   if ((gametickData.size > 4) && (fieldInfoData.size > 4)) {
@@ -143,8 +175,8 @@ UpdateStatus Game::GetState() {
     status = UpdateStatus::InvalidData;
   }
 
-  Interface::Free(gametickData.ptr);
-  Interface::Free(fieldInfoData.ptr);
+  rlbot::Interface::Free(gametickData.ptr);
+  rlbot::Interface::Free(fieldInfoData.ptr);
   return status;
 }
 
@@ -168,6 +200,7 @@ void Game::read_flatbuffer_packet(
   for (uint32_t i = 0; i < gameTickPacket->players()->size(); i++) {
     auto car = gameTickPacket->players()->Get(i);
 
+    cars[i].id = i;
     cars[i].position = vector3_to_vec3(car->physics()->location());
     cars[i].velocity = vector3_to_vec3(car->physics()->velocity());
     cars[i].angular_velocity = vector3_to_vec3(car->physics()->angularVelocity());
