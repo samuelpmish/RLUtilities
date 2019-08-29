@@ -11,12 +11,12 @@
 #include "simulation/pad.h"
 
 #include "rlbot_generated.h"
+#include "interface.h"
 
 #ifdef GENERATE_PYTHON_BINDINGS
 #include <pybind11/pybind11.h>
 #endif
 
-enum class UpdateStatus { InvalidData, OldData, NewData };
 
 class Game {
  public:
@@ -53,8 +53,7 @@ class Game {
                              pybind11::object phystick_packet,
                              pybind11::object fieldinfo_packet);
 #else
-  int SetState();
-  UpdateStatus GetState();
+  rlbot::GameState ToGameState();
 
   void read_flatbuffer_packet(const rlbot::flat::GameTickPacket *gameTickPacket,
                               const rlbot::flat::FieldInfo *fieldInfo);
