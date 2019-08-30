@@ -1,5 +1,5 @@
 #include "misc/rlurenderer.h"
-
+#include "misc/timer.h"
 
 const int n_sphere = 16;
 std::vector < vec3 > sphere_points = []{
@@ -82,16 +82,19 @@ void RLURenderer::DrawSphere(rlbot::Color color, sphere s)
 
 void RLURenderer::DrawPolyLine3D(rlbot::Color color, std::vector<vec3> vertices)
 {
-  std::vector<rlbot::flat::Vector3> points;
   std::vector<const rlbot::flat::Vector3 *> pointers;
 
   for (size_t i = 0; i < vertices.size(); i++)
   {
-    points.push_back(vec3_to_Vector3(vertices[i]));
-    pointers.push_back(&points[i]);
+    pointers.push_back(new rlbot::flat::Vector3(vec3_to_Vector3(vertices[i])));
   }
-
+  
   scoped_renderer.DrawPolyLine3D(color, pointers);
+
+  for(auto p : pointers)
+  {
+    delete p;
+  }
 }
 
 void RLURenderer::DrawString2D(rlbot::Color color, std::string text, vec2 topleft, int scaleX, int scaleY)

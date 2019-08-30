@@ -19,6 +19,7 @@ set(rlu_sources
   ${PROJECT_SOURCE_DIR}/src/simulation/mesh.cc
   ${PROJECT_SOURCE_DIR}/src/simulation/field.cc
   ${PROJECT_SOURCE_DIR}/src/simulation/curve.cc
+  ${PROJECT_SOURCE_DIR}/src/simulation/composite_arc.cc
   ${PROJECT_SOURCE_DIR}/src/simulation/bvh.cc
   ${PROJECT_SOURCE_DIR}/src/simulation/game.cc
   ${PROJECT_SOURCE_DIR}/src/simulation/ogh.cc
