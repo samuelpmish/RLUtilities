@@ -169,6 +169,7 @@ void Game::read_flatbuffer_packet(
     cars[i].velocity = vector3_to_vec3(car->physics()->velocity());
     cars[i].angular_velocity = vector3_to_vec3(car->physics()->angularVelocity());
     cars[i].orientation = rotator_to_mat3(car->physics()->rotation());
+    cars[i].o_dodge = rotation(car->physics()->rotation()->yaw());
 
     // other car data
     cars[i].boost = car->boost();
