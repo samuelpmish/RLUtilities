@@ -43,7 +43,6 @@ void Aerial::step(float dt) {
   vec3 xf = car.position + car.velocity * T + 0.5 * gravity * T * T;
   vec3 vf = car.velocity + gravity * T;
 
-  bool jumping_prev = jumping;
   if (jumping) {
 
     // how much of the jump acceleration time is left
@@ -66,7 +65,7 @@ void Aerial::step(float dt) {
     dodge.step(dt);
     controls.jump = dodge.controls.jump;
 
-    if (dodge.timer >= dodge.delay) {
+    if ((double_jump && car.double_jumped) || (!double_jump && dodge.timer > dodge.jump_duration)) {
       jumping = false;
     }
 
@@ -92,7 +91,7 @@ void Aerial::step(float dt) {
 
   reorient.step(dt);
 
-  if (jumping_prev && !jumping) { 
+  if (double_jump && dodge.timer > dodge.jump_duration && controls.jump) { 
     controls.roll = 0.0f;
     controls.pitch = 0.0f;
     controls.yaw = 0.0f;
