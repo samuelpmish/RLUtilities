@@ -106,3 +106,14 @@ void RLURenderer::DrawString3D(rlbot::Color color, std::string text, vec3 toplef
 {
   scoped_renderer.DrawString3D(text, color, vec3_to_Vector3(topleft), scaleX, scaleY);
 }
+
+void RLURenderer::DrawRect2D(rlbot::Color color, vec2 topleft, int height, int width, bool filled)
+{
+  scoped_renderer.DrawRect2D(color, vec3_to_Vector3(topleft), width, height, filled);
+}
+
+void RLURenderer::DrawRect3D(rlbot::Color color, vec3 topleft, int height, int width, bool filled, bool centered)
+{
+  scoped_renderer.DrawRect3D(color, vec3_to_Vector3(topleft), width, height, filled, centered);
+}
+

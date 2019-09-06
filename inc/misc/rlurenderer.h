@@ -17,8 +17,10 @@ class RLURenderer {
   RLU_DLL void DrawOBB(rlbot::Color color, obb box);
   RLU_DLL void DrawSphere(rlbot::Color color, sphere s);
   RLU_DLL void DrawPolyLine3D(rlbot::Color color, std::vector<vec3> vertices);
-  RLU_DLL void DrawString2D(rlbot::Color, std::string, vec2 topleft, int scaleX, int scaleY);
-  RLU_DLL void DrawString3D(rlbot::Color, std::string, vec3 topleft, int scaleX, int scaleY);
+  RLU_DLL void DrawString2D(rlbot::Color color, std::string, vec2 topleft, int scaleX, int scaleY);
+  RLU_DLL void DrawString3D(rlbot::Color color, std::string, vec3 topleft, int scaleX, int scaleY);
+  RLU_DLL void DrawRect2D(rlbot::Color color, vec2 topleft, int height, int width, bool filled);
+  RLU_DLL void DrawRect3D(rlbot::Color color, vec3 topleft, int height, int width, bool filled, bool centered = false);
 
  private:
   rlbot::ScopedRenderer scoped_renderer;
