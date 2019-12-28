@@ -2,8 +2,13 @@
 
 cd build
 
+
 #for MSVC
 #cmake .. -G "Visual Studio 15 2017 Win64" -DWITH_TESTS=TRUE -DTARGET_LANGUAGE=cpp
+#cmake --build . --config Release
+
+#for MSVC
+#cmake .. -G "Visual Studio 16 2019" -Ax64 -DWITH_TESTS=TRUE -DTARGET_LANGUAGE=python
 #cmake --build . --config Release
 
 #for MSYS/GCC
