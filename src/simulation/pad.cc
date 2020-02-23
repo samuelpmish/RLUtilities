@@ -8,7 +8,7 @@ void init_pad(pybind11::module & m) {
 		.def(pybind11::init<>())
 		.def_readwrite("location", &Pad::location)
 		.def_readwrite("is_active", &Pad::is_active)
-		.def_readwrite("is_full_boost", &Pad::is_active)
+		.def_readwrite("is_full_boost", &Pad::is_full_boost)
 		.def_readwrite("timer", &Pad::timer);
 
 }
