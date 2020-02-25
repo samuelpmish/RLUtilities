@@ -90,6 +90,14 @@ inline float dot(const vec<n> &u, const vec<n> &v) {
   return a;
 }
 
+inline float dot(const vec<2> &u, const vec<2> &v) {
+  return u.x * v.x + u.y * v.y;
+}
+
+inline float dot(const vec<3> &u, const vec<3> &v) {
+  return u.x * v.x + u.y * v.y + u.z * v.z;
+}
+
 template <int d> 
 std::ostream &operator<<(std::ostream &os, const vec<d> &v) {
   for (int i = 0; i < d; i++) {
