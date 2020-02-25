@@ -9,9 +9,9 @@
 #include "mat.h"
 
 inline vec<3> cross(const vec<3> &a, const vec<3> &b) {
-  return {a(1) * b(2) - a(2) * b(1), 
-	      a(2) * b(0) - a(0) * b(2),
-          a(0) * b(1) - a(1) * b(0)};
+  return vec<3>(a.y * b.z - a.z * b.y, 
+                a.z * b.x - a.x * b.z,
+                a.x * b.y - a.y * b.x);
 }
 
 inline vec<3> cross(const vec<3> &a) { 
