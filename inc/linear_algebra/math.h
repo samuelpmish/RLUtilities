@@ -15,11 +15,11 @@ inline vec<3> cross(const vec<3> &a, const vec<3> &b) {
 }
 
 inline vec<3> cross(const vec<3> &a) { 
-	return {-a(1), a(0), 0.0f}; 
+	return vec<3>(-a(1), a(0), 0.0f); 
 }
 
 inline vec<2> cross(const vec<2> &a) { 
-	return {-a(1), a(0)}; 
+	return vec<2>(-a(1), a(0)); 
 }
 
 inline float det(const vec<2> &a, const vec<2> &b) {
