@@ -4,7 +4,127 @@
 #include <algorithm>
 
 #include "vec.h"
+#include "vec2.h"
+#include "vec3.h"
 #include "mat.h"
+
+inline vec<3> cross(const vec<3> &a, const vec<3> &b) {
+  return vec<3>(a.y * b.z - a.z * b.y, 
+                a.z * b.x - a.x * b.z,
+                a.x * b.y - a.y * b.x);
+}
+
+inline vec<3> cross(const vec<3> &a) { 
+	return vec<3>(-a(1), a(0), 0.0f); 
+}
+
+inline vec<2> cross(const vec<2> &a) { 
+	return vec<2>(-a(1), a(0)); 
+}
+
+inline float det(const vec<2> &a, const vec<2> &b) {
+  return a(0) * b(1) - a(1) * b(0);
+}
+
+template <int n> inline
+float norm(const vec<n> &v) { 
+	return sqrt(dot(v, v)); 
+}
+
+template <int n>
+inline vec<n> normalize(const vec<n> &v) {
+  float norm_v = norm(v);
+  if (norm_v < 1.0e-6) {
+    return vec<n>(0.0f);
+  } else {
+    return v / norm_v;
+  }
+}
+
+template <int n> 
+inline vec<n> operator*(const vec<n> &v, const float other) {
+  vec<n> u;
+  for (int i = 0; i < n; i++) {
+    u(i) = other * v(i);
+  }
+  return u;
+}
+
+template <int n> 
+inline vec<n> operator*(const float other, const vec<n> &v) {
+  vec<n> u;
+  for (int i = 0; i < n; i++) {
+    u(i) = other * v(i);
+  }
+  return u;
+}
+
+template <int n> 
+inline vec<n> operator/(const vec<n> &v, const float other) {
+  vec<n> u;
+  for (int i = 0; i < n; i++) {
+    u(i) = v(i) / other;
+  }
+  return u;
+}
+
+template <int n> 
+inline vec<n> operator/(const float other, const vec<n> &v) {
+  vec<n> u;
+  for (int i = 0; i < n; i++) {
+    u(i) = other / v(i);
+  }
+  return u;
+}
+
+inline float atan2(const vec2 &v) { 
+	return std::atan2(v.y, v.x); 
+}
+
+template <int n> 
+inline float dot(const vec<n> &u, const vec<n> &v) {
+  float a = 0.0;
+  for (int i = 0; i < n; i++) {
+    a += u[i] * v[i];
+  }
+  return a;
+}
+
+inline float dot(const vec<2> &u, const vec<2> &v) {
+  return u.x * v.x + u.y * v.y;
+}
+
+inline float dot(const vec<3> &u, const vec<3> &v) {
+  return u.x * v.x + u.y * v.y + u.z * v.z;
+}
+
+template <int d> 
+std::ostream &operator<<(std::ostream &os, const vec<d> &v) {
+  for (int i = 0; i < d; i++) {
+    os << v[i];
+    if (i != d - 1)
+      os << ", ";
+  }
+  return os;
+}
+
+template <int n> inline vec<n> relu(const vec<n> &v) {
+  vec<n> u;
+  for (int i = 0; i < n; i++) {
+    u(i) = std::max(v(i), 0.f);
+  }
+  return u;
+}
+
+template <int n>
+inline vec<n> clamp(const vec<n> &v, const float min_value,
+                    const float max_value) {
+  vec<n> u;
+  for (int i = 0; i < n; i++) {
+    u(i) = std::clamp(v(i), min_value, max_value);
+  }
+  return u;
+}
 
 template < int m, int n >
 inline vec < n > dot(const vec < m > & v,
