@@ -40,4 +40,6 @@
   static float r;
   static float R;
 
+  static int axis_box_collision(const wall& w, const vec3& diagonal, const vec3& center, ray& contact_point);
+
 };

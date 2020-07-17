@@ -92,6 +92,22 @@ void Field::initialize_soccar() {
   mode = std::string("soccar");
 }
 
+int Field::axis_box_collision(const wall& w, const vec3& diagonal, const vec3& center, ray& contact_point) {
+    int count = 0;
+    vec3 abs_axis{fabs(w.n[0]), fabs(w.n[1]), fabs(w.n(2))};
+    float radius = 0.5f * dot(abs_axis, diagonal);
+
+    float separation = dot(center - w.p, w.n);
+    if (fabs(separation) <= radius && w.collidable) {
+      count++;
+      contact_point.start += center - separation * w.n;
+      contact_point.direction += w.n * (radius - separation);
+    }
+    return count;
+}
+
+
+
 void Field::initialize_hoops() {
   float scale = 0.9f;
   float y_offset = 431.664f;
@@ -385,7 +401,47 @@ void error_uninitialized_field() {
 }
 
 ray Field::collide(const obb& o) {
-  return ray{vec3{0.0f, 0.0f, 0.0f}, vec3{0.0f, 0.0f, 0.0f}};
+
+  // rotate center/diagonal
+  vec3 center = dot(o.orientation, o.center);
+  vec3 diagonal = 2 * o.half_width;
+  auto contact_point = ray{vec3{0.0, 0.0, 0.0}, vec3{0.0f, 0.0f, 0.0f}};
+  if (mode == std::string("Uninitialized")) {
+    error_uninitialized_field();
+  }
+  else {
+    float count = 0.0f;
+    for (auto w : walls) {
+      // need to rotate the wall
+      w.p = dot(o.orientation, w.p);
+      w.n = dot(o.orientation, w.n);
+      count += axis_box_collision(w, diagonal, center, contact_point);
+    }
+
+    auto tris_hit = collision_mesh.intersect(o);
+
+    for (const auto id : tris_hit) {
+      vec3 p = triangles[id].center();
+      vec3 n = triangles[id].unit_normal();
+      wall w{ p, n, true };
+
+      // need to rotate the wall
+      w.p = dot(o.orientation, w.p);
+      w.n = dot(o.orientation, w.n);
+      count += axis_box_collision(w, diagonal, center, contact_point);
+    }
+    
+    // rotate it back
+    contact_point.direction = dot(transpose(o.orientation), contact_point.direction);
+    contact_point.start = dot(transpose(o.orientation), contact_point.start);
+
+    if (count > 0) {
+      contact_point.start /= count;
+      contact_point.direction = normalize(contact_point.direction);
+    }
+  }
+
+  return contact_point;
 }
 
 ray Field::collide(const aabb& a) {
@@ -401,15 +457,7 @@ ray Field::collide(const aabb& a) {
     float count = 0.0f;
 
     for (const auto w : walls) {
-      vec3 abs_axis{fabs(w.n[0]), fabs(w.n[1]), fabs(w.n(2))};
-      float radius = 0.5f * dot(abs_axis, diagonal);
-
-      float separation = dot(center - w.p, w.n);
-      if (fabs(separation) <= radius && w.collidable) {
-        count++;
-        contact_point.start += center - separation * w.n;
-        contact_point.direction += w.n * (radius - separation);
-      }
+      count += axis_box_collision(w, diagonal, center, contact_point);
     }
 
     auto tris_hit = collision_mesh.intersect(a);
@@ -417,16 +465,8 @@ ray Field::collide(const aabb& a) {
     for (const auto id : tris_hit) {
       vec3 p = triangles[id].center();
       vec3 n = triangles[id].unit_normal();
-
-      vec3 abs_axis{fabs(n[0]), fabs(n[1]), fabs(n(2))};
-      float radius = 0.5f * dot(abs_axis, diagonal);
-
-      float separation = dot(center - p, n);
-      if (fabs(separation) <= radius) {
-        count++;
-        contact_point.start += center - separation * n;
-        contact_point.direction += n * (radius - separation);
-      }
+      wall w{ p, n, true };
+      count += axis_box_collision(w, diagonal, center, contact_point);
     }
 
     if (count > 0) {
