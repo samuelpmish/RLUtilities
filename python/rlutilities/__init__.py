@@ -1,5 +1,5 @@
 import sys
-from .rlutilities import mechanics, simulation, linear_algebra
+from .rlutilities import mechanics, simulation, linear_algebra, initialize
 
 sys.modules["rlutilities.mechanics"] = mechanics
 sys.modules["rlutilities.simulation"] = simulation

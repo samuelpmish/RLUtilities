@@ -7,80 +7,31 @@ set(TARGET_LANGUAGE "cpp" CACHE STRING "Build shared library for \"cpp\", \"pyth
 set_property(CACHE TARGET_LANGUAGE PROPERTY STRINGS "cpp" "python" "both")
 message(STATUS "Building libraries for ${TARGET_LANGUAGE}")
 
+add_compile_definitions(_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS)
+
+add_library(asio INTERFACE)
+target_include_directories(asio INTERFACE extern/asio/include/)
+
+add_library(rapidjson INTERFACE)
+target_include_directories(rapidjson INTERFACE extern/rapidjson/include/)
+
+set(CMAKE_CXX_STANDARD 17)
 add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/MP>)
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-set(rlu_sources
-
-  # simulation
-  ${PROJECT_SOURCE_DIR}/src/simulation/car.cc
-  ${PROJECT_SOURCE_DIR}/src/simulation/ball.cc
-  ${PROJECT_SOURCE_DIR}/src/simulation/geometry.cc
-  ${PROJECT_SOURCE_DIR}/src/simulation/mesh.cc
-  ${PROJECT_SOURCE_DIR}/src/simulation/field.cc
-  ${PROJECT_SOURCE_DIR}/src/simulation/curve.cc
-  ${PROJECT_SOURCE_DIR}/src/simulation/bvh.cc
-  ${PROJECT_SOURCE_DIR}/src/simulation/game.cc
-  ${PROJECT_SOURCE_DIR}/src/simulation/ogh.cc
-
-  # mechanics
-  ${PROJECT_SOURCE_DIR}/src/mechanics/jump.cc
-  ${PROJECT_SOURCE_DIR}/src/mechanics/drive.cc
-  ${PROJECT_SOURCE_DIR}/src/mechanics/dodge.cc
-  ${PROJECT_SOURCE_DIR}/src/mechanics/aerial.cc
-  ${PROJECT_SOURCE_DIR}/src/mechanics/reorient.cc
-  ${PROJECT_SOURCE_DIR}/src/mechanics/reorient_ML.cc
-  ${PROJECT_SOURCE_DIR}/src/mechanics/wavedash.cc
-  ${PROJECT_SOURCE_DIR}/src/mechanics/boostdash.cc
-
-  # misc
-  ${PROJECT_SOURCE_DIR}/src/misc/dll.cc
-  ${PROJECT_SOURCE_DIR}/src/misc/graph.cc
-  ${PROJECT_SOURCE_DIR}/src/misc/random.cc
-  ${PROJECT_SOURCE_DIR}/src/misc/logging.cc
-
-  # experimental
-  ${PROJECT_SOURCE_DIR}/src/experimental/navigator.cc
-  ${PROJECT_SOURCE_DIR}/src/experimental/follow_path.cc
-
-  # resource files for meshes, lookup tables, navigation data
-  ${PROJECT_SOURCE_DIR}/assets/assets.rc
-
-)		
+file(GLOB_RECURSE rlu_sources ${PROJECT_SOURCE_DIR}/src/*.cc ${PROJECT_SOURCE_DIR}/inc/*.h)
 
 if (TARGET_LANGUAGE STREQUAL "cpp" OR TARGET_LANGUAGE STREQUAL "both")
 
-  add_library(rlutilities_cpp SHARED 
-    ${rlu_sources}
-
-    ${PROJECT_SOURCE_DIR}/src/rlbot/interface.cc
-    ${PROJECT_SOURCE_DIR}/src/rlbot/renderer.cc
-    ${PROJECT_SOURCE_DIR}/src/rlbot/statesetting.cc
-  )
+  add_library(rlutilities_cpp ${rlu_sources})
   target_include_directories(rlutilities_cpp PUBLIC inc)
   target_compile_features(rlutilities_cpp PUBLIC cxx_std_17)
-  target_link_libraries(rlutilities_cpp PUBLIC Xinput)
-  if (CMAKE_CXX_COMPILER_ID EQUAL MSVC)
-    target_compile_definitions(rlutilities_cpp PRIVATE RLU_EXPORT)
-  else()
-    target_compile_definitions(rlutilities_cpp PRIVATE RLU_NOTHING)
-  endif()
-
-  # ensures a consistent name when used with gcc, clang, msvc
-  set_target_properties(rlutilities_cpp PROPERTIES PREFIX "") 
-  set_target_properties(rlutilities_cpp PROPERTIES OUTPUT_NAME "rlutilities")
-  set_target_properties(rlutilities_cpp PROPERTIES
-      ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-      LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-      RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-  )
-
+  target_link_libraries(rlutilities_cpp PUBLIC Xinput asio rapidjson)
   
   if (WITH_TESTS)
   
     enable_testing()
   
-    file(GLOB cc_tests "${PROJECT_SOURCE_DIR}/src/test/*.cc")
+    file(GLOB cc_tests "${PROJECT_SOURCE_DIR}/tests/*.cc")
     
     foreach(filename ${cc_tests})		
     		
@@ -88,26 +39,14 @@ if (TARGET_LANGUAGE STREQUAL "cpp" OR TARGET_LANGUAGE STREQUAL "both")
       string(REPLACE ".cc" "" testname ${filename})		
       		
       # remove the prefix		
-      string(REPLACE ${PROJECT_SOURCE_DIR}/src/test/ "" testname ${testname})		
+      string(REPLACE ${PROJECT_SOURCE_DIR}/tests/ "" testname ${testname})		
       		
       # use the remaining string to name the binary file		
       add_executable(${testname} ${filename})		
       add_test(${testname} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${testname})		
     		
       target_include_directories(${testname} PUBLIC inc/)
-      target_compile_features(${testname} PUBLIC cxx_std_17)		
-      target_link_libraries(${testname} PUBLIC rlutilities_cpp)
-      if (CMAKE_CXX_COMPILER_ID EQUAL MSVC)
-        target_compile_definitions(${testname} PRIVATE RLU_IMPORT)
-      else()
-        target_compile_definitions(${testname} PRIVATE RLU_NOTHING)
-      endif()
-
-      set_target_properties(${testname} PROPERTIES
-          ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-          LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-          RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-      )
+      target_link_libraries(${testname} rlutilities_cpp)
      		
     endforeach(filename ${cc_tests})
   
@@ -122,38 +61,18 @@ if (TARGET_LANGUAGE STREQUAL "python" OR TARGET_LANGUAGE STREQUAL "both")
 
   add_compile_options($<$<CXX_COMPILER_ID:GNU>:-D_hypot=hypot>)
 
-  pybind11_add_module(rlutilities
-    ${PROJECT_SOURCE_DIR}/src/misc/python_extensions.cc
+  file(GLOB_RECURSE rlu_bindings ${PROJECT_SOURCE_DIR}/python/src/*.cc)
 
-    ${PROJECT_SOURCE_DIR}/src/simulation/car_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/simulation/pad_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/simulation/ball_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/simulation/goal_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/simulation/game_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/simulation/field_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/simulation/curve_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/simulation/geometry_pybind11.cc
-
-    ${PROJECT_SOURCE_DIR}/src/mechanics/jump_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/mechanics/dodge_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/mechanics/drive_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/mechanics/aerial_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/mechanics/reorient_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/mechanics/reorient_ML_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/mechanics/wavedash_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/mechanics/boostdash_pybind11.cc
-
-    ${PROJECT_SOURCE_DIR}/src/experimental/navigator_pybind11.cc
-    ${PROJECT_SOURCE_DIR}/src/experimental/follow_path_pybind11.cc
-
-    ${PROJECT_SOURCE_DIR}/src/linear_algebra/math_pybind11.cc
-
-    ${rlu_sources}
-  )
-  target_include_directories(rlutilities PUBLIC inc/)
-  target_compile_definitions(rlutilities PRIVATE RLU_NOTHING)
+  pybind11_add_module(rlutilities ${rlu_bindings})
+  target_include_directories(rlutilities PUBLIC inc)
   target_compile_definitions(rlutilities PUBLIC -DGENERATE_PYTHON_BINDINGS)
   target_compile_definitions(rlutilities PUBLIC -DHAVE_SNPRINTF=1)
-  target_compile_features(rlutilities PUBLIC cxx_std_17)
+  target_link_libraries(rlutilities PUBLIC Xinput asio rapidjson rlutilities_cpp)
+
+  set_target_properties(rlutilities PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python/rlutilities)
 
 endif()
+
+set(ASSET_DIR ${PROJECT_SOURCE_DIR}/assets/)
+configure_file ("${CMAKE_CURRENT_SOURCE_DIR}/inc/misc/config.h.in"
+                "${CMAKE_CURRENT_SOURCE_DIR}/inc/misc/config.h")

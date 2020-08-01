@@ -20,6 +20,8 @@ Aerial::Aerial(Car & c) : car(c), dodge(c), reorient(c) {
 
   up = vec3{0.0f, 0.0f, 1.0f};
   angle_threshold = 0.3f;
+
+  alignment_threshold = 0.7f;
   reorient_distance = 50.0f;
   throttle_distance = 50.0f;
 
@@ -84,9 +86,9 @@ void Aerial::step(float dt) {
     reorient.target_orientation = look_at(delta_x, up);
   } else {
     if (fabs(det(target_orientation) - 1.0f) < 0.01f) {
-      reorient.target_orientation = look_at(target_position - car.position, up);
-    } else {
       reorient.target_orientation = target_orientation;
+    } else {
+      reorient.target_orientation = look_at(target_position - car.position, up);
     }
   }
 
@@ -103,24 +105,37 @@ void Aerial::step(float dt) {
   }
 
   // only boost/throttle if we're facing the right direction
-  if (angle_between(car.forward(), direction) < angle_threshold) {
-    if (norm(delta_x) > throttle_distance) {
+  if (fabs(dot(car.forward(), direction)) > angle_threshold) {
+
+    float s = dot(delta_x, car.forward());
+
+    // the exact instantaneous change in velocity my car 
+    // would need to put it on an intercept course with the target
+    float delta_v = s / T;
+
+    // in practice, my car make that change in a single frame,
+    // so I pick the appropriate throttle / boost combination
+    // to get as close as possible
+    if (delta_v > (2 * boost_accel * dt)) {
       controls.boost = 1;
       controls.throttle = 0.0f;
     } else {
       controls.boost = 0;
-      controls.throttle = clip(0.5f * throttle_accel * T * T, 0.0f, 1.0f);
+      controls.throttle = clip(delta_v / (2 * throttle_accel * dt), -1.0f, 1.0f);
     }
+
   } else {
     controls.boost = 0;
     controls.throttle = 0.0f;
   }
 
-  finished = (T <= 0.0f);
-
-  //if (fabs(T) < 0.05f) {
-  //  std::cout << T << " " << target - car.x << std::endl;
+  //if (fabs(T) < 0.1) {
+  //  std::cout << dot(transpose(car.orientation), delta_x) << std::endl;
+  //  std::cout << controls.throttle << " " << controls.boost << std::endl;
   //}
+
+
+  finished = (T <= 0.0f);
 
 }
 
@@ -148,7 +163,8 @@ bool Aerial::is_viable() {
   // estimate the time required to turn
   reorient.target_orientation = look_at(f, up);
   float total_turn_time = reorient.simulate().time - car.time;
-  float phi = angle_between(car.orientation, reorient.target_orientation);
+  //float phi = angle_between(car.orientation, reorient.target_orientation);
+  float phi = angle_between(f, car.forward());
 
   // the time when we start boosting (coarse estimate!)
   float tau_1 = total_turn_time * clip(1.0f - angle_threshold / phi, 0.0f, 1.0f);
@@ -164,6 +180,10 @@ bool Aerial::is_viable() {
   vec3 velocity_estimate = vf + boost_accel * (tau_2 - tau_1) * f;
 
   float boost_estimate = (tau_2 - tau_1) * 30.0f;
+
+  std::cout << phi << " " << total_turn_time << " " << tau_1 << std::endl;
+  std::cout << boost_estimate << " " << norm(velocity_estimate) << " " << ratio << std::endl;
+  std::cout << std::endl;
 
   return (norm(velocity_estimate) < 0.90f * max_speed) && // can't exceed max speed
          (boost_estimate < 0.95f * car.boost) &&          // need enough boost

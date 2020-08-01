@@ -31,8 +31,6 @@ class Interpolation {
     });
   }
 
-
-
   output_type operator()(float input) {
   
     float t = clip(input, values.front().first, values.back().first);

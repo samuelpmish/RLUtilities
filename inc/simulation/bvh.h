@@ -34,6 +34,7 @@ class bvh {
   std::vector<int> intersect(const S &) const;
 
   ray raycast_any(const ray &) const;
+  ray raycast_nearest(const ray &) const;
 
  private:
   void build_radix_tree();

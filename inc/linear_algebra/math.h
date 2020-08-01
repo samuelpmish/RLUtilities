@@ -6,6 +6,12 @@
 #include "vec.h"
 #include "mat.h"
 
+using quaternion = vec4;
+
+struct rotator {
+  float roll, pitch, yaw;
+};
+
 template < int m, int n >
 inline vec < n > dot(const vec < m > & v,
   const mat < m, n > & A) {

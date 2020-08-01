@@ -5,7 +5,7 @@
 #include <fstream>
 #include <algorithm>
 
-#include "mechanics/Drive.h"
+#include "mechanics/drive.h"
 
 #include "misc/io.h"
 #include "misc/timer.h"

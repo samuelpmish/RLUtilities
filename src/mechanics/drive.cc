@@ -2,7 +2,6 @@
 
 #include "simulation/field.h"
 #include "simulation/circles.h"
-#include "simulation/composite_arc.h"
 
 #include <cmath>
 #include <numeric>

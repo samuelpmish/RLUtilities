@@ -8,56 +8,65 @@
 #include "simulation/ball.h"
 #include "simulation/car.h"
 #include "simulation/goal.h"
-#include "simulation/pad.h"
-
-#include "rlbot/rlbot_generated.h"
+#include "simulation/boost_pad.h"
 
 #ifdef GENERATE_PYTHON_BINDINGS
 #include <pybind11/pybind11.h>
 #endif
 
-enum class UpdateStatus { InvalidData, OldData, NewData };
+enum class GameState {
+  Inactive,
+  Countdown,
+  Kickoff,
+  Active,
+  GoalScored,
+  Replay,
+  Paused,
+  Ended
+};
 
-class Game {
- public:
+enum class GameMode {
+  Unknown, 
+  Soccar, 
+  Hoops, 
+  Snowday, 
+  Rumble, 
+  Dropshot 
+};
+
+#ifdef GENERATE_PYTHON_BINDINGS
+#include <pybind11/pybind11.h>
+#endif
+
+struct Game {
   Game();
 
   int frame;
-  int frame_delta;
+  int score[2];
 
   float time;
-  float time_delta;
   float time_remaining;
 
-  int num_cars;
-  bool overtime;
-  bool round_active;
-  bool kickoff_pause;
-  bool match_ended;
+  GameState state;
 
   static float gravity;
-  static float frametime;
   static std::string map;
   static std::string mode;
 
   Ball ball;
 
-  std::array<Car, 8> cars;
+  std::vector<Car> cars;
 
-  std::vector<Pad> pads;
+  std::vector<BoostPad> pads;
+
+  std::vector<Goal> goals;
 
   static void set_mode(std::string);
 
-#ifdef GENERATE_PYTHON_BINDINGS
-  void read_game_information(pybind11::object gametick_packet,
-                             pybind11::object phystick_packet,
-                             pybind11::object fieldinfo_packet);
-#else
-  int SetState();
-  UpdateStatus GetState();
-
-  void read_flatbuffer_packet(const rlbot::flat::GameTickPacket *gameTickPacket,
-                              const rlbot::flat::FieldInfo *fieldInfo);
-#endif
+  #ifdef GENERATE_PYTHON_BINDINGS
+  void Game::read_game_information(pybind11::object gametick,
+                                   pybind11::object phystick,
+                                   pybind11::object fieldinfo);
+  #endif
 
 };

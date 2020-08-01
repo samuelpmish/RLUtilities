@@ -24,7 +24,6 @@ void FollowPath::step(float dt) {
   float steer_reaction_time = 0.25f; 
   float accel_reaction_time = 0.05f;
 
-  float speed = dot(car.velocity, car.forward());
   float T = fmaxf(arrival_time - car.time, 0.008f);
 
   float s = path.find_nearest(car.position);
@@ -69,7 +68,7 @@ float interpolate_quadratic(float v0, float a0, float vT, float t, float T) {
 float interpolate_quadratic(float v0, float aT, float vT, float t, float T) {
   float tau = t / T;
   float dv = aT * t;
-  return v0 * (tau - 1.0f) * (tau - 1.0f) * (1.0f + 2.0 * tau) + 
+  return v0 * (tau - 1.0f) * (tau - 1.0f) * (1.0f + 2.0f * tau) + 
          vT * (3.0f - 2.0f * tau) * tau * tau + 
          dv * (tau - 1.0f) * tau * tau;
 }
@@ -112,7 +111,7 @@ void FollowPath::calculate_plan(Curve path_, float arrival_time_, float arrival_
 
   path.calculate_max_speeds(norm(car.velocity), arrival_speed);
 
-  float dt = 1.0 / 60.0f;
+  float dt = 1.0f / 60.0f;
   float s = path.find_nearest(car.position);
 
   float T = arrival_time - car.time;

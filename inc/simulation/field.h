@@ -3,8 +3,6 @@
 #include <vector>
 #include <string>
 
-#include "misc/rlu_dll.h"
-
 #include "simulation/bvh.h"
 #include "simulation/geometry.h"
 
@@ -17,27 +15,30 @@
   };
 
  public:
-  RLU_DLL static bvh<tri> collision_mesh;
-  RLU_DLL static bvh<sphere> navigation_mesh;
-  RLU_DLL static std::vector<wall> walls;
-  RLU_DLL static std::vector<tri> triangles;
-  RLU_DLL static std::vector<aabb> obstacles;
-  RLU_DLL static std::string mode;
+  static std::string mode;
+  static bvh<tri> collision_mesh;
+  static bvh<sphere> navigation_mesh;
+  static std::vector<tri> triangles;
 
-  RLU_DLL static void initialize_soccar();
-  RLU_DLL static void initialize_hoops();
-  RLU_DLL static void initialize_dropshot();
-  RLU_DLL static void initialize_throwback();
+  static void initialize_soccar();
+  static void initialize_hoops();
+  static void initialize_dropshot();
+  static void initialize_throwback();
 
-  RLU_DLL static ray snap(vec3 p);
-  RLU_DLL static ray collide(const obb & o);
-  RLU_DLL static ray collide(const aabb & a);
-  RLU_DLL static ray collide(const sphere & o);
+  static ray snap(vec3 p);
+  static ray collide(const obb & o);
+  static ray collide(const aabb & a);
+  static ray collide(const sphere & o);
 
-  RLU_DLL static ray raycast_any(const ray &);
-
- private:
-  static float r;
-  static float R;
+  // if a hit is found, returns a ray where:
+  // ray.start is the position of the intersection
+  // ray.direction is the unit normal of the intersected surface
+  // 
+  // if no hit is found, then ray.normal will be {0,0,0}
+  //
+  // Note: for raycast_nearest(), the query is more expensive
+  // for long rays, so limit the magnitude of direction, when possible
+  static ray raycast_any(const ray &);
+  static ray raycast_nearest(const ray &);
 
 };

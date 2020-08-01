@@ -5,8 +5,11 @@
 
 #include "linear_algebra/math.h"
 
-#include "misc/json.h"
-#include "misc/rlu_dll.h"
+enum class BallShape : uint8_t {
+  Sphere,
+  Puck,
+  Cube
+};
 
 class Ball {
  public:
@@ -36,12 +39,13 @@ class Ball {
   static const float dropshot_collision_radius;
 
   static float radius;
+  static float height;
   static float collision_radius;
   static float I; // moment of inertia
 
-  RLU_DLL Ball();
+  Ball();
 
-  RLU_DLL sphere hitbox();
-  RLU_DLL void step(float dt);
-  RLU_DLL void step(float dt, const Car & c);
+  sphere hitbox();
+  void step(float dt);
+  void step(float dt, const Car & c);
 };

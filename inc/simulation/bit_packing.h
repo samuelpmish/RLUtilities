@@ -32,8 +32,8 @@ inline uint32_t unpack32_lsb(uint32_t ab, uint32_t shift = 16) {
 }
 
 inline uint32_t clz(uint32_t n) {
-  uint32_t index;
-  uint8_t isNonzero = _BitScanReverse((unsigned long *)&index, n);
+  unsigned long index;
+  uint8_t isNonzero = _BitScanReverse(&index, n);
   return uint32_t(isNonzero ? 31 - index : 32);
 }
 

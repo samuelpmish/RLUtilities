@@ -1,8 +1,6 @@
 #include "simulation/ball.h"
 #include "simulation/field.h"
 
-#include "misc/json.h"
-
 const float Ball::restitution = 0.6f;
 const float Ball::drag = -0.0305f;
 const float Ball::mu = 2.0f;

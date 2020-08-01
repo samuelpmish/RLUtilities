@@ -209,7 +209,7 @@ Curve::Curve(std::vector< ControlPoint > info,
     vec3 n0 = normals[i];
     vec3 t0 = normalize(points[i+1] - points[i-1]);
 
-    for (int j = points.size() - 2; j > i + 1; j--) {
+    for (int j = int(points.size() - 2); j > i + 1; j--) {
 
       if (segment_ids[i] == segment_ids[j]) break;
 

@@ -1,0 +1,8 @@
+[submodule "extern/asio"]
+	path = extern/asio
+	url = https://github.com/chriskohlhoff/asio.git
+	branch = master
+[submodule "extern/rapidjson"]
+	path = extern/rapidjson
+	url = https://github.com/Tencent/rapidjson.git
+	branch = master

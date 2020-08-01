@@ -1,6 +1,6 @@
 #pragma once
 
-#include "simulation/Car.h"
+#include "simulation/car.h"
 #include "simulation/input.h"
 
 #include "linear_algebra/math.h"

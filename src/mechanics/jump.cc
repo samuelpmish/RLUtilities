@@ -1,7 +1,5 @@
 #include "mechanics/jump.h"
 
-#include "misc/json.h"
-
 const float Jump::speed = 291.667f;
 const float Jump::acceleration = 1458.3333f;
 const float Jump::min_duration = 0.025f;
@@ -46,15 +44,4 @@ Car Jump::simulate() {
 	}
 
 	return car_copy;
-}
-
-std::string Jump::to_json() {
-
-  return nlohmann::json{
-    {"duration", duration},
-    {"finished", finished},
-    {"timer", timer},
-    {"counter", counter}
-  }.dump();
-
 }
