@@ -6,3 +6,7 @@
 	path = extern/rapidjson
 	url = https://github.com/Tencent/rapidjson.git
 	branch = master
+[submodule "python/pybind11"]
+	path = python/pybind11
+	url = https://github.com/pybind/pybind11.git
+	branch = master
