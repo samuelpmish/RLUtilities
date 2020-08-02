@@ -64,9 +64,9 @@ struct Game {
   static void set_mode(std::string);
 
   #ifdef GENERATE_PYTHON_BINDINGS
-  void Game::read_game_information(pybind11::object gametick,
-                                   pybind11::object phystick,
-                                   pybind11::object fieldinfo);
+  void read_game_information(pybind11::object gametick,
+                             pybind11::object phystick,
+                             pybind11::object fieldinfo);
   #endif
 
 };
