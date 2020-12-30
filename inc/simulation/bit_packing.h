@@ -1,6 +1,5 @@
 #pragma once
 
-#include <intrin.h>
 #include <inttypes.h>
 
 inline uint64_t pack64(uint64_t a, uint64_t b, uint32_t shift = 32) {
@@ -31,6 +30,8 @@ inline uint32_t unpack32_lsb(uint32_t ab, uint32_t shift = 16) {
   return (ab & mask);
 }
 
+#ifdef _WIN32
+#include <intrin.h>
 inline uint32_t clz(uint32_t n) {
   unsigned long index;
   uint8_t isNonzero = _BitScanReverse(&index, n);
@@ -43,5 +44,9 @@ inline uint32_t clz(uint64_t n) {
 
   return llz + (llz == 32) * rlz;
 }
+#else 
+inline uint32_t clz(uint32_t n) { return __builtin_clz(n); }
+inline uint32_t clz(uint64_t n) { return __builtin_clzll(n); }
+#endif
 
 inline uint32_t bits_needed(uint32_t n) { return 32 - clz(n); }
