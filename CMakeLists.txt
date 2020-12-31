@@ -25,7 +25,7 @@ if (TARGET_LANGUAGE STREQUAL "cpp" OR TARGET_LANGUAGE STREQUAL "both")
   add_library(rlutilities_cpp ${rlu_sources})
   target_include_directories(rlutilities_cpp PUBLIC inc)
   target_compile_features(rlutilities_cpp PUBLIC cxx_std_17)
-  target_link_libraries(rlutilities_cpp PUBLIC Xinput asio rapidjson)
+  target_link_libraries(rlutilities_cpp PUBLIC asio rapidjson)
   
   if (WITH_TESTS)
   
