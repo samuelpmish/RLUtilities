@@ -1,6 +1,6 @@
 # Overview
 
-This project provides some tools for car/ball simulation in Rocket League, and some basic controller that might
+This project provides some tools for car/ball simulation in Rocket League, and some basic controllers that might
 be useful for writing a custom bot.
 
 ## Build and Test
