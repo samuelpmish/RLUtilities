@@ -63,11 +63,11 @@ if (TARGET_LANGUAGE STREQUAL "python" OR TARGET_LANGUAGE STREQUAL "both")
 
   file(GLOB_RECURSE rlu_bindings ${PROJECT_SOURCE_DIR}/python/src/*.cc)
 
-  pybind11_add_module(rlutilities ${rlu_bindings})
+  pybind11_add_module(rlutilities ${rlu_bindings} ${rlu_sources})
   target_include_directories(rlutilities PUBLIC inc)
   target_compile_definitions(rlutilities PUBLIC -DGENERATE_PYTHON_BINDINGS)
   target_compile_definitions(rlutilities PUBLIC -DHAVE_SNPRINTF=1)
-  target_link_libraries(rlutilities PUBLIC Xinput asio rapidjson rlutilities_cpp)
+  target_link_libraries(rlutilities PUBLIC asio rapidjson)
 
   set_target_properties(rlutilities PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python/rlutilities)
 
