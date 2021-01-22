@@ -15,11 +15,17 @@ build*/
 .vs/
 .vscode/
 
+config.h
+
 # Python
 __pycache__/
 *$py.class
 .idea/
 .mypy_cache/
+*.iobj
+*.ipdb
+*.pyd
+*.pyi
 
 # Distribution / packaging
 .Python
