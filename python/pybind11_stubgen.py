@@ -346,11 +346,7 @@ class PropertyStubsGenerator(StubsGenerator):
 
     def to_lines(self): # type: () -> List[str]
         result = []
-        result.append("@property")
-        result.append("def {field_name}(self) -> {rtype}:".format(field_name=self.name,rtype=self.signature.rtype))
-        result.append(self.indent("pass"))
-        result.append("")
-        #result.append("{field_name}: {rtype}".format(field_name=self.name,rtype=self.signature.rtype))
+        result.append("{field_name}: {rtype}".format(field_name=self.name,rtype=self.signature.rtype))
 
         #docstring = self.remove_signatures(self.prop.__doc__)
         #docstring += "\n:type: {rtype}".format(rtype=self.signature.rtype)
@@ -569,6 +565,8 @@ class ModuleStubsGenerator(StubsGenerator):
             # result.extend(map(self.indent, map(lambda m: "import {}".format(m), used_modules)))
             result.extend(map(lambda m: "import {}".format(m), used_modules))
 
+        if self.module.__name__.endswith("simulation") or self.module.__name__.endswith("mechanics"):
+            result += ["from rlutilities.linear_algebra import *"]
 
         # define __all__
 
