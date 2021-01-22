@@ -147,7 +147,8 @@ void init_linalg(pybind11::module & m) {
 
 	m.def("inv", (mat2(*)(const mat2 &)) &inv);
 	m.def("inv", (mat3(*)(const mat3 &)) &inv);
-	m.def("look_at", &look_at);
+	m.def("look_at", (mat2(*)(const vec2 &)) &look_at);
+	m.def("look_at", (mat3(*)(const vec3 &, const vec3 &)) &look_at);
 	m.def("rotation", &rotation);
 	m.def("euler_to_rotation", &euler_to_rotation);
 	m.def("rotation_to_euler", &rotation_to_euler);

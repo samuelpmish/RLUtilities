@@ -297,6 +297,16 @@ inline mat < 3, 3 > look_at(const vec < 3 > & direction, const vec < 3 > & up = 
   };
 }
 
+inline mat < 2, 2 > look_at(const vec < 2 > & direction) {
+  vec2 f = normalize(direction);
+  vec2 l = cross(f);
+
+  return mat2{
+    {f[0], l[0]},
+    {f[1], l[1]},
+  };
+}
+
 inline mat < 3, 3 > R3_basis(const vec3 & n) {
   float sign = (n[2] >= 0.0f) ? 1.0f : -1.0f;
   float a = -1.0f / (sign + n[2]); 
