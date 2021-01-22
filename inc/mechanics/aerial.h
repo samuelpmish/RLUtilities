@@ -27,10 +27,8 @@ class Aerial {
   mat3 target_orientation;
 
   // parameters that govern the controller
-  float alignment_threshold;
   float angle_threshold;
   float reorient_distance;
-  float throttle_distance;
   
   Input controls;
   bool finished;

@@ -19,9 +19,7 @@ Aerial::Aerial(Car & c) : car(c), dodge(c), reorient(c) {
   up = vec3{0.0f, 0.0f, 1.0f};
   angle_threshold = 0.3f;
 
-  alignment_threshold = 0.7f;
   reorient_distance = 50.0f;
-  throttle_distance = 50.0f;
 
   double_jump = true;
   dodge.jump_duration = 0.20f;
@@ -41,7 +39,6 @@ void Aerial::step(float dt) {
   vec3 xf = car.position + car.velocity * T + 0.5 * car.gravity * T * T;
   vec3 vf = car.velocity + car.gravity * T;
 
-  bool jumping_prev = jumping;
   if (jumping) {
 
     // how much of the jump acceleration time is left
@@ -58,13 +55,15 @@ void Aerial::step(float dt) {
     xf += car.up() * j_accel * tau * (T - 0.5f * tau);
 
     // impulse from the second jump
-    vf += car.up() * j_speed;
-    xf += car.up() * j_speed * (T - tau);
+    if (double_jump) {
+      vf += car.up() * j_speed;
+      xf += car.up() * j_speed * (T - tau);
+    }
 
     dodge.step(dt);
     controls.jump = dodge.controls.jump;
 
-    if (dodge.timer >= dodge.delay) {
+    if ((double_jump && car.double_jumped) || (!double_jump && dodge.timer > dodge.jump_duration)) {
       jumping = false;
     }
 
@@ -90,7 +89,7 @@ void Aerial::step(float dt) {
 
   reorient.step(dt);
 
-  if (jumping_prev && !jumping) { 
+  if (controls.jump && dodge.timer > dodge.jump_duration) { 
     controls.roll = 0.0f;
     controls.pitch = 0.0f;
     controls.yaw = 0.0f;
@@ -101,7 +100,7 @@ void Aerial::step(float dt) {
   }
 
   // only boost/throttle if we're facing the right direction
-  if (fabs(dot(car.forward(), direction)) > angle_threshold) {
+  if (angle_between(car.forward(), direction) < angle_threshold) {
 
     float s = dot(delta_x, car.forward());
 
@@ -196,9 +195,9 @@ Car Aerial::simulate() {
   copy.arrival_time = arrival_time;
   copy.target_orientation = target_orientation;
   copy.up = up;
+  copy.double_jump = double_jump;
   copy.angle_threshold = angle_threshold;
   copy.reorient_distance = reorient_distance;
-  copy.throttle_distance = throttle_distance;
 
   copy.finished = finished;
   copy.controls = controls;

@@ -120,7 +120,6 @@ nlohmann::json to_json(Aerial a) {
   obj["up"] = a.up;
   obj["angle_threshold"] = a.angle_threshold;
   obj["reorient_distance"] = a.reorient_distance;
-  obj["throttle_distance"] = a.throttle_distance;
   return obj;
   
 }
