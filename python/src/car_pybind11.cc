@@ -26,6 +26,8 @@ void init_car(pybind11::module & m) {
 		.def_readwrite("jump_timer", &Car::jump_timer)
 		.def_readwrite("dodge_timer", &Car::dodge_timer)
 		.def_readwrite("boost", &Car::boost)
+		.def_readwrite("hitbox_widths", &Car::hitbox_widths)
+		.def_readwrite("hitbox_offset", &Car::hitbox_offset)
 		.def_readwrite("controls", &Car::controls);
 
 	pybind11::class_<Input>(m, "Input")

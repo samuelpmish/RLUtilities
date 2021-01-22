@@ -34,10 +34,6 @@ enum class GameMode {
   Dropshot 
 };
 
-#ifdef GENERATE_PYTHON_BINDINGS
-#include <pybind11/pybind11.h>
-#endif
-
 struct Game {
   Game();
 
@@ -64,9 +60,8 @@ struct Game {
   static void set_mode(std::string);
 
   #ifdef GENERATE_PYTHON_BINDINGS
-  void read_game_information(pybind11::object gametick,
-                             pybind11::object phystick,
-                             pybind11::object fieldinfo);
+  void read_field_info(const pybind11::object& field_info);
+  void read_packet(const pybind11::object& packet);
   #endif
 
 };

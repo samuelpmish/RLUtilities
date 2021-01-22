@@ -150,6 +150,7 @@ void init_linalg(pybind11::module & m) {
 	m.def("look_at", &look_at);
 	m.def("rotation", &rotation);
 	m.def("euler_to_rotation", &euler_to_rotation);
+	m.def("rotation_to_euler", &rotation_to_euler);
 	m.def("axis_to_rotation", &axis_to_rotation);
 	m.def("rotation_to_axis", &rotation_to_axis);
 	m.def("transpose", (mat2(*)(const mat2 &)) &transpose);

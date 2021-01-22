@@ -48,8 +48,8 @@ PYBIND11_MODULE(rlutilities, m) {
 	init_aerial(mechanics);
 	init_wavedash(mechanics);
 	init_boostdash(mechanics);
-  init_reorient(mechanics);
-  init_reorient_ML(mechanics);
+    init_reorient(mechanics);
+    init_reorient_ML(mechanics);
 	init_followpath(mechanics);
 
   pybind11::module linear_algebra = m.def_submodule("linear_algebra");
