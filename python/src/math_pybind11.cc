@@ -17,6 +17,8 @@ void init_linalg(pybind11::module & m) {
 	}))
 		.def("__getitem__", [](const vec2 & v, size_t i) { return v[i]; })
 		.def("__setitem__", [](vec2 & v, size_t i, float f) { v[i] = f; })
+		.def_property("x", [](const vec2 & v) {return v[0];}, [](vec2 & v, float f) {v[0] = f;})
+		.def_property("y", [](const vec2 & v) {return v[1];}, [](vec2 & v, float f) {v[1] = f;})
 		.def("__str__", [](const vec2 & v) {
 		return std::to_string(v[0]) + std::string(" ") +
 			std::to_string(v[1]);
@@ -39,6 +41,9 @@ void init_linalg(pybind11::module & m) {
 	}))
 		.def("__getitem__", [](const vec3 & v, size_t i) { return v[i]; })
 		.def("__setitem__", [](vec3 & v, size_t i, float f) { v[i] = f; })
+		.def_property("x", [](const vec3 & v) {return v[0];}, [](vec3 & v, float f) {v[0] = f;})
+		.def_property("y", [](const vec3 & v) {return v[1];}, [](vec3 & v, float f) {v[1] = f;})
+		.def_property("z", [](const vec3 & v) {return v[2];}, [](vec3 & v, float f) {v[2] = f;})
 		.def("__str__", [](const vec3 & v) {
 		return std::to_string(v[0]) + std::string(" ") +
 			std::to_string(v[1]) + std::string(" ") +
