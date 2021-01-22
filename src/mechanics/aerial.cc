@@ -12,8 +12,6 @@ const float Aerial::throttle_accel = 66.66667f;
 
 const float Aerial::boost_per_second = 30.0f; // ???
 
-const vec3 gravity{0.0f, 0.0f, -650.0f};
-
 Aerial::Aerial(Car & c) : car(c), dodge(c), reorient(c) {
   finished = false;
   controls = Input();
@@ -38,12 +36,10 @@ void Aerial::step(float dt) {
   const float j_accel = Jump::acceleration;
   const float j_duration = Jump::max_duration;
 
-  const vec3 gravity{0.0f, 0.0f, -650.0f};
-
   float T = arrival_time - car.time;
 
-  vec3 xf = car.position + car.velocity * T + 0.5 * gravity * T * T;
-  vec3 vf = car.velocity + gravity * T;
+  vec3 xf = car.position + car.velocity * T + 0.5 * car.gravity * T * T;
+  vec3 vf = car.velocity + car.gravity * T;
 
   bool jumping_prev = jumping;
   if (jumping) {
@@ -147,8 +143,8 @@ bool Aerial::is_viable() {
 
   float T = arrival_time - car.time;
 
-  vec3 xf = car.position + car.velocity * T + 0.5 * gravity * T * T;
-  vec3 vf = car.velocity + gravity * T;
+  vec3 xf = car.position + car.velocity * T + 0.5 * car.gravity * T * T;
+  vec3 vf = car.velocity + car.gravity * T;
 
   if (car.on_ground) {
     vf += car.up() * (2.0f * j_speed + j_accel * j_duration);

@@ -32,8 +32,6 @@ sphere Ball::hitbox() {
 }
 
 void Ball::step(float dt) {
-	const vec3 gravity = vec3{ 0.0, 0.0, -650.0f };
-
 	ray contact = Field::collide(hitbox());
 
 	if (norm(contact.direction) > 0.0) {

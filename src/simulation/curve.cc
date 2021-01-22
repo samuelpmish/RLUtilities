@@ -405,7 +405,7 @@ void Curve::calculate_tangents() {
 
 float Curve::calculate_max_speeds(float v0, float vf) {
 
-  vec3 g{0.0f, 0.0f, Game::gravity};
+  const vec3 &g = Game::gravity;
   max_speeds = std::vector < float >(curvatures.size());
 
   for (int i = 0; i < curvatures.size(); i++) {

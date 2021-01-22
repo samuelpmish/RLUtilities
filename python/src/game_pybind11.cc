@@ -49,6 +49,28 @@ void Game::read_field_info(const pybind11::object& field_info) {
 }
 
 void Game::read_packet(const pybind11::object& packet) {
+    // game info
+    pybind11::object game_info = packet.attr("game_info");
+
+    time = game_info.attr("seconds_elapsed").cast<float>();
+    time_remaining = game_info.attr("game_time_remaining").cast<float>();
+    float gravity_z = game_info.attr("world_gravity_z").cast<float>();
+    gravity = {0.0f, 0.0f, gravity_z};
+
+    if (game_info.attr("is_match_ended").cast<bool>()) {
+        state = GameState::Ended;
+    } else {
+        if (game_info.attr("is_round_active").cast<bool>()) {
+            if (game_info.attr("is_kickoff_pause").cast<bool>()) {
+                state = GameState::Kickoff;
+            } else {
+                state = GameState::Active;
+            }
+        } else {
+            state = GameState::Inactive;
+        }
+    }
+
     // cars
     int num_cars = packet.attr("num_cars").cast<int>();
     pybind11::list game_cars = packet.attr("game_cars");
@@ -75,6 +97,7 @@ void Game::read_packet(const pybind11::object& packet) {
 
         cars[i].time = time;
         cars[i].id = i;
+        cars[i].gravity = gravity;
 
         cars[i].hitbox_widths[0] = game_car.attr("hitbox").attr("length").cast<float>() * 0.5f;
         cars[i].hitbox_widths[1] = game_car.attr("hitbox").attr("width").cast<float>() * 0.5f;
@@ -89,6 +112,7 @@ void Game::read_packet(const pybind11::object& packet) {
     ball.velocity = vector3_to_vec3(ball_physics.attr("velocity"));
     ball.angular_velocity = vector3_to_vec3(ball_physics.attr("angular_velocity"));
     ball.time = time;
+    ball.gravity = gravity;
 
     // boost pads
     int num_game_boosts = packet.attr("num_boost").cast<int>();
@@ -107,27 +131,6 @@ void Game::read_packet(const pybind11::object& packet) {
             }
         }
 
-    }
-
-    // game info
-    pybind11::object game_info = packet.attr("game_info");
-
-    time = game_info.attr("seconds_elapsed").cast<float>();
-    time_remaining = game_info.attr("game_time_remaining").cast<float>();
-    gravity = game_info.attr("world_gravity_z").cast<float>();
-
-    if (game_info.attr("is_match_ended").cast<bool>()) {
-        state = GameState::Ended;
-    } else {
-        if (game_info.attr("is_round_active").cast<bool>()) {
-            if (game_info.attr("is_kickoff_pause").cast<bool>()) {
-                state = GameState::Kickoff;
-            } else {
-                state = GameState::Active;
-            }
-        } else {
-            state = GameState::Inactive;
-        }
     }
 }
 

@@ -45,7 +45,7 @@ struct Game {
 
   GameState state;
 
-  static float gravity;
+  static vec3 gravity;
   static std::string map;
   static std::string mode;
 
