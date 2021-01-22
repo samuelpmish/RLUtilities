@@ -70,6 +70,7 @@ void Game::read_packet(const pybind11::object& packet) {
         cars[i].double_jumped = game_car.attr("double_jumped").cast<bool>();
         cars[i].on_ground = game_car.attr("has_wheel_contact").cast<bool>();
         cars[i].supersonic = game_car.attr("is_super_sonic").cast<bool>();
+        cars[i].demolished = game_car.attr("is_demolished").cast<bool>();
         cars[i].team = game_car.attr("team").cast<int>();
 
         cars[i].time = time;

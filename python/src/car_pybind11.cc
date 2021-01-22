@@ -20,6 +20,7 @@ void init_car(pybind11::module & m) {
 		.def_readwrite("angular_velocity", &Car::angular_velocity)
 		.def_readwrite("orientation", &Car::orientation)
 		.def_readwrite("supersonic", &Car::supersonic)
+		.def_readwrite("demolished", &Car::demolished)
 		.def_readwrite("jumped", &Car::jumped)
 		.def_readwrite("double_jumped", &Car::double_jumped)
 		.def_readwrite("on_ground", &Car::on_ground)
