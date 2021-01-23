@@ -41,7 +41,7 @@ void Dodge::step(float dt) {
 		controls.jump = 1;
 	}
 
-	if (car.time >= delay && !car.double_jumped && !car.on_ground) {
+	if (timer >= delay && !car.double_jumped && !car.on_ground) {
 
 		if (norm(direction) > 0.0f) {
 
