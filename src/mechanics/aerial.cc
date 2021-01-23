@@ -1,6 +1,8 @@
 #include "mechanics/aerial.h"
 #include "mechanics/jump.h"
 
+#include "simulation/game.h"
+
 #include "misc/timer.h"
 
 #include <fstream>
@@ -36,8 +38,8 @@ void Aerial::step(float dt) {
 
   float T = arrival_time - car.time;
 
-  vec3 xf = car.position + car.velocity * T + 0.5 * car.gravity * T * T;
-  vec3 vf = car.velocity + car.gravity * T;
+  vec3 xf = car.position + car.velocity * T + 0.5 * Game::gravity * T * T;
+  vec3 vf = car.velocity + Game::gravity * T;
 
   if (jumping) {
 
@@ -142,8 +144,8 @@ bool Aerial::is_viable() {
 
   float T = arrival_time - car.time;
 
-  vec3 xf = car.position + car.velocity * T + 0.5 * car.gravity * T * T;
-  vec3 vf = car.velocity + car.gravity * T;
+  vec3 xf = car.position + car.velocity * T + 0.5 * Game::gravity * T * T;
+  vec3 vf = car.velocity + Game::gravity * T;
 
   if (car.on_ground) {
     vf += car.up() * (2.0f * j_speed + j_accel * j_duration);

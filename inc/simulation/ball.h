@@ -17,7 +17,6 @@ class Ball {
   vec3 velocity;
   vec3 angular_velocity;
   float time;
-  vec3 gravity;
 
   float dropshot_damage;
   float dropshot_absorbed;

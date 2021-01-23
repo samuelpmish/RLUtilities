@@ -97,7 +97,6 @@ void Game::read_packet(const pybind11::object& packet) {
 
         cars[i].time = time;
         cars[i].id = i;
-        cars[i].gravity = gravity;
 
         cars[i].hitbox_widths[0] = game_car.attr("hitbox").attr("length").cast<float>() * 0.5f;
         cars[i].hitbox_widths[1] = game_car.attr("hitbox").attr("width").cast<float>() * 0.5f;
@@ -112,7 +111,6 @@ void Game::read_packet(const pybind11::object& packet) {
     ball.velocity = vector3_to_vec3(ball_physics.attr("velocity"));
     ball.angular_velocity = vector3_to_vec3(ball_physics.attr("angular_velocity"));
     ball.time = time;
-    ball.gravity = gravity;
 
     // boost pads
     int num_game_boosts = packet.attr("num_boost").cast<int>();
@@ -146,7 +144,7 @@ void init_game(pybind11::module & m) {
 		.def_readonly("pads", &Game::pads)
 		.def_readonly("goals", &Game::goals)
         .def_readonly_static("map", &Game::map)
-        .def_readonly_static("gravity", &Game::gravity)
+        .def_readwrite_static("gravity", &Game::gravity)
         .def_static("set_mode", &Game::set_mode)
         .def("read_field_info", &Game::read_field_info)
         .def("read_packet", &Game::read_packet);

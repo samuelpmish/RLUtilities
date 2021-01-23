@@ -121,7 +121,6 @@ class Car {
 
   int frame;
   float time;
-  vec3 gravity;
 
   CarBody body;
   CarState state;

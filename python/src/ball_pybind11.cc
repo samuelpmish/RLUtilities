@@ -9,7 +9,6 @@ void init_ball(pybind11::module & m) {
 		.def_readwrite("velocity", &Ball::velocity)
 		.def_readwrite("angular_velocity", &Ball::angular_velocity)
 		.def_readwrite("time", &Ball::time)
-		.def_readwrite("gravity", &Ball::gravity)
 		.def_readonly_static("restitution", &Ball::restitution)
 		.def_readonly_static("drag", &Ball::drag)
 		.def_readonly_static("friction", &Ball::mu)

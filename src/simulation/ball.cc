@@ -1,3 +1,4 @@
+#include "simulation/game.h"
 #include "simulation/ball.h"
 #include "simulation/field.h"
 
@@ -65,7 +66,7 @@ void Ball::step(float dt) {
 	}
 	else {
 
-		velocity += (drag * velocity + gravity) * dt;
+		velocity += (drag * velocity + Game::gravity) * dt;
 		position += velocity * dt;
 
 	}

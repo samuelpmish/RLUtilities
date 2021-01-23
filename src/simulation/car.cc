@@ -1,4 +1,5 @@
 #include "simulation/car.h"
+#include "simulation/game.h"
 
 #include "mechanics/aerial.h"
 #include "mechanics/dodge.h"
@@ -26,7 +27,7 @@ vec3 Car::up() const {
 }
 
 void Car::jump(const Input& in, float dt) {
-  velocity += gravity * dt + Jump::speed * up();
+  velocity += Game::gravity * dt + Jump::speed * up();
   position += velocity * dt;
 
   orientation = dot(axis_to_rotation(angular_velocity * dt), orientation);
@@ -68,7 +69,7 @@ void Car::air_dodge(const Input& in, float dt) {
     }
     dv[1] *= (1.0f + 0.9f * s);
 
-    velocity += gravity * dt + vec3(dot(o_dodge, dv));
+    velocity += Game::gravity * dt + vec3(dot(o_dodge, dv));
     position += velocity * dt;
 
     angular_velocity += dodge_torque * dt;
@@ -81,7 +82,7 @@ void Car::air_dodge(const Input& in, float dt) {
   } else {
     dodge_torque = vec3{0.0f, 0.0f, 0.0f};
 
-    velocity += gravity * dt + Jump::speed * up();
+    velocity += Game::gravity * dt + Jump::speed * up();
     position += velocity * dt;
 
     angular_velocity += dodge_torque * dt;
@@ -135,7 +136,7 @@ void Car::aerial_control(const Input& in, float dt) {
     angular_velocity += dot(orientation, T * rpy + H * omega_local) * (dt / J);
   }
 
-  velocity += gravity * dt;
+  velocity += Game::gravity * dt;
 
   position += velocity * dt;
   orientation = dot(axis_to_rotation(angular_velocity * dt), orientation);
