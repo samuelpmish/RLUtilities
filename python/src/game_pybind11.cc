@@ -127,6 +127,7 @@ void Game::read_packet(const pybind11::object& packet) {
             } else {
                 pads[i].state = BoostPadState::Unavailable;
             }
+            pads[i].timer = game_boost.attr("timer").cast<float>();
         }
 
     }

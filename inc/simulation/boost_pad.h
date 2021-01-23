@@ -16,5 +16,6 @@ struct BoostPad {
   vec3 position;
   BoostPadType type;
   BoostPadState state;
+  float timer;
   uint16_t actor_id;
 };
