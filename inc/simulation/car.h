@@ -107,6 +107,7 @@ class Car {
   bool jumped;
   bool double_jumped;
   bool on_ground;
+  bool demolished;
 
   int boost;
 

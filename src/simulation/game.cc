@@ -7,7 +7,7 @@
 #include <fstream>
 #include <iostream>
 
-float Game::gravity = -650.0f;
+vec3 Game::gravity = {0.0f, 0.0f, -650.0f};
 std::string Game::map = "map_not_set";
 std::string Game::mode = "mode_not_set";
 

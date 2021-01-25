@@ -1,3 +1,4 @@
+#include "simulation/game.h"
 #include "simulation/ball.h"
 #include "simulation/field.h"
 
@@ -32,8 +33,6 @@ sphere Ball::hitbox() {
 }
 
 void Ball::step(float dt) {
-	const vec3 gravity = vec3{ 0.0, 0.0, -650.0f };
-
 	ray contact = Field::collide(hitbox());
 
 	if (norm(contact.direction) > 0.0) {
@@ -67,7 +66,7 @@ void Ball::step(float dt) {
 	}
 	else {
 
-		velocity += (drag * velocity + gravity) * dt;
+		velocity += (drag * velocity + Game::gravity) * dt;
 		position += velocity * dt;
 
 	}

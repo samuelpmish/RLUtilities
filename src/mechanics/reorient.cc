@@ -165,7 +165,9 @@ vec3 Reorient::find_controls_for(const vec3 & ideal_alpha) {
 }
 
 void Reorient::step(float dt) {
-
+  if (std::isnan(alpha[0]) || std::isnan(alpha[1]) || std::isnan(alpha[2])) {
+    alpha = {0.0f, 0.0f, 0.0f};
+  }
   omega = dot(transpose(target_orientation), car.angular_velocity);
   theta = dot(transpose(target_orientation), car.orientation);
   omega_local = dot(omega, theta);
