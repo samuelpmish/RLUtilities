@@ -36,7 +36,7 @@ mesh throwback_corner_wall_2{};
 
 namespace rlu {
 
-  void initialize(std::string asset_dir) {
+  void initialize(std::string asset_dir = ASSET_DIR) {
 
     auto read_mesh = [asset_dir](std::string str) {
       return mesh(
