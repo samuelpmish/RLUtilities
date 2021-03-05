@@ -26,6 +26,7 @@ __pycache__/
 *.ipdb
 *.pyd
 *.pyi
+python/rlutilities/assets
 
 # Distribution / packaging
 .Python
