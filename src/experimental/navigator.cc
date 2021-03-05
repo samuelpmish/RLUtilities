@@ -94,7 +94,9 @@ void Navigator::analyze_surroundings(float time_budget) {
   vec3 n = navigation_normals[source_node];
   source -= dot(source - p, n) * n;
 
-  std::cout << "source: " << source << std::endl;
+  if (debug) {
+    std::cout << "source: " << source << std::endl;
+  }
 
   vec3 f = car.forward();
   source_direction = -1;

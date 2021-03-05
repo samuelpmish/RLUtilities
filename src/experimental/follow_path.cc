@@ -116,38 +116,37 @@ void FollowPath::calculate_plan(Curve path_, float arrival_time_, float arrival_
 
   float T = arrival_time - car.time;
   if (T < 0) {
-    std::cout << "Warning: invalid arrival time" << std::endl;
-  } else {
+    // std::cout << "Warning: invalid arrival time" << std::endl;
+    return;
+  }
 
-    float v0 = norm(car.velocity);
-    float vf = arrival_speed;
-  
-    float a = Drive::boost_accel + Drive::throttle_accel(vf);
-    float error = distance_error(s, T, vf, a, v0, int(T / dt));
-    std::cout << "a = " << a << " calculating error: " << error << std::endl;
+  float v0 = norm(car.velocity);
+  float vf = arrival_speed;
 
-  
-    float a_old = -Drive::brake_accel;
-    float error_old = distance_error(s, T, vf, a_old, v0, int(T / dt));
-    std::cout << "a = " << a_old << " calculating error: " << error_old << std::endl;
-  
-    // try to find the right arrival acceleration
-    // using a few iterations of secant method
-    for (int i = 0; i < 1 * 16; i++) {
-  
-      if (fabs(error) < 0.5f) break;
-  
-      float new_a = (a_old * error - a * error_old) / (error - error_old);
-  
-      a_old = a;
-      a = new_a;
-  
-      error_old = error;
-      error = distance_error(s, T, vf, a, v0, int(T / dt));
+  float a = Drive::boost_accel + Drive::throttle_accel(vf);
+  float error = distance_error(s, T, vf, a, v0, int(T / dt));
+  // std::cout << "a = " << a << " calculating error: " << error << std::endl;
 
-      std::cout << "a = " << a << " calculating error: " << error << std::endl;
 
-    }
+  float a_old = -Drive::brake_accel;
+  float error_old = distance_error(s, T, vf, a_old, v0, int(T / dt));
+  // std::cout << "a = " << a_old << " calculating error: " << error_old << std::endl;
 
+  // try to find the right arrival acceleration
+  // using a few iterations of secant method
+  for (int i = 0; i < 1 * 16; i++) {
+
+    if (fabs(error) < 0.5f) break;
+
+    float new_a = (a_old * error - a * error_old) / (error - error_old);
+
+    a_old = a;
+    a = new_a;
+
+    error_old = error;
+    error = distance_error(s, T, vf, a, v0, int(T / dt));
+
+    // std::cout << "a = " << a << " calculating error: " << error << std::endl;
+    
   }
 }
