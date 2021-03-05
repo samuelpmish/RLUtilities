@@ -9,5 +9,6 @@ void init_followpath(pybind11::module & m) {
     .def_readwrite("path", &FollowPath::path)
     .def_readonly("finished", &FollowPath::finished)
     .def_readonly("controls", &FollowPath::controls)
-    .def("step", &FollowPath::step);
+    .def("step", &FollowPath::step)
+    .def("calculate_plan", &FollowPath::calculate_plan);
 }
