@@ -36,12 +36,12 @@ mesh throwback_corner_wall_2{};
 
 namespace rlu {
 
-  void initialize(std::string mode) {
+  void initialize(std::string asset_dir) {
 
-    auto read_mesh = [](std::string str) {
+    auto read_mesh = [asset_dir](std::string str) {
       return mesh(
-        read_binary<int>(ASSET_DIR + str + "_ids.bin"),
-        read_binary<float>(ASSET_DIR + str + "_vertices.bin")
+        read_binary<int>(asset_dir + str + "_ids.bin"),
+        read_binary<float>(asset_dir + str + "_vertices.bin")
       );
     };
 
@@ -66,13 +66,14 @@ namespace rlu {
     throwback_corner_wall_1 = read_mesh("throwback/throwback_corner_wall_1");
     throwback_corner_wall_2 = read_mesh("throwback/throwback_corner_wall_2");
 
-    auto prefix = ASSET_DIR + std::string("soccar/soccar_navigation_");
+    auto prefix = asset_dir + std::string("soccar/soccar_navigation_");
     Navigator::init_statics(
         read_binary<Graph::edge>(prefix + "graph.bin"),
         read_binary<vec3>(prefix + "nodes.bin"),
         read_binary<vec3>(prefix + "normals.bin"));
 
-    Game::set_mode(mode);
+    // User should call this instead.
+    // Game::set_mode(mode);
 
   }
 
