@@ -365,7 +365,7 @@ namespace Outgoing {
   std::string serialize(const std::vector < Message > & packet) {
 
     rapidjson::StringBuffer sb;
-    rapidjson::Writer writer(sb);
+    rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
 
     writer.StartArray();
     for (auto message : packet) {
