@@ -72,6 +72,8 @@ namespace rlu {
         read_binary<vec3>(prefix + "nodes.bin"),
         read_binary<vec3>(prefix + "normals.bin"));
 
+    ReorientML::set_model(Model(read_binary<float>(asset_dir + "ML/reorient_ML_model.bin")));
+    
     // User should call this instead.
     // Game::set_mode(mode);
 
