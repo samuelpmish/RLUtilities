@@ -71,6 +71,8 @@ if (TARGET_LANGUAGE STREQUAL "python" OR TARGET_LANGUAGE STREQUAL "both")
 
   set_target_properties(rlutilities PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python/rlutilities)
 
+  file(COPY ${PROJECT_SOURCE_DIR}/assets DESTINATION ${PROJECT_SOURCE_DIR}/python/rlutilities)
+
 endif()
 
 set(ASSET_DIR ${PROJECT_SOURCE_DIR}/assets/)
