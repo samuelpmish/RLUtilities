@@ -110,7 +110,7 @@ void Aerial::step(float dt) {
     // would need to put it on an intercept course with the target
     float delta_v = s / T;
 
-    // in practice, my car make that change in a single frame,
+    // in practice, my car can't make that change in a single frame,
     // so I pick the appropriate throttle / boost combination
     // to get as close as possible
     if (delta_v > (2 * boost_accel * dt)) {
