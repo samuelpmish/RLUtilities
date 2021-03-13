@@ -232,24 +232,11 @@ class AttributeStubsGenerator(StubsGenerator):
                 )
             ]
 
-        value_lines = repr(self.attr).split("\n")
-        if len(value_lines)==1:
-            value = value_lines[0]
-            return [
-                "{name} = None # type: {typename} # value = {value}".format(
-                    name=self.name,
-                    typename=self.fully_qualified_name(type(self.attr)),
-                    value=value)
-            ]
-        else:
-            return [
-                "{name} = None # type: {typename} # value = ".format(
-                    name=self.name,
-                    typename=str(type(self.attr)))
-            ] \
-                   + ['"""'] \
-                   + [l.replace('"""', r'\"\"\"') for l in value_lines] \
-                   + ['"""']
+        return [
+            "{name}: {typename} = None # type: {typename}".format(
+                name=self.name,
+                typename=self.fully_qualified_name(type(self.attr)))
+        ]
 
 
 class FreeFunctionStubsGenerator(StubsGenerator):
