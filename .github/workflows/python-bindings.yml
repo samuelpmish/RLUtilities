@@ -1,6 +1,11 @@
 name: Python Bindings
 
 on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+    branches:
+      - master
+      - develop
 
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -14,11 +19,20 @@ jobs:
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
     runs-on: windows-latest
 
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8, 3.9]
+
     steps:
     - name: Checkout repository and submodules
       uses: actions/checkout@v2
       with:
         submodules: recursive
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
 
     - name: Create Build Environment
       # Some projects don't allow in-source building, so create a separate build directory
@@ -41,13 +55,32 @@ jobs:
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: cmake --build . --config $BUILD_TYPE
 
-    - name: Get .pyd file from build output
-      working-directory: ${{github.workspace}}/python/rlutilities
-      shell: bash
-      run: |
-        cp Release/rlutilities.cp37-win_amd64.pyd .
-        rm -rf Release
-      
+    - name: ${{ matrix.python-version }} .pyd artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.python-version }}
+        path: python/rlutilities/*.pyd
+
+  release:
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: mkdir temp
+
+    - name: Download all artifacts from previous jobs
+      uses: actions/download-artifact@v2
+      with:
+        path: temp
+
+    - name: Copy all .pyd files to release folder
+      run: cp temp/*/*.pyd python/rlutilities
+
+    - name: Copy assets to release folder
+      run: cp -r assets python/rlutilities
+
     - name: Generate Stubs
       working-directory: ${{github.workspace}}/python
       shell: bash
@@ -55,9 +88,30 @@ jobs:
         python pybind11_stubgen.py rlutilities
         cp -r stubs/rlutilities-stubs/rlutilities/* rlutilities
         rm -rf stubs
-      
-    - name: Archive build artifacts
+        rm -rf rlutilities/__pycache__
+
+    - name: Release artifact
       uses: actions/upload-artifact@v2
       with:
-        name: python-bindings
+        name: release
         path: python/rlutilities
+
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v5.3
+      with:
+        release_branches: master,develop
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Zip release
+      # because we're on windows, we have to use this powershell command
+      run: Compress-Archive -Path python/rlutilities -DestinationPath rlutilities.zip 
+
+    - name: Create a release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.tag_version.outputs.new_tag }}
+        files: rlutilities.zip
+        body: Download and extract the `rlutilities` folder to your bot source root folder.
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
