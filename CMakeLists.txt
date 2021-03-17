@@ -70,6 +70,7 @@ if (TARGET_LANGUAGE STREQUAL "python" OR TARGET_LANGUAGE STREQUAL "both")
   target_link_libraries(rlutilities PUBLIC asio rapidjson)
 
   set_target_properties(rlutilities PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/python/rlutilities)
+  set_target_properties(rlutilities PROPERTIES LIBRARY_OUTPUT_DIRECTORY_RELEASE ${PROJECT_SOURCE_DIR}/python/rlutilities)
 
   file(COPY ${PROJECT_SOURCE_DIR}/assets DESTINATION ${PROJECT_SOURCE_DIR}/python/rlutilities)
 

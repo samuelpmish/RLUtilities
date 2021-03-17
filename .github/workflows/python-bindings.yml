@@ -1,0 +1,116 @@
+name: Python Bindings
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    # The CMake configure and build commands are platform agnostic and should work equally
+    # well on Windows or Mac.  You can convert this to a matrix build if you need
+    # cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        python-version: [3.7, 3.8, 3.9]
+
+    steps:
+    - name: Checkout repository and submodules
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Create Build Environment
+      # Some projects don't allow in-source building, so create a separate build directory
+      # We'll use this as our working directory for all subsequent commands
+      run: cmake -E make_directory ${{github.workspace}}/build
+
+    - name: Configure CMake
+      # Use a bash shell so we can use the same syntax for environment variable
+      # access regardless of the host operating system
+      shell: bash
+      working-directory: ${{github.workspace}}/build
+      # Note the current convention is to use the -S and -B options here to specify source 
+      # and build directories, but this is only available with CMake 3.13 and higher.  
+      # The CMake binaries on the Github Actions machines are (as of this writing) 3.12
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=$BUILD_TYPE -DTARGET_LANGUAGE=python
+
+    - name: Build
+      working-directory: ${{github.workspace}}/build
+      shell: bash
+      # Execute the build.  You can specify a specific target with "--target <NAME>"
+      run: cmake --build . --config $BUILD_TYPE
+
+    - name: ${{ matrix.python-version }} .pyd artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.python-version }}
+        path: python/rlutilities/*.pyd
+
+  release:
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: mkdir temp
+
+    - name: Download all artifacts from previous jobs
+      uses: actions/download-artifact@v2
+      with:
+        path: temp
+
+    - name: Copy all .pyd files to release folder
+      run: cp temp/*/*.pyd python/rlutilities
+
+    - name: Copy assets to release folder
+      run: cp -r assets python/rlutilities
+
+    - name: Generate Stubs
+      working-directory: ${{github.workspace}}/python
+      shell: bash
+      run: |
+        python pybind11_stubgen.py rlutilities
+        cp -r stubs/rlutilities-stubs/rlutilities/* rlutilities
+        rm -rf stubs
+        rm -rf rlutilities/__pycache__
+
+    - name: Release artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: release
+        path: python/rlutilities
+
+    - name: Bump version and push tag
+      id: tag_version
+      uses: mathieudutour/github-tag-action@v5.3
+      with:
+        release_branches: master,develop
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Zip release
+      # because we're on windows, we have to use this powershell command
+      run: Compress-Archive -Path python/rlutilities -DestinationPath rlutilities.zip 
+
+    - name: Create a release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.tag_version.outputs.new_tag }}
+        files: rlutilities.zip
+        body: Download and extract the `rlutilities` folder to your bot source root folder.
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
