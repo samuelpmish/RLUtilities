@@ -20,7 +20,7 @@ void init_curve(pybind11::module & m) {
     .def("pop_front", &Curve::pop_front)
     .def("calculate_distances", &Curve::calculate_distances)
     .def("calculate_tangents", &Curve::calculate_tangents)
-    .def("calculate_max_speeds", &Curve::calculate_max_speeds)
+    .def("calculate_max_speeds", &Curve::calculate_max_speeds, pybind11::arg("v0"), pybind11::arg("vf"))
     .def("write_to_file", &Curve::write_to_file)
     .def_readwrite("points", &Curve::points)
     .def_readonly("length", &Curve::length);

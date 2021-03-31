@@ -146,9 +146,9 @@ void init_game(pybind11::module & m) {
 		.def_readonly("goals", &Game::goals)
         .def_readonly_static("map", &Game::map)
         .def_readwrite_static("gravity", &Game::gravity)
-        .def_static("set_mode", &Game::set_mode)
-        .def("read_field_info", &Game::read_field_info)
-        .def("read_packet", &Game::read_packet);
+        .def_static("set_mode", &Game::set_mode, pybind11::arg("mode"))
+        .def("read_field_info", &Game::read_field_info, pybind11::arg("field_info"))
+        .def("read_packet", &Game::read_packet, pybind11::arg("packet"));
 
 	pybind11::enum_<GameState>(m, "GameState")
 	    .value("Active", GameState::Active)

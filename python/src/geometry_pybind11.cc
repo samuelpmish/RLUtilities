@@ -4,7 +4,7 @@
 void init_geometry(pybind11::module & m) {
 	pybind11::class_<ray>(m, "ray")
 		.def(pybind11::init())
-		.def(pybind11::init< vec<3>, vec<3> >())
+		.def(pybind11::init< vec<3>, vec<3> >(), pybind11::arg("start"), pybind11::arg("direction"))
 		.def_readwrite("start", &ray::start)
 		.def_readwrite("direction", &ray::direction);
 
@@ -16,7 +16,7 @@ void init_geometry(pybind11::module & m) {
 
 	pybind11::class_<sphere>(m, "sphere")
 		.def(pybind11::init())
-		.def(pybind11::init< vec<3>, float >())
+		.def(pybind11::init< vec<3>, float >(), pybind11::arg("center"), pybind11::arg("radius"))
 		.def_readwrite("center", &sphere::center)
 		.def_readwrite("radius", &sphere::radius);
 
