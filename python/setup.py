@@ -4,7 +4,7 @@ import setuptools
 #    long_description = fh.read()
 
 setuptools.setup(
-    name='RLUtilities',
+    name='rlutilities',
     version='1.0.3',
     author='Sam Mish',
     author_email='samuelpmish@gmail.com',
@@ -15,6 +15,7 @@ setuptools.setup(
     packages=['rlutilities'],
     package_data={
         'rlutilities': [
+            'assets/*'
             '*.pyd',
             '__init__.py',
             '*.pyi',
