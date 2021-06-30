@@ -52,7 +52,10 @@ void Game::read_packet(const pybind11::object& packet) {
     // game info
     pybind11::object game_info = packet.attr("game_info");
 
-    time = game_info.attr("seconds_elapsed").cast<float>();
+    float current_time = game_info.attr("seconds_elapsed").cast<float>();
+    time_delta = current_time - time;
+    time = current_time;
+
     time_remaining = game_info.attr("game_time_remaining").cast<float>();
     float gravity_z = game_info.attr("world_gravity_z").cast<float>();
     gravity = {0.0f, 0.0f, gravity_z};
@@ -137,6 +140,7 @@ void init_game(pybind11::module & m) {
 	pybind11::class_<Game>(m, "Game")
 		.def(pybind11::init())
 		.def_readwrite("time", &Game::time)
+		.def_readwrite("time_delta", &Game::time_delta)
 		.def_readwrite("time_remaining", &Game::time_remaining)
 		.def_readwrite("frame", &Game::frame)
 		.def_readwrite("state", &Game::state)
