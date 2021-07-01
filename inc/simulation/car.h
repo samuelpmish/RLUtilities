@@ -98,10 +98,6 @@ class Car {
   vec3 velocity;
   vec3 angular_velocity;
   mat3 orientation;
-  mat2 o_dodge;
-
-  vec4 q; // quaternion
-  vec3 rotator;
 
   bool supersonic;
   bool jumped;
@@ -116,7 +112,6 @@ class Car {
   float boost_timer;
   bool enable_jump_acceleration;
 
-  vec2 dodge_dir;
   vec3 dodge_torque;
 
   int frame;

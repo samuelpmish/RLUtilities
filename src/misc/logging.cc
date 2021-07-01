@@ -41,7 +41,6 @@ nlohmann::json to_json(Car c) {
   obj["boost_left"] = c.boost;
   obj["jump_timer"] = c.jump_timer;
   obj["dodge_timer"] = c.dodge_timer;
-  obj["dodge_dir"] = {c.dodge_dir[0], c.dodge_dir[1]};
   obj["time"] = c.time;
   return obj; 
   
