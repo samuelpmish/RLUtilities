@@ -45,7 +45,7 @@ void Car::air_dodge(const Input& in, float dt) {
     float vf = dot(velocity, forward());
     float s = fabs(vf) / v_max;
 
-    dodge_dir = normalize(vec2{-in.pitch, in.yaw});
+    vec2 dodge_dir = normalize(vec2{-in.pitch, in.yaw});
 
     vec3 dodge_torque_local =
         vec3(cross(vec2{dodge_dir[0] * 224.0f, dodge_dir[1] * 260.0f}));
@@ -69,7 +69,8 @@ void Car::air_dodge(const Input& in, float dt) {
     }
     dv[1] *= (1.0f + 0.9f * s);
 
-    velocity += Game::gravity * dt + vec3(dot(o_dodge, dv));
+    auto f = forward();
+    velocity += Game::gravity * dt + vec3(dot(rotation(atan2(f[1], f[0])), dv));
     position += velocity * dt;
 
     angular_velocity += dodge_torque * dt;
@@ -341,13 +342,12 @@ Car::Car() {
   velocity = vec3{0.0f, 0.0f, 0.0f};
   angular_velocity = vec3{0.0f, 0.0f, 0.0f};
   orientation = eye<3>();
-  q = vec4{0.0f, 0.0f, 0.0f, 0.0f};
-  rotator = vec3{0.0f, 0.0f, 0.0f};
 
   supersonic = false;
   jumped = false;
   double_jumped = false;
   on_ground = false;
+  demolished = false;
 
   //state = "OnGround";
 

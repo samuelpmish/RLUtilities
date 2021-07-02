@@ -43,6 +43,8 @@ struct Game {
   float time;
   float time_remaining;
 
+  float time_delta;
+
   GameState state;
 
   static vec3 gravity;

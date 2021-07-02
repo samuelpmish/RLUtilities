@@ -52,7 +52,10 @@ void Game::read_packet(const pybind11::object& packet) {
     // game info
     pybind11::object game_info = packet.attr("game_info");
 
-    time = game_info.attr("seconds_elapsed").cast<float>();
+    float current_time = game_info.attr("seconds_elapsed").cast<float>();
+    time_delta = current_time - time;
+    time = current_time;
+
     time_remaining = game_info.attr("game_time_remaining").cast<float>();
     float gravity_z = game_info.attr("world_gravity_z").cast<float>();
     gravity = {0.0f, 0.0f, gravity_z};
@@ -137,6 +140,7 @@ void init_game(pybind11::module & m) {
 	pybind11::class_<Game>(m, "Game")
 		.def(pybind11::init())
 		.def_readwrite("time", &Game::time)
+		.def_readwrite("time_delta", &Game::time_delta)
 		.def_readwrite("time_remaining", &Game::time_remaining)
 		.def_readwrite("frame", &Game::frame)
 		.def_readwrite("state", &Game::state)
@@ -146,9 +150,9 @@ void init_game(pybind11::module & m) {
 		.def_readonly("goals", &Game::goals)
         .def_readonly_static("map", &Game::map)
         .def_readwrite_static("gravity", &Game::gravity)
-        .def_static("set_mode", &Game::set_mode)
-        .def("read_field_info", &Game::read_field_info)
-        .def("read_packet", &Game::read_packet);
+        .def_static("set_mode", &Game::set_mode, pybind11::arg("mode"))
+        .def("read_field_info", &Game::read_field_info, pybind11::arg("field_info"))
+        .def("read_packet", &Game::read_packet, pybind11::arg("packet"));
 
 	pybind11::enum_<GameState>(m, "GameState")
 	    .value("Active", GameState::Active)

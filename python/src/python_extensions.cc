@@ -30,7 +30,15 @@ PYBIND11_MODULE(rlutilities, m) {
 
 	m.def("initialize", &rlu::initialize);
 
-  pybind11::module simulation = m.def_submodule("simulation");
+	// The order of modules below matters! Define them in topological order.
+	// For example: `simulation` depends on `linear_algebra`, define `linear_algebra` first.
+	// This is needed for correct dosctring generation, which is needed for correct generation of stubs.
+	// For more info see https://pybind11.readthedocs.io/en/stable/advanced/misc.html?highlight=docstring#avoiding-c-types-in-docstrings
+
+	pybind11::module linear_algebra = m.def_submodule("linear_algebra");
+	init_linalg(linear_algebra);
+
+  	pybind11::module simulation = m.def_submodule("simulation");
 	init_car(simulation);
 	init_ball(simulation);
 	init_pad(simulation);
@@ -41,7 +49,7 @@ PYBIND11_MODULE(rlutilities, m) {
 	init_game(simulation);
 	init_navigator(simulation);
 
-  pybind11::module mechanics = m.def_submodule("mechanics");
+  	pybind11::module mechanics = m.def_submodule("mechanics");
 	init_jump(mechanics);
 	init_dodge(mechanics);
 	init_drive(mechanics);
@@ -51,8 +59,5 @@ PYBIND11_MODULE(rlutilities, m) {
     init_reorient(mechanics);
     init_reorient_ML(mechanics);
 	init_followpath(mechanics);
-
-  pybind11::module linear_algebra = m.def_submodule("linear_algebra");
-	init_linalg(linear_algebra);
 
 }

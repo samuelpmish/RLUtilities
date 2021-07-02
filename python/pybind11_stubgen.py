@@ -224,16 +224,8 @@ class AttributeStubsGenerator(StubsGenerator):
         return False
 
     def to_lines(self): # type: () -> List[str]
-        if self.is_safe_to_use_repr(self.attr):
-            return [
-                "{name} = {repr}".format(
-                    name=self.name,
-                    repr=repr(self.attr)
-                )
-            ]
-
         return [
-            "{name}: {typename} = None # type: {typename}".format(
+            "{name}: {typename}".format(
                 name=self.name,
                 typename=self.fully_qualified_name(type(self.attr)))
         ]
@@ -331,6 +323,19 @@ class PropertyStubsGenerator(StubsGenerator):
     def parse(self):
         self.signature = self.property_signature_from_docstring(self.prop, self.module_name)
 
+    def get_involved_modules_names(self):
+        groups = re.findall("([a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)*)", self.signature.rtype)
+
+        involved_modules_names = set()
+        for group in groups:
+            t = group[0]
+            try:
+                i = t.rindex(".")
+                involved_modules_names.add(t[:i])
+            except ValueError:
+                pass
+        return involved_modules_names
+
     def to_lines(self): # type: () -> List[str]
         result = []
         result.append("{field_name}: {rtype}".format(field_name=self.name,rtype=self.signature.rtype))
@@ -411,6 +416,8 @@ class ClassStubsGenerator(StubsGenerator):
         for f in self.methods: # type: ClassMemberStubsGenerator
             self.involved_modules_names |= f.get_involved_modules_names()
 
+        for p in self.properties:
+            self.involved_modules_names |= p.get_involved_modules_names()
 
 
     def to_lines(self): # type: () -> List[str]
@@ -552,8 +559,6 @@ class ModuleStubsGenerator(StubsGenerator):
             # result.extend(map(self.indent, map(lambda m: "import {}".format(m), used_modules)))
             result.extend(map(lambda m: "import {}".format(m), used_modules))
 
-        if self.module.__name__.endswith("simulation") or self.module.__name__.endswith("mechanics"):
-            result += ["from rlutilities.linear_algebra import *"]
 
         # define __all__
 
@@ -604,11 +609,6 @@ class ModuleStubsGenerator(StubsGenerator):
         else:
             with open(self.short_name + ".pyi", "w") as init_pyi:
                 content = "\n".join(self.to_lines())
-                content = content.replace("vec<2>", "vec2")
-                content = content.replace("vec<3>", "vec3")
-                content = content.replace("vec<4>", "vec4")
-                content = content.replace("mat<2,2>", "mat2")
-                content = content.replace("mat<3,3>", "mat3")
                 content = content.replace("rlutilities.rlutilities", "rlutilities")
                 init_pyi.write(content)
 
