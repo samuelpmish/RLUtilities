@@ -127,7 +127,7 @@ class StubsGenerator(object):
     def function_signatures_from_docstring(func, module_name): # type: (Any, str) -> List[FunctionSignature]
         name = func.__name__
         try:
-            signature_regex = r"(\s*(?P<overload_number>\d+).)?\s*{name}\s*\((?P<args>[^\(\)]*)\)\s*->\s*(?P<rtype>[^\(\)]+)\s*".format(
+            signature_regex = r".*{name}\((?P<args>.*)\) -> (?P<rtype>.*).*".format(
                 name=name)
             doc_lines = func.__doc__
             signatures = []
