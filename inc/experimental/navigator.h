@@ -24,9 +24,9 @@ class Navigator {
   Curve path_to(vec3, vec3, float);
 
   static void init_statics(
-    std::vector< Graph::edge > nav_edges,
-    std::vector< vec3 > nav_nodes,
-    std::vector< vec3 > nav_normals);
+    const std::vector< Graph::edge > & nav_edges,
+    const std::vector< vec3 > & nav_nodes,
+    const std::vector< vec3 > & nav_normals);
 
   static std::vector < vec3 > navigation_nodes;
   static std::vector < vec3 > navigation_tangents;
