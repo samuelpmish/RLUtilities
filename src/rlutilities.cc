@@ -67,10 +67,12 @@ namespace rlu {
     throwback_corner_wall_2 = read_mesh("throwback/throwback_corner_wall_2");
 
     auto prefix = asset_dir + std::string("soccar/soccar_navigation_");
-    Navigator::init_statics(
-        read_binary<Graph::edge>(prefix + "graph.bin"),
-        read_binary<vec3>(prefix + "nodes.bin"),
-        read_binary<vec3>(prefix + "normals.bin"));
+    auto navigation_graph = read_binary<Graph::edge>(prefix + "graph.bin");
+    auto navigation_nodes = read_binary<vec3>(prefix + "nodes.bin");
+    auto navigation_normals = read_binary<vec3>(prefix + "normals.bin");
+    if (!navigation_graph.empty() && !navigation_nodes.empty() && !navigation_normals.empty()) {
+      Navigator::init_statics(navigation_graph, navigation_nodes, navigation_normals);
+    }
 
     ReorientML::set_model(Model(read_binary<float>(asset_dir + "ML/reorient_ML_model.bin")));
     

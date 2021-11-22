@@ -26,9 +26,9 @@ std::vector < vec3 > Navigator::navigation_normals;
 std::vector < vec3 > Navigator::directions;
 
 void Navigator::init_statics(
-    std::vector< Graph::edge > nav_edges,
-    std::vector< vec3 > nav_nodes,
-    std::vector< vec3 > nav_normals) {
+    const std::vector< Graph::edge > & nav_edges,
+    const std::vector< vec3 > & nav_nodes,
+    const std::vector< vec3 > & nav_normals) {
 
   //scale = float(parameters[0]);
   //nx = parameters[1];
