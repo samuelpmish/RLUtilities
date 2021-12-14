@@ -68,10 +68,10 @@ void Ball::step(float dt) {
 
 	}
 	else {
-
-		v += (drag * v + gravity) * dt;
-		x += v * dt;
-
+    if (norm(v) > 0) { // If the ball has exactly 0 velocity, it will be frozen
+		  v += (drag * v + gravity) * dt;
+		  x += v * dt;
+    }
 	}
 
 	w *= fminf(1.0, w_max / norm(w));
