@@ -35,7 +35,7 @@ sphere Ball::hitbox() {
 void Ball::step(float dt) {
 	ray contact = Field::collide(hitbox());
 
-  bool frozen = dot(velocity, velocity) == 0 && dot(angular_velocity, angular_velocity); // Ball will not simulate if it has exactly 0 velocity (and not colliding)
+  bool frozen = (dot(velocity, velocity) == 0) && (dot(angular_velocity, angular_velocity) == 0); // Ball will not simulate if it has exactly 0 velocity (and not colliding)
   
 	if (norm(contact.direction) > 0.0) {
 
