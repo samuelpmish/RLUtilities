@@ -40,3 +40,7 @@ Add this repo as a submodule to your project, so that you might easily receive u
 
 The project uses CMake, so put ```add_directory(path/to/RLUtilities)``` in your CMakeLists.txt to
 include it in an existing CMake project. From there, link it to any target that depends on it.
+
+### Python
+Download the [latest Release](https://github.com/samuelpmish/RLUtilities/releases/latest).
+
