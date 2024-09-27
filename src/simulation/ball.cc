@@ -35,6 +35,8 @@ sphere Ball::hitbox() {
 void Ball::step(float dt) {
 	ray contact = Field::collide(hitbox());
 
+  bool frozen = (dot(velocity, velocity) == 0) && (dot(angular_velocity, angular_velocity) == 0); // Ball will not simulate if it has exactly 0 velocity (and not colliding)
+  
 	if (norm(contact.direction) > 0.0) {
 
 		vec3 p = contact.start;
@@ -62,17 +64,16 @@ void Ball::step(float dt) {
 		if (penetration > 0.0f) {
 			position += 1.001f * penetration * n;
 		}
-
-	}
-	else {
-
-		velocity += (drag * velocity + Game::gravity) * dt;
-		position += velocity * dt;
-
+	} else if (!frozen) {
+		  velocity += (drag * velocity + Game::gravity) * dt;
+      position += velocity * dt;
 	}
 
-	angular_velocity *= fminf(1.0, w_max / norm(angular_velocity));
-	velocity *= fminf(1.0, v_max / norm(velocity));
+  if (!frozen) {
+	  angular_velocity *= fminf(1.0, w_max / norm(angular_velocity));
+	  velocity *= fminf(1.0, v_max / norm(velocity));
+  }
+  
 	time += dt;
 }
 

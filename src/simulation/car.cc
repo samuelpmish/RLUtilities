@@ -372,26 +372,26 @@ Car::Car() {
 
 void Car::update(Car next) {
   float dt = next.time - time;
-
-  if (next.on_ground) {
+  
+  // Update jump timer
+  if (!next.jumped) {
+    // We aren't jumping
     jump_timer = -1.0f;
-    dodge_timer = -1.0f;
-    enable_jump_acceleration = false;
-
   } else {
     if (on_ground) {
-      if (next.jumped) {
-        jump_timer = 0.0f;
-        enable_jump_acceleration = true;
-
-      } else {
-        // TODO
-      }
-
+      // We jumped this frame
+	    jump_timer = 0;
     } else {
-      // TODO
+	    // Mid-air jump
+	    jump_timer += dt;
     }
   }
+  
+  // Update jump acceleration
+  enable_jump_acceleration = jump_timer >= 0 && jump_timer <= Jump::max_duration;
+  
+   // TODO: Maybe determine if a double-jump was a dodge or not (https://discord.com/channels/348658686962696195/348658686962696196/923424717522731048)
+  dodge_timer = -1.0f;
 
   if (next.controls.boost) {
     if (controls.boost) {
